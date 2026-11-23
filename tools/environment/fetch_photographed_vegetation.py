@@ -9,8 +9,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def main():
-    manifest = json.loads((ROOT/'art/expressway/sources/vegetation/manifest.json').read_text(encoding='utf-8'))
-    for record in manifest['files']:
+    records = []
+    for folder in ('vegetation', 'tree-small-02', 'grass-bermuda-01'):
+        manifest = json.loads((ROOT/f'art/expressway/sources/{folder}/manifest.json').read_text(encoding='utf-8'))
+        records.extend(manifest['files'])
+    for record in records:
         path = ROOT/record['path']
         if path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == record['sha256']:
             print('Verified', record['path'])

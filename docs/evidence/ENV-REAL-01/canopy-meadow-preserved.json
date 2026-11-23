@@ -1,0 +1,29 @@
+{
+  "baseline": "r15-driving-baseline",
+  "current": "r120-meadow-canopy-coast",
+  "recorded_rows_identical": 4505,
+  "scope": "仅已记录Control/位置/朝向/时间/原点/进度/碰撞字段；非完整Snapshot或性能Gate",
+  "retained_original_resource_bytes": {
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "d52b96fd1296b5a5ee09d26622697ac7e223e58ea859693e16de314fa58b89b5",
+    "assets\\game\\expressway\\daylight-sky.hdr": "1f92cbf17e46659ff37c9770d065280da226896b0f56091c4c1fca071da7fbeb",
+    "assets\\game\\expressway\\daylight.env": "277f5d31d085c235ab4abdfcbbde9f5533e01dc711e3dc65c1ac57aacddbf319",
+    "assets\\game\\expressway\\photographed-vegetation.bam": "88820231ff0a58ae5440432a6c2d078823af9dc9bb2f800ad39dfa325d5030be"
+  },
+  "source_unchanged_lf_normalized": {
+    "src/main.py": "382a07b6016f75b14ff63b5afa47496a91e09f8e64f4f4425c36b955d9c9ded6",
+    "src/simulation.py": "3012b87be3b0e5cda7f31132cc3f7d21ac12448a23700d6f3c585c0703044364",
+    "src/vehicle.py": "8c54c9e3107587fbd24dcb527702e0097cd395d1368c9936864939a58652b95f",
+    "src/vehicle_dynamics.py": "5fcaeeaa0e4335720e939174065a7977b07e348191159cd6bef9e11118a07ef7",
+    "src/highway_segments.py": "b4319700adf731b7eac0c76bb6ad2a3e5594938f3243e273018eb412d5ffa3c1",
+    "src/curve_mesh.py": "2ecde807e4d10d08d28793ae0533d709ef18b10f905943756d70ff8864594206",
+    "src/career_terrain.py": "1074414e949f9368ea737d15fd4e87a5ec397036cbb526c740a718cf57306b5c",
+    "src/sky_dome.py": "d0d7c2d8580b0391ac6d0270a5a957f3f21d9209b5abfe4a082bde1daad96ed1"
+  },
+  "new_canopy_visibility": "logs/local-kcd-canopy-visibility; local ignored derivatives only",
+  "runtime_files_sha256": {
+    "tools/environment/local_kcd_drive.py": "3a11ed57c367d7aa13976054e12eb6a9040ca3d84b160d0bcf0fa0ae94a07dbf",
+    "tools/environment/kcd_local_assets.py": "81cd06e8f2bc95aa4f1ae6937f4a69cdd2159f923547f870b5f0e793b7ddd78c",
+    "tools/environment/kcd_local_environment.py": "0af64846d4ade399c5db5b9c25b0d429855835694cea70981b3740224226457d",
+    "tools/environment/bake_kcd_canopy_visibility.py": "43817f19cdb0a1d0e7e8c6810bb4b8f092c6edb3ee816cb7ef556c7a0e3d0226"
+  }
+}

@@ -1,0 +1,335 @@
+{
+  "scope": "五种原树/三档LOD/两组坡度，同一真实GPU图逐通道比较；技术根部镜位，不代替随车美术验收",
+  "cases": [
+    {
+      "tree": 0,
+      "lod": 0,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 0,
+      "lod": 0,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 0,
+      "lod": 1,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 0,
+      "lod": 1,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 0,
+      "lod": 2,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 0,
+      "lod": 2,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 1,
+      "lod": 0,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 1,
+      "lod": 0,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 1,
+      "lod": 1,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 1,
+      "lod": 1,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 1,
+      "lod": 2,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 1,
+      "lod": 2,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 2,
+      "lod": 0,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 2,
+      "lod": 0,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 2,
+      "lod": 1,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 2,
+      "lod": 1,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 2,
+      "lod": 2,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 2,
+      "lod": 2,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 3,
+      "lod": 0,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 3,
+      "lod": 0,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 3,
+      "lod": 1,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 3,
+      "lod": 1,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 3,
+      "lod": 2,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 3,
+      "lod": 2,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 4,
+      "lod": 0,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 4,
+      "lod": 0,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 4,
+      "lod": 1,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 4,
+      "lod": 1,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 4,
+      "lod": 2,
+      "slope": [
+        0.35,
+        -0.2
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    },
+    {
+      "tree": 4,
+      "lod": 2,
+      "slope": [
+        -0.4,
+        0.25
+      ],
+      "mean_rgb8": 0.0,
+      "max_rgb8": 0.0,
+      "changed_channels": 0
+    }
+  ]
+}

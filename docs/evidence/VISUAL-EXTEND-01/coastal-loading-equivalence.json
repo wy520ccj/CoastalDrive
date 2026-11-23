@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "height_queries": [
+    {
+      "mode": "original",
+      "queries": 570,
+      "wall_ms": 2129.585800001223
+    },
+    {
+      "mode": "indexed",
+      "queries": 570,
+      "wall_ms": 2.224900001237984
+    },
+    {
+      "mode": "indexed",
+      "queries": 570,
+      "wall_ms": 2.4240000002464512
+    },
+    {
+      "mode": "original",
+      "queries": 570,
+      "wall_ms": 2111.8635999991966
+    }
+  ],
+  "ground_cells_setup_ms": 34.11760000017239,
+  "placements_equal": true,
+  "placements": 119,
+  "models": [
+    {
+      "model": "nature/tree_pineTallA.glb",
+      "crown": null,
+      "geometry_material_equal": true
+    },
+    {
+      "model": "nature/tree_pineTallA.glb",
+      "crown": "a",
+      "geometry_material_equal": true
+    },
+    {
+      "model": "nature/tree_pineTallA.glb",
+      "crown": "b",
+      "geometry_material_equal": true
+    },
+    {
+      "model": "nature/tree_pineTallB.glb",
+      "crown": null,
+      "geometry_material_equal": true
+    },
+    {
+      "model": "nature/tree_pineTallB.glb",
+      "crown": "a",
+      "geometry_material_equal": true
+    },
+    {
+      "model": "nature/tree_pineTallB.glb",
+      "crown": "b",
+      "geometry_material_equal": true
+    },
+    {
+      "model": "nature/rock_largeA.glb",
+      "crown": null,
+      "geometry_material_equal": true
+    }
+  ],
+  "scope": "真实570个种植支撑点高度逐值相同、全部摆放相同、原树/石及两冠几何/材质/外廓相同；离场分项，非正常驾驶FPS或完整GPU检查。"
+}

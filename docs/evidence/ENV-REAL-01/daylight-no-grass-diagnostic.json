@@ -1,0 +1,115 @@
+{
+  "scope": "默认/Draw、独立120Hz物理会话、正常跟车；Controller通过Control执行，不是人工驾驶或完整物理性能Gate",
+  "hard_lod": false,
+  "hide_grass": true,
+  "display_frames": 508,
+  "views": [
+    {
+      "tick": 670,
+      "progress_m": 40.366301510217305,
+      "speed_mps": 13.493124961853027,
+      "collisions": 0
+    },
+    {
+      "tick": 1365,
+      "progress_m": 120.25072645219691,
+      "speed_mps": 13.999120712280273,
+      "collisions": 0
+    },
+    {
+      "tick": 1961,
+      "progress_m": 190.010220799561,
+      "speed_mps": 13.469874382019043,
+      "collisions": 0
+    },
+    {
+      "tick": 2655,
+      "progress_m": 270.1688884281952,
+      "speed_mps": 14.07913589477539,
+      "collisions": 0
+    }
+  ],
+  "sizes": [
+    [
+      1280,
+      720
+    ]
+  ],
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "render_buffers": [
+    {
+      "name": "filter-base",
+      "multisamples": 4
+    }
+  ],
+  "all_frames": {
+    "wall_frame_ms": {
+      "median": 40.43124999952852,
+      "p95": 49.42577500441985,
+      "p99": 55.375525997660596,
+      "max": 474.54470000229776
+    },
+    "parent_cpu_ms": {
+      "median": 46.875,
+      "p95": 78.125,
+      "p99": 93.75,
+      "max": 484.375
+    },
+    "update_wall_ms": {
+      "median": 3.7659500012523495,
+      "p95": 9.635725000407547,
+      "p99": 11.955416998607689,
+      "max": 18.101900001056492
+    },
+    "update_cpu_ms": {
+      "median": 0.0,
+      "p95": 46.875,
+      "p99": 46.875,
+      "max": 46.875
+    },
+    "stream_frame_ms": {
+      "median": 0.06900000153109431,
+      "p95": 4.354135003814008,
+      "p99": 6.838961000103155,
+      "max": 16.76640000368934
+    }
+  },
+  "without_capture_readback": {
+    "wall_frame_ms": {
+      "median": 40.39010000269627,
+      "p95": 49.162699998123564,
+      "p99": 52.61007200460881,
+      "max": 59.71470000076806
+    },
+    "parent_cpu_ms": {
+      "median": 46.875,
+      "p95": 78.125,
+      "p99": 93.75,
+      "max": 93.75
+    },
+    "update_wall_ms": {
+      "median": 3.759300001547672,
+      "p95": 9.641500000725499,
+      "p99": 11.957123998727182,
+      "max": 18.101900001056492
+    },
+    "update_cpu_ms": {
+      "median": 0.0,
+      "p95": 46.875,
+      "p99": 46.875,
+      "max": 46.875
+    },
+    "stream_frame_ms": {
+      "median": 0.06900000153109431,
+      "p95": 4.355320004106034,
+      "p99": 6.843392000009769,
+      "max": 16.76640000368934
+    }
+  },
+  "owner_end": {
+    "tick": 2704,
+    "dropped_time": 0.0,
+    "monotonic": 38430.7007023
+  },
+  "limits": "parent_cpu不含独立物理进程；update_wall不是完整物理求解/IPC等待分解，不通过全步性能Gate"
+}

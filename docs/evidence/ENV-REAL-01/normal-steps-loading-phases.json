@@ -1,0 +1,329 @@
+{
+  "scope": "安装本机表现后实际绑定入口；生成器仅测next执行，不含yield间等待；CPU仅主线程；非全步物理Gate",
+  "phases": {
+    "load_kit": {
+      "count": 1,
+      "wall_ms": {
+        "total": 4258.836799999699,
+        "max": 4258.836799999699,
+        "p95": 4258.836799999699
+      },
+      "main_thread_cpu_ms": {
+        "total": 4125.0,
+        "max": 4125.0
+      }
+    },
+    "surface": {
+      "count": 70,
+      "wall_ms": {
+        "total": 241.05849999614293,
+        "max": 5.010699998820201,
+        "p95": 4.776469998796528
+      },
+      "main_thread_cpu_ms": {
+        "total": 312.5,
+        "max": 15.625
+      }
+    },
+    "markings": {
+      "count": 1750,
+      "wall_ms": {
+        "total": 298.1470999729936,
+        "max": 3.6717000002681743,
+        "p95": 0.2741350001087994
+      },
+      "main_thread_cpu_ms": {
+        "total": 281.25,
+        "max": 15.625
+      }
+    },
+    "local-coastal-cliff": {
+      "count": 14,
+      "wall_ms": {
+        "total": 21.971700003632577,
+        "max": 2.131799999915529,
+        "p95": 1.9999149983050302
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "local-sandstone-foot": {
+      "count": 84,
+      "wall_ms": {
+        "total": 21.062400013761362,
+        "max": 0.9050000007846393,
+        "p95": 0.4926300003717187
+      },
+      "main_thread_cpu_ms": {
+        "total": 31.25,
+        "max": 15.625
+      }
+    },
+    "course-terrain": {
+      "count": 14,
+      "wall_ms": {
+        "total": 105.94330000094487,
+        "max": 18.372599999565864,
+        "p95": 16.54142000061256
+      },
+      "main_thread_cpu_ms": {
+        "total": 93.75,
+        "max": 15.625
+      }
+    },
+    "local-driving-view-tree": {
+      "count": 42,
+      "wall_ms": {
+        "total": 25.180400007229764,
+        "max": 3.5286999991512857,
+        "p95": 3.1569549973937674
+      },
+      "main_thread_cpu_ms": {
+        "total": 15.625,
+        "max": 15.625
+      }
+    },
+    "local-driving-companion": {
+      "count": 48,
+      "wall_ms": {
+        "total": 5.286299994622823,
+        "max": 0.2100000019709114,
+        "p95": 0.13874999967811164
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "local-driving-understory": {
+      "count": 77,
+      "wall_ms": {
+        "total": 7.250199996633455,
+        "max": 0.31209999724524096,
+        "p95": 0.1848600011726376
+      },
+      "main_thread_cpu_ms": {
+        "total": 15.625,
+        "max": 15.625
+      }
+    },
+    "local-kcd-understory": {
+      "count": 162,
+      "wall_ms": {
+        "total": 12.984599987248657,
+        "max": 0.3314000023237895,
+        "p95": 0.11093999837612496
+      },
+      "main_thread_cpu_ms": {
+        "total": 31.25,
+        "max": 15.625
+      }
+    },
+    "local-outcrop-canopy": {
+      "count": 13,
+      "wall_ms": {
+        "total": 1.4760999947611708,
+        "max": 0.20620000213966705,
+        "p95": 0.17422000091755754
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "local-outcrop-understory": {
+      "count": 85,
+      "wall_ms": {
+        "total": 6.995700012339512,
+        "max": 0.21710000146413222,
+        "p95": 0.13346000123419796
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "local-kcd-tree": {
+      "count": 666,
+      "wall_ms": {
+        "total": 77.19080000606482,
+        "max": 0.8556999964639544,
+        "p95": 0.1982000003408757
+      },
+      "main_thread_cpu_ms": {
+        "total": 78.125,
+        "max": 15.625
+      }
+    },
+    "local-tree-understory": {
+      "count": 178,
+      "wall_ms": {
+        "total": 15.533200043137185,
+        "max": 0.20460000087041408,
+        "p95": 0.13371999993978537
+      },
+      "main_thread_cpu_ms": {
+        "total": 15.625,
+        "max": 15.625
+      }
+    },
+    "local-kcd-grass-controls": {
+      "count": 14776,
+      "wall_ms": {
+        "total": 673.207500254648,
+        "max": 0.802099999418715,
+        "p95": 0.06990000110818073
+      },
+      "main_thread_cpu_ms": {
+        "total": 625.0,
+        "max": 15.625
+      }
+    },
+    "local-kcd-grass-batch": {
+      "count": 210,
+      "wall_ms": {
+        "total": 30.74209999977029,
+        "max": 0.46379999912460335,
+        "p95": 0.28881999842269573
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "local-woodland-coverage": {
+      "count": 2460,
+      "wall_ms": {
+        "total": 181.36599990612012,
+        "max": 8.334199999808334,
+        "p95": 0.060005002160323756
+      },
+      "main_thread_cpu_ms": {
+        "total": 171.875,
+        "max": 15.625
+      }
+    },
+    "local-kcd-normal-accumulation": {
+      "count": 178,
+      "wall_ms": {
+        "total": 38.807699991593836,
+        "max": 0.5816000011691358,
+        "p95": 0.27867000026162714
+      },
+      "main_thread_cpu_ms": {
+        "total": 15.625,
+        "max": 15.625
+      }
+    },
+    "local-kcd-normal-normalization": {
+      "count": 70,
+      "wall_ms": {
+        "total": 3.625300007115584,
+        "max": 0.13499999840860255,
+        "p95": 0.06441999903472603
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "local-kcd-ground-normals": {
+      "count": 432,
+      "wall_ms": {
+        "total": 37.05339995940449,
+        "max": 3.010000000358559,
+        "p95": 0.05097999892313964
+      },
+      "main_thread_cpu_ms": {
+        "total": 31.25,
+        "max": 15.625
+      }
+    },
+    "facilities": {
+      "count": 528,
+      "wall_ms": {
+        "total": 44.355100031680195,
+        "max": 8.70270000086748,
+        "p95": 0.06586000072275054
+      },
+      "main_thread_cpu_ms": {
+        "total": 93.75,
+        "max": 15.625
+      }
+    },
+    "drain-shadow": {
+      "count": 2106,
+      "wall_ms": {
+        "total": 629.3346999809728,
+        "max": 2.6247999994666316,
+        "p95": 1.4771999994991347
+      },
+      "main_thread_cpu_ms": {
+        "total": 546.875,
+        "max": 15.625
+      }
+    },
+    "trees": {
+      "count": 112,
+      "wall_ms": {
+        "total": 77.17289999345667,
+        "max": 1.8866000027628615,
+        "p95": 1.331559999744058
+      },
+      "main_thread_cpu_ms": {
+        "total": 62.5,
+        "max": 15.625
+      }
+    },
+    "road-batch": {
+      "count": 14,
+      "wall_ms": {
+        "total": 157.81520000018645,
+        "max": 12.41690000097151,
+        "p95": 12.074219999885827
+      },
+      "main_thread_cpu_ms": {
+        "total": 125.0,
+        "max": 15.625
+      }
+    },
+    "detail-batch": {
+      "count": 140,
+      "wall_ms": {
+        "total": 313.66730000445386,
+        "max": 3.7205000007816125,
+        "p95": 2.9802350010868395
+      },
+      "main_thread_cpu_ms": {
+        "total": 406.25,
+        "max": 15.625
+      }
+    },
+    "sign-batch": {
+      "count": 14,
+      "wall_ms": {
+        "total": 6.561600002896739,
+        "max": 1.574800000526011,
+        "p95": 1.5504249993682606
+      },
+      "main_thread_cpu_ms": {
+        "total": 0.0,
+        "max": 0.0
+      }
+    },
+    "segment-finish": {
+      "count": 14,
+      "wall_ms": {
+        "total": 4.94389998857514,
+        "max": 0.6747000006726012,
+        "p95": 0.6736599998475867
+      },
+      "main_thread_cpu_ms": {
+        "total": 15.625,
+        "max": 15.625
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+Citrus Orchard Road (Pure Sky), Poly Haven
+Photography: Dimitrios Savva. Processing: Jarod Guest.
+Source: https://polyhaven.com/a/citrus_orchard_road_puresky
+License: CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
+Original 8K HDR SHA256:
+d6a88bb8c31d8f0e99033b8a2ca5b93a20ac7491eae7064edd00c22f2b348ac3
+
+daylight-sky.hdr preserves original bytes. daylight.env is derived through
+offline cube filtering with the same sky color balance as the visible sky.
+Source information and official checksum are saved under
+art/expressway/sources/coastal-sunset38-citrus/.
+
+wave-normals.txo.pz is project-authored procedural geometry-normal data,
+generated from periodic Fourier waves by tools/environment/prepare_coastal_sunset.py.
+It is not a photographed water material or an imported third-party image.
+
+The rejected ImageGen panorama and perspective-face candidates are not runtime assets.

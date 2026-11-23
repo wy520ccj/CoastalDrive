@@ -128,6 +128,28 @@ def test_visual_ground_keeps_original_tree_roots_and_road_edge():
         assert coast["vertices"][i * 13] == pytest.approx(offset_point(point, 6.4))
 
 
+def test_ground_cells_keep_first_triangle_height_and_original_outside_error():
+    from environment.terrain import triangle_weights
+
+    mesh = landscape_meshes()[0]
+    points = [tuple(sum(mesh['vertices'][i][axis] for i in face)/3 for axis in range(2))
+              for face in mesh['faces'][::211]]
+    points.extend((x+delta, y) for x, y in ((0, 0), (-32, 16), (24, -40))
+                  for delta in (-1e-8, 0, 1e-8))
+    points.append((1000, 1000))
+    for x, y in points:
+        for face in mesh['faces']:
+            triangle = [mesh['vertices'][i] for i in face]
+            weights = triangle_weights(x, y, triangle)
+            if weights is not None:
+                expected = sum(w*p[2] for w, p in zip(weights, triangle))
+                assert ground_height(x, y) == expected
+                break
+        else:
+            with pytest.raises(ValueError, match='采样点在视觉岛面之外'):
+                ground_height(x, y)
+
+
 def test_near_road_shore_preserves_existing_collision_rock_contacts():
     from coastal_map import strip_mesh
     from environment.terrain import triangle_weights
@@ -168,6 +190,14 @@ def test_terrain_export_and_texture_coordinate_binding():
             assert len(values) > 10
             triangles += sum(p.decompose().getNumPrimitives() for p in geom.getPrimitives())
     assert triangles == sum(len(mesh["faces"]) for mesh in landscape_meshes()) + 1800
+
+    from environment.foundation import coastal_ground_shader
+
+    # 岛内草地与岩岸/草片职责不同，不能将细草法线误套整个地形。
+    inland = model.find('**/inland/+GeomNode')
+    assert inland.getShader() == coastal_ground_shader()
+    for name in ('coast', 'ground-cover', 'lighthouse-reef'):
+        assert model.find(f'**/{name}/+GeomNode').getShader() is None
 
 
 def test_coastal_slope_faces_the_sky_in_recipe_and_export():

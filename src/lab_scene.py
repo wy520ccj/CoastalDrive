@@ -2,17 +2,37 @@
 
 import math
 
-from panda3d.core import AmbientLight, CardMaker, DirectionalLight, LineSegs, Quat, Vec3
+from panda3d.core import (
+    AmbientLight,
+    CardMaker,
+    DirectionalLight,
+    LineSegs,
+    Material,
+    Quat,
+    TextureStage,
+    Vec3,
+)
 
+from environment.expressway_materials import (
+    daylight_environment,
+    lab_asphalt_shader,
+    photographed_surface,
+)
 from lab_maneuvers import bump_geometry, reference_path
+from paths import resource_root
 from skins import apply_skin, vehicle_for_design
-from vehicle_visual import load_vehicle
+from vehicle_visual import load_vehicle, set_vehicle_reflection
 
 
 class LabScene:
     def __init__(self, base):
         self.base = base
         self.root = base.render.attachNewNode("vehicle-lab-scene")
+        self.environment, daylight = daylight_environment(resource_root()/'assets/game/environment/daylight')
+        # 输入仅属于当前视窗；关闭实验台即移除，不能覆盖返回驾驶后的环境。
+        self.root.setShaderInput('sh_coeffs', self.environment.sh_coefficients)
+        set_vehicle_reflection(self.root, self.environment)
+        self.sun_offset = Vec3(*daylight['directional_sun'])*30
         self.vehicle = None
         self.wheels = ()
         self.camera_mode = 0
@@ -25,9 +45,18 @@ class LabScene:
         self.floor = self.root.attachNewNode(floor.generate())
         self.floor.setP(-90)
         self.floor.setZ(-.015)
-        self.floor.setColor(.47, .52, .51, 1)
+        self.floor.setTexture(photographed_surface('asphalt_03_diff_2k.jpg', color=True))
+        self.floor.setTexScale(TextureStage.getDefault(), 1000, 1000)
+        self.floor.setShader(lab_asphalt_shader())
+        self.floor.setShaderInput('asphalt_normals', photographed_surface('asphalt_03_nor_gl_2k.jpg'))
+        self.floor.setShaderInput('asphalt_roughness', photographed_surface('asphalt_03_rough_2k.jpg'))
+        material = Material('lab-asphalt')
+        material.setBaseColor((1, 1, 1, 1))
+        material.setRoughness(.85)
+        material.setMetallic(0)
+        self.floor.setMaterial(material)
         grid = LineSegs()
-        grid.setColor(.65, .70, .65, 1)
+        grid.setColor(.38, .40, .40, 1)
         for offset in range(-400, 800, 10):
             grid.moveTo(offset, -400, .001)
             grid.drawTo(offset, 800, .001)
@@ -37,11 +66,11 @@ class LabScene:
         grid_node.setShaderOff()
         grid_node.setLightOff()
         ambient = AmbientLight("lab-ambient")
-        ambient.setColor((.48, .53, .60, 1))
+        ambient.setColor((.015, .02, .025, 1))
         self.root.setLight(self.root.attachNewNode(ambient))
         key = DirectionalLight("lab-key")
-        key.setColor((1.8, 1.7, 1.5, 1))
-        key.setShadowCaster(True, 1024, 1024)
+        key.setColor((2.6, 2.35, 1.9, 1))
+        key.setShadowCaster(True, 2048, 2048)
         key.getLens().setFilmSize(22, 22)
         key.getLens().setNearFar(1, 60)
         self.light = self.root.attachNewNode(key)
@@ -58,6 +87,8 @@ class LabScene:
                 wheel.removeNode()
         definition = vehicle_for_design(design.id, "sports")
         self.vehicle, self.wheels = load_vehicle(self.root, definition, config=config)
+        for node in (self.vehicle, *self.wheels):
+            set_vehicle_reflection(node, self.environment)
         apply_skin(self.vehicle.getChild(0), 0)
         position = Vec3(95, 0, config.center_of_mass_height)
         self.vehicle.setPos(position)
@@ -92,8 +123,16 @@ class LabScene:
         else:
             self.base.camera.setPos(position+offsets[self.camera_mode])
             self.base.camera.lookAt(position+Vec3(0, 0, .35))
-        self.light.setPos(position+Vec3(10, -12, 20))
-        self.light.lookAt(position)
+        self.light.setPos(self.sun_offset)
+        self.light.lookAt(0, 0, 0)
+        inverse = self.light.getQuat().conjugate()
+        light_position = inverse.xform(position+self.sun_offset)
+        lens = self.light.node().getLens()
+        size = self.light.node().getShadowBufferSize()
+        # 沿投影像素格移动，避免回放中的亚像素投影游动；方向和镜头保持固定。
+        for axis, step in ((0, lens.getFilmSize().x/size.x), (2, lens.getFilmSize().y/size.y)):
+            light_position[axis] = round(light_position[axis]/step)*step
+        self.light.setPos(self.light.getQuat().xform(light_position))
 
     def trajectory(self, snapshots):
         self.path_node.removeNode()

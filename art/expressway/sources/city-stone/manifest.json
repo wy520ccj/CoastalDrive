@@ -1,0 +1,66 @@
+{
+  "source": "https://polyhaven.com/a/rustic_stone_wall_02",
+  "authors": {
+    "Amal Kumar": "All"
+  },
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "dimensions_m": [
+    1.5,
+    1.5
+  ],
+  "files": [
+    {
+      "kind": "Diffuse",
+      "path": "assets/game/materials/rustic_stone_wall_02_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rustic_stone_wall_02/rustic_stone_wall_02_diff_1k.jpg",
+      "bytes": 794327,
+      "md5": "9ca81a5ea589ea55a547bccc43c9df85",
+      "sha256": "a091e04d73ddf7485d1b99a66d6cfe270e9ba36cdc26f98dbc17934427e43bc9",
+      "color_space": "sRGB"
+    },
+    {
+      "kind": "nor_gl",
+      "path": "assets/game/materials/rustic_stone_wall_02_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rustic_stone_wall_02/rustic_stone_wall_02_nor_gl_1k.jpg",
+      "bytes": 1191033,
+      "md5": "9612e01f923facfdd420fd7b811269b0",
+      "sha256": "a7e5c96b8ba3ab3d066c673c4da9b1b7735f176ed6b6b2b9f74216fc151225f7",
+      "color_space": "linear"
+    },
+    {
+      "kind": "Rough",
+      "path": "assets/game/materials/rustic_stone_wall_02_rough_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rustic_stone_wall_02/rustic_stone_wall_02_rough_1k.jpg",
+      "bytes": 517126,
+      "md5": "d5fad1c25c7bc87dd697d8491e43f9fc",
+      "sha256": "7a8fb2fd4870fc599eeed319b52382c546c3e481f7bf39c2f3d4476b9fb6a54c",
+      "color_space": "linear"
+    }
+  ],
+  "source_pixels_modified": false,
+  "project_calibration": {
+    "linear_diffuse_mean_rgb": [
+      0.2521226957221279,
+      0.18159668327443956,
+      0.11194833003441448
+    ],
+    "relative_color_variation_weight": 1.0,
+    "normal_strength": 0.6,
+    "uv_metres_per_repeat": 1.5,
+    "vertex_color_defines": "linear warm grey masonry albedo"
+  },
+  "selection": {
+    "design": "docs/design/garage-v2/43-city-mainland.png",
+    "viewed_author_context": "https://cdn.polyhaven.com/asset_img/renders/rustic_stone_wall_02/context_01.jpg?height=900&quality=95&v=2acefc3f",
+    "reason": "Horizontal thin grey-brown masonry courses match low coastal garden walls; larger fortress blocks and aged plaster were rejected.",
+    "research_files": "logs/all-scene-20261029/city-stone-research"
+  },
+  "preparation": {
+    "mechanism": "Hidden loading-only quad carries diffuse and TextureStage data maps so existing prepareScene uploads them.",
+    "evidence": "logs/all-scene-20261029/city-masonry-preparation-r2.json",
+    "both_materials_prepared_maps": 6,
+    "visible_draw_groups_added": 0,
+    "limits": "64px offscreen preparation evidence; no driving frame-time claim"
+  }
+}

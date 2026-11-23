@@ -21,6 +21,14 @@ def batch_driving_geometry(root, wheels):
         geometry = part.attachNewNode('driving-geometry')
         for child in children:
             child.reparentTo(geometry)
+        # 导入件常有数值完全相同的独立材质；先共享，原生合批才能合并这些绘制状态。
+        materials = []
+        for material in geometry.findAllMaterials():
+            shared = next((value for value in materials if value.compareTo(material) == 0), None)
+            if shared is None:
+                materials.append(material)
+            else:
+                geometry.replaceMaterial(material, shared)
         geometry.clearModelNodes()
         geometry.flattenStrong()
 

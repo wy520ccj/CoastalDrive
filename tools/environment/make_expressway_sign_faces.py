@@ -38,6 +38,18 @@ def route(draw, box):
     text(draw, (x+w/2,y+h*.62), "S18", int(h*.43))
 
 
+def ridge_warning():
+    """沿用龙门牌版式，只替换预算山脊的道路提示文字。"""
+    image, draw = board((1536, 288))
+    route(draw, (70, 30, 150, 180))
+    text(draw, (900, 87), "前方下坡急弯", 112)
+    text(draw, (900, 183), "300米 · 提前减速", 44)
+    for x in (288, 768, 1248):
+        arrow(draw, x, 215, 52)
+    OUT.mkdir(parents=True, exist_ok=True)
+    image.save(OUT / "ridge-gantry.png")
+
+
 def build():
     OUT.mkdir(parents=True, exist_ok=True)
     for name in ("gantry", "route-direction", "bridge-advance", "advance-sign"):
@@ -93,6 +105,7 @@ def build():
     for digit in range(10):
         text(draw, (digit*96+48,64), str(digit), 105)
     digits.save(OUT / "digits.png")
+    ridge_warning()
 
 
 if __name__ == "__main__":

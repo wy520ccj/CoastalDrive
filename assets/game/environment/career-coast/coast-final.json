@@ -1,0 +1,20 @@
+{
+  "course": "coast-final",
+  "sha256": "4e3f6adc6532decf0afe6dde2bbcbb3cb4f98cb841e07e60b7a68483f4cf701d",
+  "sources": {
+    "src/career_courses.py": "4983b146e57b4a218fcf844597eb371777df3db4bd2b5c5e2efbd82c4b59b63d",
+    "src/career_terrain.py": "1074414e949f9368ea737d15fd4e87a5ec397036cbb526c740a718cf57306b5c",
+    "tools/environment/prepare_career_coast.py": "a3dd6ee28f8e5aa29d734e4885f077db5435ecd7d9baf101525f58d02af28003"
+  },
+  "original_triangles": 27128,
+  "refined_original_triangles": 5296,
+  "triangles": 112028,
+  "vertices": 56425,
+  "grid_step": 2,
+  "file_bytes": 1928036,
+  "protected_radius": 35,
+  "height_change_start": 38,
+  "background_triangles": 8784,
+  "background_vertices": 4526,
+  "scope": "Original visual mesh; physics terrain remains unchanged; rendered/performance acceptance pending"
+}

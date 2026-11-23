@@ -1,0 +1,26 @@
+{
+  "schema": "coastal-rock-runtime-v1",
+  "converter": {
+    "panda3d": "1.10.16",
+    "panda3d-gltf": "1.3.0"
+  },
+  "changes": [
+    "同一glTF转换结果完整序列化",
+    "保留全部网格/切线/材质/内嵌贴图",
+    "原GLB、LOD命名和运行时岩岸着色器不改"
+  ],
+  "assets": [
+    {
+      "source": "art/expressway/candidates/coastal-rocks/coastal-rocks.glb",
+      "source_sha256": "530e776e7e84d27801d02052ce834181b97375b1d98c36f55f5dba03436061df",
+      "output": "assets/game/expressway/runtime-rocks/coastal-rocks.bam",
+      "output_sha256": "b16548680f319903307c435b4666c39b42fdc182fb19bf66e4ef7650bae4f10e"
+    },
+    {
+      "source": "art/expressway/candidates/driving-rocks/driving-rocks.glb",
+      "source_sha256": "ab885df3a765bfb905031b7fa21307d45141c88726104d9006eb5c52dfa1db66",
+      "output": "assets/game/expressway/runtime-rocks/driving-rocks.bam",
+      "output_sha256": "a9bf0733e319563bc09dbf20524971a215421d60c5dd98126d5e66675884d3ca"
+    }
+  ]
+}

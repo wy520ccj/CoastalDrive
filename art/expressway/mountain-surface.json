@@ -1,0 +1,20 @@
+{
+  "status": "in progress; existing forest RGB and default rock pigment scale restored; mountain shape/forest layering and performance gates still open",
+  "design": "docs/design/garage-v2/43-city-mainland.png",
+  "sources": {
+    "tools/environment/local_coastal_landscape.py": "2c89f3d82011526e8c0585dc7e446c34865e5a4e0846d66fdc47687aa2e6ab9d",
+    "tools/environment/capture_regional.py": "f0a3a596d06aad905af77ee351f67e967fd7e7d426d68503ad1fad39adebc3ac",
+    "src/environment/expressway_mountains.py": "e67447f11e528d0c67223158102deccc0a7d27fef3b4895ee317e2f3c6353b8b",
+    "assets/game/expressway/shaders/route-mountain.frag": "2793bfd812596068e685d93b1645ddf1929d3bb61e56a40a32edc74b202226f3",
+    "assets/game/expressway/shaders/distance-haze.glsl": "b56f3c02279ad0c3768e68c5cbb29ae4e589ac6fe4661d229afee3872447e421"
+  },
+  "render": "logs/all-scene-20261029/mountain-material-r1/03800m.png",
+  "comparison": "logs/all-scene-20261029/mountain-material-r1/pixel-comparison.json",
+  "checks": "logs/all-scene-20261029/T1-mountain-pigment/summary.json",
+  "invariants": [
+    "no geometry or physical-world change",
+    "no sky/sun/exposure/haze/distance-culling change",
+    "same texture inputs and draw passes",
+    "offscreen only; no desktop input or foreground tests"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "OpenAI built-in ImageGen",
+  "origin": "exec-37091a6c-9bef-44a1-ae90-32402979d004.png",
+  "use": "UI design reference only; not runtime screenshot or texture",
+  "reference_roles": [
+    "coastal actual screenshot edit target",
+    "existing career HUD style only"
+  ],
+  "first_iteration": "logs/visual-extend-20261028/hud40-r1-rejected.png",
+  "sha256": {
+    "docs/design/garage-v2/40-coastal-hud.png": "ea6cb56648a5c6b86dde757f0e36a4f29e8208c26c4e3da13208d7d5c2be0370",
+    "docs/design/garage-v2/40-coastal-hud-prompt.txt": "763052796a23b2a503f4412e16615a6e2eea1a36a75086764b7832b7a772e634",
+    "docs\\design\\garage-v2\\40-coastal-hud-refine-prompt.txt": "8093afabf153bda44b345fa53ce7d20a7b43c892e597dccff4b2f378e03973bc",
+    "docs/evidence/VISUAL-EXTEND-01/ground-time-120m.png": "6bf3560ddc47ddf2a46feeea21bfa66f3d6c8ad63545a897e39f333d7bad087d",
+    "docs/evidence/GARAGE-DESIGN-02/daylight-vegetation/02-driving-1280.png": "55832d27048ef2c24a36849716442464f372344b61861e207f181da664b618ca"
+  }
+}

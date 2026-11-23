@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-30",
+  "status": "Isolated candidate; visual rejected; not enabled by default",
+  "design": "docs/design/garage-v2/46-career-coast.png",
+  "enable_environment": "COASTALDRIVE_COAST_CANDIDATE=1",
+  "capture_option": "--career-coast-candidate",
+  "courses": {
+    "coast-club": {
+      "course": "coast-club",
+      "sha256": "51512d1367528bac5647969fb490df460132519f068a5bc950afaa8e7daaab8b",
+      "sources": {
+        "src/career_courses.py": "4983b146e57b4a218fcf844597eb371777df3db4bd2b5c5e2efbd82c4b59b63d",
+        "src/career_terrain.py": "1074414e949f9368ea737d15fd4e87a5ec397036cbb526c740a718cf57306b5c",
+        "tools/environment/prepare_career_coast.py": "a3dd6ee28f8e5aa29d734e4885f077db5435ecd7d9baf101525f58d02af28003"
+      },
+      "original_triangles": 17531,
+      "refined_original_triangles": 3062,
+      "triangles": 66721,
+      "vertices": 33676,
+      "grid_step": 2,
+      "file_bytes": 1166126,
+      "protected_radius": 35,
+      "height_change_start": 38,
+      "background_triangles": 7524,
+      "background_vertices": 3886,
+      "scope": "Original visual mesh; physics terrain remains unchanged; rendered/performance acceptance pending"
+    },
+    "coast-final": {
+      "course": "coast-final",
+      "sha256": "4e3f6adc6532decf0afe6dde2bbcbb3cb4f98cb841e07e60b7a68483f4cf701d",
+      "sources": {
+        "src/career_courses.py": "4983b146e57b4a218fcf844597eb371777df3db4bd2b5c5e2efbd82c4b59b63d",
+        "src/career_terrain.py": "1074414e949f9368ea737d15fd4e87a5ec397036cbb526c740a718cf57306b5c",
+        "tools/environment/prepare_career_coast.py": "a3dd6ee28f8e5aa29d734e4885f077db5435ecd7d9baf101525f58d02af28003"
+      },
+      "original_triangles": 27128,
+      "refined_original_triangles": 5296,
+      "triangles": 112028,
+      "vertices": 56425,
+      "grid_step": 2,
+      "file_bytes": 1928036,
+      "protected_radius": 35,
+      "height_change_start": 38,
+      "background_triangles": 8784,
+      "background_vertices": 4526,
+      "scope": "Original visual mesh; physics terrain remains unchanged; rendered/performance acceptance pending"
+    }
+  },
+  "sources": {
+    "src/scene.py": "1a10b17a3dd347121ee04ceac2cea59d0516392130b8952735e514068cd14b82",
+    "src/environment/career_coast.py": "940492c2f2d28dde3a833e9a5d060bc2711d56c89dea6c3637b997415b853308",
+    "src/environment/expressway_route.py": "ae642716d7cd3abc95083b7d6abc9e6641f6d986fc0e29cf5f91a6a60e4eee37",
+    "tools/environment/local_kcd_drive.py": "e2bb810819fb68a9bce3e7f540fa089a10eba518c89a21e8f544c12db95839de",
+    "tools/environment/capture_regional.py": "65365ff063508937d5447727f7eb2a927695d239730685c796ab1a4a47591486",
+    "tools/environment/prepare_career_coast.py": "a3dd6ee28f8e5aa29d734e4885f077db5435ecd7d9baf101525f58d02af28003",
+    "tests/test_career_coast.py": "6cfb9c1f9658bc2d83e2fd1bdb0c830cae0b81dc0373546bb632b6f427c196de",
+    "tests/test_career_lighting.py": "e9df9b67c0fd29995b6cea134d3fdb170be3ec3652dd2b4ade1f0fbf9036f464",
+    "tests/test_local_kcd_drive.py": "eacd393590481aa8704a13772b6cdd39782b73ac0d239f5d5a420f66051e7d30"
+  },
+  "protected": {
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\career_terrain.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\career_courses.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\curve_mesh.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\session.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\highway_driver.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\environment\\expressway_city.py": true,
+    "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\environment\\foundation.py": true
+  },
+  "evidence": "docs/evidence/VISUAL-EXTEND-01/career-shore2.md",
+  "final_t1": "logs/all-scene-20261029/T1-career-shore2-isolated-r2/summary.json",
+  "final_capture": "logs/all-scene-20261029/career-shore2-backdrop-cup/summary.json",
+  "driving_acceptance": false,
+  "visual_acceptance": false,
+  "commercial_assets": false
+}

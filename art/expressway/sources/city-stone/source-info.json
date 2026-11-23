@@ -1,0 +1,63 @@
+{
+  "date_published": 1688601600,
+  "name": "Rustic Stone Wall 02",
+  "categories": [
+    "man made",
+    "outdoor",
+    "wall",
+    "rock"
+  ],
+  "type": 1,
+  "staging": null,
+  "tags": [
+    "rough",
+    "uneven",
+    "weathered",
+    "wall",
+    "rock",
+    "old",
+    "worn",
+    "chipped",
+    "damaged",
+    "cracked",
+    "rocks",
+    "cracks",
+    "stone",
+    "rustic architecture",
+    "rugged",
+    "exterior",
+    "stonework",
+    "crumbling",
+    "timeworn",
+    "rustic"
+  ],
+  "authors": {
+    "Amal Kumar": "All"
+  },
+  "info": null,
+  "dimensions": [
+    1500,
+    1500
+  ],
+  "max_resolution": [
+    16384,
+    16384
+  ],
+  "files_hash": "99d5c4ac8c6b7cd67f7679860825cb7fdbced480",
+  "description": "Free 16K texture of a rustic stone wall: rough, uneven stacked stonework with chipped edges, weathered cracks and warm beige-brown tones; high-detail relief.",
+  "category_id": "6b87bb89-210e-5f4c-a78b-3a4bdfac7fe0",
+  "category": "Stone/Walls & Rubble/Rubble & Random Stone",
+  "attributes": {
+    "surface_use": "wall",
+    "condition": [
+      "weathered",
+      "damaged",
+      "cracked"
+    ],
+    "origin": "man_made",
+    "setting": "outdoor"
+  },
+  "img_version": "2acefc3f",
+  "download_count": 132798,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/rustic_stone_wall_02.png?width=256&height=256&format=webp&v=2acefc3f"
+}

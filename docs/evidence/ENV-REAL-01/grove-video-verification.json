@@ -1,0 +1,12 @@
+{
+  "full_video": {
+    "width": 1440,
+    "height": 810,
+    "r_frame_rate": "15/1",
+    "duration": "37.600000",
+    "nb_frames": "564"
+  },
+  "frame312_matches_tick": 2698,
+  "mean_absolute_rgb8_difference": 2.9336236854138087,
+  "scope": "Actual render, 120Hz physics sampled every 8 ticks; encoder wall time is not realtime performance."
+}

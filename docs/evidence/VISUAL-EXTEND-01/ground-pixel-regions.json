@@ -1,0 +1,23 @@
+[
+  {
+    "distance_m": 0,
+    "changed_pixels": 230403,
+    "mean_channel_difference": 1.8584407150205762,
+    "right_half_changed_pixels": 0,
+    "top_80_rows_changed_pixels": 0
+  },
+  {
+    "distance_m": 90,
+    "changed_pixels": 216580,
+    "mean_channel_difference": 1.5063435570987653,
+    "right_half_changed_pixels": 0,
+    "top_80_rows_changed_pixels": 0
+  },
+  {
+    "distance_m": 225,
+    "changed_pixels": 146850,
+    "mean_channel_difference": 0.961531796553498,
+    "right_half_changed_pixels": 0,
+    "top_80_rows_changed_pixels": 0
+  }
+]

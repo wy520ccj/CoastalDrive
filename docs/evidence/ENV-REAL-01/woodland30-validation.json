@@ -1,0 +1,111 @@
+{
+  "started_utc": "2026-10-25T09:08:40.129097+00:00",
+  "git_head": "15c321f547dbc0f8891200c8fb84bede91d07257",
+  "git_status": "M art/expressway/sources/road-materials/manifest.json\n M art/expressway/vegetation-extraction.json\n M assets/game/expressway/shaders/route-mountain.frag\n M assets/game/expressway/shaders/route-terrain.frag\n M assets/game/expressway/vegetation-manifest.json\n M docs/asset-register.csv\n M docs/current-progress.md\n M docs/environment-art.md\n M docs/tasks/PLAY-REPAIR-01.md\n M launchers/README.md\n M launchers/game-current.cmd\n M src/application.py\n M src/environment/expressway.py\n M src/environment/expressway_materials.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M src/scene.py\n M tests/test_career_ui.py\n M tests/test_expressway_route.py\n M tools/blender/prepare_photographed_vegetation.py\n M tools/environment/fetch_photographed_vegetation.py\n M tools/environment/kcd_local_assets.py\n M tools/environment/pack_photographed_vegetation.py\n M tools/environment/prepare_daylight_environment.py\n M tools/validate.py\n?? art/expressway/candidates/\n?? art/expressway/sources/daylight-29/\n?? art/expressway/sources/grass-bermuda-01/\n?? art/expressway/sources/tree-small-02/\n?? assets/game/materials/leafy_grass_nor_gl_2k.jpg\n?? assets/game/materials/leafy_grass_rough_2k.jpg\n?? docs/design/garage-v2/25-kcd-ground-lighting.png\n?? docs/design/garage-v2/26-coastal-rebuild-prompt.txt\n?? docs/design/garage-v2/26-coastal-rebuild.md\n?? docs/design/garage-v2/26-coastal-rebuild.png\n?? docs/design/garage-v2/27-driving-view-environment-prompt.txt\n?? docs/design/garage-v2/27-driving-view-environment.md\n?? docs/design/garage-v2/27-driving-view-environment.png\n?? docs/design/garage-v2/28-driving-woodland-prompt.txt\n?? docs/design/garage-v2/28-driving-woodland.md\n?? docs/design/garage-v2/28-driving-woodland.png\n?? docs/design/garage-v2/29-driving-daylight-prompt.txt\n?? docs/design/garage-v2/29-driving-daylight.md\n?? docs/design/garage-v2/29-driving-daylight.png\n?? docs/design/garage-v2/30-woodland-floor-prompt.txt\n?? docs/design/garage-v2/30-woodland-floor.md\n?? docs/design/garage-v2/30-woodland-floor.png\n?? docs/evidence/ENV-REAL-01/\n?? docs/tasks/ENV-REAL-01.md\n?? launchers/game-kcd-local.cmd\n?? tests/test_local_kcd_drive.py\n?? tools/blender/bake_coastal_canopy.py\n?? tools/blender/build_coastal_meadow.py\n?? tools/blender/prepare_driving_rocks.py\n?? tools/blender/prepare_vegetation_candidate.py\n?? tools/environment/bake_kcd_canopy_visibility.py\n?? tools/environment/check_canopy_visibility_gpu.py\n?? tools/environment/check_driving_composition.py\n?? tools/environment/check_heightfield_gpu.py\n?? tools/environment/check_interactive_local_drive.py\n?? tools/environment/check_local_kcd_drive.py\n?? tools/environment/check_tree_lod_transition.py\n?? tools/environment/check_tree_root_transport.py\n?? tools/environment/decode_bc6h.c\n?? tools/environment/kcd_lighting_diagnostics.py\n?? tools/environment/kcd_local_environment.py\n?? tools/environment/local_coastal_landscape.py\n?? tools/environment/local_kcd_drive.py\n?? tools/environment/pack_vegetation_candidate.py\n?? tools/environment/prepare_kcd_environment.py\n?? tools/environment/preview_woodland_catalog.py\n?? tools/third_party/",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_local_kcd_drive.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ENV-REAL-01-woodland30-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.113
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_local_kcd_drive.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ENV-REAL-01-woodland30-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 117.768
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ENV-REAL-01-woodland30-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.477
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ENV-REAL-01-woodland30-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.492
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ENV-REAL-01-woodland30-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.486
+    }
+  ]
+}

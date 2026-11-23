@@ -1,0 +1,52 @@
+{
+  "date_published": 1654819200,
+  "name": "Floor Pavement",
+  "categories": [
+    "man made",
+    "dirty",
+    "brick",
+    "floor",
+    "outdoor"
+  ],
+  "type": 1,
+  "staging": null,
+  "tags": [
+    "ground",
+    "sidewalk",
+    "cracked",
+    "damaged",
+    "floor",
+    "pavement",
+    "cement",
+    "square"
+  ],
+  "dimensions": [
+    2000,
+    2000
+  ],
+  "max_resolution": [
+    8192,
+    8192
+  ],
+  "files_hash": "b2418e783b15c1c20c38de8bfc2dfcb851cb5c7a",
+  "description": "Free 8K texture of square concrete pavement: worn, cracked tiles with grout lines, chipped edges, subtle dirt, and a rough, low-relief surface.",
+  "authors": {
+    "Dario Barresi": "processing",
+    "Charlotte Baglioni": "photography"
+  },
+  "category_id": "ce26ba57-ef4b-54d4-a954-9a85bb053b9e",
+  "category": "Brick & Block/Concrete Block & Paver/Interlocking Pavers",
+  "attributes": {
+    "surface_use": "paving",
+    "condition": [
+      "worn",
+      "cracked",
+      "damaged"
+    ],
+    "origin": "man_made",
+    "setting": "outdoor"
+  },
+  "img_version": "3f98b8c6",
+  "download_count": 50252,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/floor_pavement.png?width=256&height=256&format=webp&v=3f98b8c6"
+}

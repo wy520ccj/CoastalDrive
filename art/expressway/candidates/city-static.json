@@ -1,0 +1,169 @@
+{
+  "status": "rejected; no default integration",
+  "reason": "Side-view gain did not establish original chase-view gain; local plot batches also had higher before/after median samples. Do not treat geometry inventory as actual draws or FPS.",
+  "candidate": "tools/environment/city_static_candidate.py",
+  "capture_flag": "--city-static-diagnostics",
+  "static_physics_tick": 0,
+  "production_restore": {
+    "src/environment/expressway_city.py": {
+      "sha256": "f5047a3ede3f874d80d9a4ca50873dae87112ee19235e03b9918ab5ad7853c26",
+      "matches_attempt_baseline": true
+    },
+    "src/environment/expressway_route.py": {
+      "sha256": "c02cba91d20c820946b1bf41002c7f9cefc552b67d88036ee57e43acaf4d83fb",
+      "matches_attempt_baseline": true
+    }
+  },
+  "reports": {
+    "whole_segment_side": {
+      "before": {
+        "geom_nodes": 6778,
+        "geoms": 7262,
+        "triangles": 12539839,
+        "vertices": 520535
+      },
+      "after": {
+        "geom_nodes": 6232,
+        "geoms": 6695,
+        "triangles": 12539839,
+        "vertices": 532955
+      },
+      "changed_pixels": 3312,
+      "timing": [
+        {
+          "order": 0,
+          "variant": "before",
+          "frames": 20,
+          "median_ms": 7.977799999935087,
+          "p95_ms": 14.478599997528363,
+          "max_ms": 14.735100001416868
+        },
+        {
+          "order": 1,
+          "variant": "after",
+          "frames": 20,
+          "median_ms": 5.632150001474656,
+          "p95_ms": 9.904034997998679,
+          "max_ms": 9.906600000249455
+        },
+        {
+          "order": 2,
+          "variant": "after",
+          "frames": 20,
+          "median_ms": 5.8770499999809545,
+          "p95_ms": 10.147869998218084,
+          "max_ms": 11.097300000983523
+        },
+        {
+          "order": 3,
+          "variant": "before",
+          "frames": 20,
+          "median_ms": 7.240050001200871,
+          "p95_ms": 12.012754999523167,
+          "max_ms": 12.253199998667696
+        }
+      ]
+    },
+    "whole_segment_road": {
+      "before": {
+        "geom_nodes": 6778,
+        "geoms": 7262,
+        "triangles": 12539839,
+        "vertices": 520535
+      },
+      "after": {
+        "geom_nodes": 6232,
+        "geoms": 6695,
+        "triangles": 12539839,
+        "vertices": 532955
+      },
+      "changed_pixels": 511,
+      "timing": [
+        {
+          "order": 0,
+          "variant": "before",
+          "frames": 20,
+          "median_ms": 13.828850000209059,
+          "p95_ms": 22.916719997738255,
+          "max_ms": 23.112799997761613
+        },
+        {
+          "order": 1,
+          "variant": "after",
+          "frames": 20,
+          "median_ms": 13.73809999859077,
+          "p95_ms": 24.641095002152728,
+          "max_ms": 29.039499997452367
+        },
+        {
+          "order": 2,
+          "variant": "after",
+          "frames": 20,
+          "median_ms": 17.348600000332226,
+          "p95_ms": 19.210439999733353,
+          "max_ms": 19.361300001037307
+        },
+        {
+          "order": 3,
+          "variant": "before",
+          "frames": 20,
+          "median_ms": 18.283650000739726,
+          "p95_ms": 21.705200001815683,
+          "max_ms": 21.802100000059
+        }
+      ]
+    },
+    "local_plots_road": {
+      "before": {
+        "geom_nodes": 6778,
+        "geoms": 7262,
+        "triangles": 12539839,
+        "vertices": 520535
+      },
+      "after": {
+        "geom_nodes": 6260,
+        "geoms": 6737,
+        "triangles": 12539839,
+        "vertices": 532955
+      },
+      "changed_pixels": 511,
+      "timing": [
+        {
+          "order": 0,
+          "variant": "before",
+          "frames": 20,
+          "median_ms": 12.86459999937506,
+          "p95_ms": 22.278280002319665,
+          "max_ms": 24.747900002694223
+        },
+        {
+          "order": 1,
+          "variant": "after",
+          "frames": 20,
+          "median_ms": 15.260250000210362,
+          "p95_ms": 25.875125000493426,
+          "max_ms": 27.490600001328858
+        },
+        {
+          "order": 2,
+          "variant": "after",
+          "frames": 20,
+          "median_ms": 15.18584999939776,
+          "p95_ms": 20.309229996746588,
+          "max_ms": 28.527300000860123
+        },
+        {
+          "order": 3,
+          "variant": "before",
+          "frames": 20,
+          "median_ms": 14.645550001660013,
+          "p95_ms": 29.752615001780214,
+          "max_ms": 30.682000000524567
+        }
+      ]
+    }
+  },
+  "t1_initial_candidate": "logs/all-scene-20261029/T1-city-static/summary.json",
+  "t0_isolated_candidate": "logs/all-scene-20261029/T0-city-static-isolated/summary.json",
+  "driving_performance_acceptance": false
+}

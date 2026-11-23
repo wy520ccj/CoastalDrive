@@ -1,6 +1,7 @@
 // 天空地平线的辐亮度用于空气透视；远端轮廓先渐隐再卸载。
 uniform sampler2D expressway_sky;
 uniform mat4 expressway_sky_inverse;
+uniform vec3 expressway_sky_tint;
 
 void expressway_dither(float coverage) {
     ivec2 cell = ivec2(gl_FragCoord.xy) & ivec2(3);
@@ -22,6 +23,6 @@ vec3 expressway_haze(vec3 color, vec3 world_position) {
     // 与天空球相同的经纬映射；高处远景不能拿地平线颜色覆盖云层。
     vec2 uv = vec2(atan(sky_direction.y, sky_direction.x) / 6.28318530718,
                    0.5 + asin(clamp(sky_direction.z, -1.0, 1.0)) / 3.14159265359);
-    vec3 radiance = texture(expressway_sky, uv).rgb;
+    vec3 radiance = texture(expressway_sky, uv).rgb*expressway_sky_tint;
     return mix(color, radiance, haze);
 }

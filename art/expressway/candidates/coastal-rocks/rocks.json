@@ -1,0 +1,32 @@
+[
+  {
+    "name": "cliff-lod0",
+    "triangles": 92364,
+    "ratio": 0.2
+  },
+  {
+    "name": "cliff-lod1",
+    "triangles": 23091,
+    "ratio": 0.05
+  },
+  {
+    "name": "cliff-lod2",
+    "triangles": 4617,
+    "ratio": 0.01
+  },
+  {
+    "name": "shore-lod0",
+    "triangles": 135986,
+    "ratio": 0.2
+  },
+  {
+    "name": "shore-lod1",
+    "triangles": 33995,
+    "ratio": 0.05
+  },
+  {
+    "name": "shore-lod2",
+    "triangles": 6798,
+    "ratio": 0.01
+  }
+]

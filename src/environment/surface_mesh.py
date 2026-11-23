@@ -4,6 +4,7 @@ from array import array
 from functools import lru_cache
 
 from panda3d.core import (
+    ConfigVariableBool,
     Geom,
     GeomNode,
     GeomTriangles,
@@ -13,7 +14,25 @@ from panda3d.core import (
     GeomVertexWriter,
     InternalName,
     NodePath,
+    SceneGraphReducer,
 )
+
+
+def flatten_steps(root):
+    """按原生flattenStrong顺序分摊合并；节点须在全部完成后再挂入实时场景。"""
+    reducer, node = SceneGraphReducer(), root.node()
+    reducer.applyAttribs(node)
+    yield 'mesh-batch-attributes'
+    reducer.flatten(node, ~0)
+    yield 'mesh-batch-nodes'
+    if ConfigVariableBool('flatten-geoms').getValue():
+        reducer.makeCompatibleState(node)
+        yield 'mesh-batch-compatible'
+        reducer.collectVertexData(node, ~(SceneGraphReducer.CVDFormat | SceneGraphReducer.CVDName
+                                          | SceneGraphReducer.CVDAnimationType))
+        yield 'mesh-batch-vertices'
+        reducer.unify(node, False)
+        yield 'mesh-batch-primitives'
 
 
 @lru_cache(maxsize=8)

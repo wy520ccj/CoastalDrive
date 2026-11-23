@@ -17,6 +17,74 @@ from scene import Scene
 kit = test_expressway.kit
 
 
+def test_streamed_water_inherits_live_scene_time_after_batching(kit):
+    from panda3d.core import ShaderAttrib
+
+    scene = NodePath('water-clock-owner')
+    scene.setShaderInput('sea_time', 0.)
+    segment = scene.attachNewNode('water-segment')
+    try:
+        build_segment(segment, 2, 23, kit[0], lambda _node: None, HighwayCurve(23, hills=True))
+        waters = []
+        for part in segment.findAllMatches('**/+GeomNode'):
+            for state in part.node().getGeomStates():
+                shader = state.getAttrib(ShaderAttrib)
+                if shader is not None and shader.getShader() == kit[0]['route-water-shader']:
+                    waters.append((part, state))
+        assert waters
+        for time in (0., .5, 2., 2.):
+            scene.setShaderInput('sea_time', time)
+            for part, state in waters:
+                effective = part.getNetState().compose(state).getAttrib(ShaderAttrib)
+                assert effective.getShaderInput('sea_time').getVector().x == pytest.approx(time)
+    finally:
+        scene.removeNode()
+
+
+@pytest.mark.parametrize('shape', ('flat', 'highway', 'career'))
+def test_shared_surface_edges_keep_exact_shadow_and_asphalt_coordinates(kit, shape):
+    from panda3d.core import GeomVertexReader, Vec2, Vec3
+
+    from career_courses import CareerCourse
+    from environment.expressway_route import rail_shadow_coordinate, segment_steps
+
+    curve = (None if shape == 'flat' else HighwayCurve(23, hills=True)
+             if shape == 'highway' else CareerCourse('ridge-club'))
+    assets, _ = kit
+    index = 2
+    origin = Vec3(*anchor(curve, index)) if curve else Vec3(0, index*200, 0)
+    root = NodePath('shared-edges')
+    work = segment_steps(root, index, 23, assets, lambda _: None, curve)
+    try:
+        surfaces = 0
+        for phase in work:
+            surfaces += phase == 'surface'
+            if surfaces == 3:
+                break
+        assert surfaces == 3
+        work.close()
+        checked = 0
+        for node in root.findAllMatches('**/+GeomNode'):
+            data = node.node().getGeom(0).getVertexData()
+            positions = GeomVertexReader(data, 'vertex')
+            shadows = GeomVertexReader(data, 'rail_shadow_coord')
+            uv = GeomVertexReader(data, 'texcoord')
+            while not positions.isAtEnd():
+                world = positions.getData3f()+origin
+                distance, lateral = curve.project(tuple(world)) if curve else (world.y, world.x)
+                # 与不复用结果的原逐顶点公式逐值对照，包括600m纹理周期接缝。
+                assert tuple(shadows.getData2f()) == tuple(Vec2(*rail_shadow_coordinate(curve, distance, lateral)))
+                if node.getName() == 'expressway-road':
+                    expected = lateral/2., (index*200 % 600+distance-index*200)/2.
+                    assert tuple(uv.getData2f()) == tuple(Vec2(*expected))
+                checked += 1
+        source = curve_mesh.surfaces(curve, index) if curve else surface_meshes()
+        assert checked == sum(len(source[name][1])*3 for name in ('road', 'shoulder-left', 'shoulder-right'))
+    finally:
+        work.close()
+        root.removeNode()
+
+
 def test_speed_limit_and_triangle_warnings_have_separate_mileage_slots():
     signs = {"speed-limit", "curve-left", "curve-right", "hill-warning", "wind-warning"}
     for seed in range(25):
@@ -61,6 +129,43 @@ def test_static_rail_coordinates_preserve_existing_geometry_and_material_channel
     for expected in coordinates:
         assert tuple(reader.getData2f()) == pytest.approx(expected, abs=1e-6)
     node.removeNode()
+
+
+@pytest.mark.parametrize("curve", [None, HighwayCurve(23, hills=True)])
+def test_cached_drain_corners_keep_exact_world_space_shadow_coordinates(kit, monkeypatch, curve):
+    from panda3d.core import GeomVertexReader, Vec3
+
+    from environment import expressway_route, surface_mesh
+
+    assets, _trees = kit
+    root = NodePath("drain-corner-test")
+    index = -2
+    origin = Vec3(*anchor(curve, index))
+    assets["drain-grate"].setTag("verify-drain", "1")
+    monkeypatch.setattr(expressway_route, "positions", lambda *_: [
+        ("drain-grate", -7.68, -380, 17), ("drain-grate", 7.68, -320, 197)])
+    original = surface_mesh.set_rail_shadow_coordinates
+    checked = 0
+
+    def verify(node, coordinates, faces=None, geom_index=0):
+        nonlocal checked
+        if not node.findNetTag("verify-drain").isEmpty():
+            reader = GeomVertexReader(node.node().getGeom(geom_index).getVertexData(), "vertex")
+            expected = []
+            while not reader.isAtEnd():
+                world = root.getRelativePoint(node, tuple(reader.getData3f())) + origin
+                distance, lateral = curve.project(tuple(world)) if curve else (world.y, world.x)
+                road_z = curve.sample(distance).z if curve else 0
+                expected.append(expressway_route.rail_shadow_coordinate(curve, distance, lateral, world.z-road_z))
+            # 原逐顶点世界坐标公式逐值一致，覆盖同点重复、子节点变换和两侧朝向。
+            assert coordinates == expected
+            checked += len(coordinates)
+        original(node, coordinates, faces, geom_index)
+
+    monkeypatch.setattr(surface_mesh, "set_rail_shadow_coordinates", verify)
+    build_segment(root, index, 23, assets, lambda _: None, curve)
+    assert checked > 100
+    root.removeNode()
 
 
 def test_photographed_maps_keep_color_and_scalar_formats_separate(kit, tmp_path, monkeypatch):
@@ -149,7 +254,8 @@ def test_all_shapes_keep_physical_surfaces_and_stream_lifetime(kit, curve, monke
     sim = SimpleNamespace(stream=stream, origin_y=8000, seed=23)
     scene.base = SimpleNamespace(session=SimpleNamespace(
         simulation=sim, render_segments=lambda: tuple(stream.segments),
-        render_origin=lambda: sim.origin_y))
+        render_origin=lambda: sim.origin_y), pipeline=SimpleNamespace(exposure=1.0))
+    scene.previous_exposure = .75
     scene.sync_segments()
     expected = curve_mesh.surfaces(curve, 42) if curve else surface_meshes()
     for name, surface in expected.items():
@@ -185,6 +291,7 @@ def test_all_shapes_keep_physical_surfaces_and_stream_lifetime(kit, curve, monke
     assert set(scene.segment_nodes) == {-2}
     assert not scene.render.findAllMatches("**/+BulletRigidBodyNode")
     scene.close()
+    assert scene.base.pipeline.exposure == .75
 
 
 def test_facilities_are_global_and_never_double_owned():
@@ -291,7 +398,8 @@ def test_partial_segment_stays_detached_and_is_cancelled_on_unload(kit, monkeypa
     simulation = SimpleNamespace(stream=stream, origin_y=0, seed=23)
     scene.base = SimpleNamespace(session=SimpleNamespace(
         simulation=simulation, render_segments=lambda: tuple(stream.segments),
-        render_origin=lambda: simulation.origin_y))
+        render_origin=lambda: simulation.origin_y), pipeline=SimpleNamespace(exposure=1.0))
+    scene.previous_exposure = .75
     clock = iter(n * .0001 for n in range(10000))
     monkeypatch.setattr(scene_module, "perf_counter", lambda: next(clock))
     scene.sync_segments(budget_ms=1, distance=-8)
@@ -311,6 +419,7 @@ def test_partial_segment_stays_detached_and_is_cancelled_on_unload(kit, monkeypa
     scene.sync_segments(budget_ms=1, distance=1208)
     closing_root, closing_steps = scene.segment_builds[6]
     scene.close()
+    assert scene.base.pipeline.exposure == .75
     assert closing_root.isEmpty()
     assert closing_steps.gi_frame is None
     assert not scene.segment_builds
@@ -336,7 +445,8 @@ def test_budgeted_completion_attaches_whole_segment_at_current_origin(kit, monke
     simulation = SimpleNamespace(stream=stream, origin_y=0, seed=23)
     scene.base = SimpleNamespace(session=SimpleNamespace(
         simulation=simulation, render_segments=lambda: tuple(stream.segments),
-        render_origin=lambda: simulation.origin_y))
+        render_origin=lambda: simulation.origin_y), pipeline=SimpleNamespace(exposure=1.0))
+    scene.previous_exposure = .75
     clock = iter(n * .0001 for n in range(100000))
     monkeypatch.setattr(scene_module, "perf_counter", lambda: next(clock))
     calls = 0
@@ -361,3 +471,4 @@ def test_budgeted_completion_attaches_whole_segment_at_current_origin(kit, monke
     assert counts[0] == counts[1]
     full.removeNode()
     scene.close()
+    assert scene.base.pipeline.exposure == .75

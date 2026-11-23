@@ -1,0 +1,12 @@
+{
+  "status": "isolated; not adopted; user redirected work toward house surroundings and performance",
+  "receiver_shader": "city-shadow.glsl",
+  "known_plane_gpu": "logs/all-scene-20261029/city-shadow-plane.json",
+  "scene_candidate": "logs/all-scene-20261029/city-shadow-candidate-r2",
+  "production_material_restored_hash": "76a5943f6480948a6a0c32ae5c2a01d9b58ba8842d755c4bc791e8edc3cc8f0a",
+  "matches_pre_investigation_material": true,
+  "receiver_scene_stripes_resolved": false,
+  "caster_offset_diagnostics": "logs/all-scene-20261029/city-shadow-caster-r2",
+  "caster_offset_not_adopted": true,
+  "tools_depth_probe_interrupted": "logs/all-scene-20261029/city-shadow-depth-r1"
+}

@@ -53,13 +53,26 @@ def relief(x, y, s, d):
 
 
 def ground_height(x, y):
-    mesh = landscape_meshes()[0]
-    for triangle in mesh["faces"]:
-        points = [mesh["vertices"][i] for i in triangle]
+    # 只缩小候选集合；边界容差、三角形顺序和重心插值沿用原视觉网格。
+    for points in ground_cells().get((math.floor(x/8), math.floor(y/8)), ()):
         weights = triangle_weights(x, y, points)
         if weights is not None:
             return sum(w * p[2] for w, p in zip(weights, points))
     raise ValueError(f"采样点在视觉岛面之外：{x}, {y}")
+
+
+@lru_cache(maxsize=1)
+def ground_cells():
+    mesh = landscape_meshes()[0]
+    cells = {}
+    for triangle in mesh['faces']:
+        points = tuple(mesh['vertices'][i] for i in triangle)
+        left, right = min(p[0] for p in points)-1e-7, max(p[0] for p in points)+1e-7
+        bottom, top = min(p[1] for p in points)-1e-7, max(p[1] for p in points)+1e-7
+        for column in range(math.floor(left/8), math.floor(right/8)+1):
+            for row in range(math.floor(bottom/8), math.floor(top/8)+1):
+                cells.setdefault((column, row), []).append(points)
+    return cells
 
 
 def mix(a, b, t):

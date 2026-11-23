@@ -1,0 +1,62 @@
+{
+  "scope": "独立两次导出；GLB全文SHA不同，按实际使用的数据核对，不宣称文件逐字节等同",
+  "runtime_source_sha256": "4ba6f5507b174e313fe13adcd2838951ad3caa886cd746d5136c52fba0fa5e60",
+  "reexport_sha256": "60cd77a8fbd23a77bfd7b8f613939b72787137602b92bf64c28ec8f9decdd3ec",
+  "same_visible_lods": [
+    "g_rock_cliff_face_01",
+    "g_rock_cliff_face_01_LOD1",
+    "g_rock_cliff_face_01_LOD2",
+    "g_rock_cliff_face_01_LOD3",
+    "g_rock_cliff_face_01_LOD4"
+  ],
+  "same_source_images": {
+    "0x274ae218c818f1e4": "bdf0067598fef51ae63faa341959039606d9cef8b5faf0d0dc55549dcc59118f",
+    "0x274ae218c818f1e4.dds": "c65d60e30bfddf5d4d3e1f57b8cbe3fee69155699d56eb53c37fd314cc05c368",
+    "0x1078de90ab737298": "a59a32e259833b4ecd14a2c9d92815ebebf0a869e0660862017855af3246b97e",
+    "0x172256b51bd3cd23": "ca9246ead97bdcc2fc2282d490b08efc14ecf4ae14d5e1de5b2316ed3a96aa1c",
+    "0x9c4b87212a9cd66d": "1e61a1d797c6aff855b2f0800a15c900670dc0e80ad484de73ccf62747eaf14c",
+    "0xbbddb47f548cd2ba": "15940dfc7118efd5ea8a3a0738231bf6324d83f6afca039f71bc555ec1ae8007",
+    "0xadfa568c38a21638": "ad1312a59b4d2f5f5d75e8efb10757b9bbe56e17ab02d90459ea2dba26436368",
+    "0x3e5a17efc348de5c": "b063aee4668e520a7434c07d87fb8d85a7d25484f326ed287b0325c8cf29ff13"
+  },
+  "material_extra_differences": [
+    [
+      "base_normal_ao_dirt",
+      5,
+      3
+    ],
+    [
+      "detail_mask_",
+      6,
+      4
+    ],
+    [
+      "triplanar_detail_albedo",
+      4,
+      2
+    ],
+    [
+      "triplanar_detail_data",
+      1,
+      5
+    ],
+    [
+      "weathering_albedo",
+      2,
+      6
+    ],
+    [
+      "weathering_nar",
+      3,
+      1
+    ]
+  ],
+  "same_material_texture_references": {
+    "base_normal_ao_dirt": "0xadfa568c38a21638",
+    "detail_mask_": "0x3e5a17efc348de5c",
+    "triplanar_detail_albedo": "0xbbddb47f548cd2ba",
+    "triplanar_detail_data": "0x1078de90ab737298",
+    "weathering_albedo": "0x172256b51bd3cd23",
+    "weathering_nar": "0x9c4b87212a9cd66d"
+  }
+}

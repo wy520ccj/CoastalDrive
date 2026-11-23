@@ -1,0 +1,39 @@
+{
+  "source": "https://polyhaven.com/a/white_plaster_02",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0",
+  "scale_m": 1,
+  "files": [
+    {
+      "kind": "Diffuse",
+      "path": "assets/game/materials/white_plaster_02_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/white_plaster_02/white_plaster_02_diff_1k.jpg",
+      "bytes": 527219,
+      "sha256": "a1ebbe091bd1ae93d2abd5de8d69f9003a8d0ee6532bcf9a87c2492c97051f23"
+    },
+    {
+      "kind": "nor_gl",
+      "path": "assets/game/materials/white_plaster_02_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/white_plaster_02/white_plaster_02_nor_gl_1k.jpg",
+      "bytes": 652310,
+      "sha256": "eb572ca3630d5bfde72e2601b1f02412da23ca005cd19384dced8690be4cb783"
+    },
+    {
+      "kind": "Rough",
+      "path": "assets/game/materials/white_plaster_02_rough_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/white_plaster_02/white_plaster_02_rough_1k.jpg",
+      "bytes": 295900,
+      "sha256": "4ff1fe957cd161b07f721fe6c28a9459c8c2e8ec65627a26c16e483a07c80d85"
+    }
+  ],
+  "project_paint_calibration": {
+    "linear_diffuse_mean_rgb": [
+      0.2719839789333033,
+      0.2461039903414615,
+      0.1985410272003447
+    ],
+    "relative_color_variation_weight": 0.35,
+    "vertex_colors_define": "linear paint albedo",
+    "source_pixels_modified": false
+  }
+}

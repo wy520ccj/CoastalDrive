@@ -44,25 +44,78 @@ def photographed_surface(name, *, color=False):
 
 
 @lru_cache(maxsize=1)
-def daylight_assets():
-    """天空、空气透视和照明共用同一实拍；源图是线性HDR，不能再按sRGB解码。"""
-    from simplepbr.envmap import EnvMap
+def lab_asphalt_shader():
+    """实验地面沿用道路的米制实拍法线/粗糙度，不引入道路护栏或远景输入。"""
+    from simplepbr._shaderutils import _load_shader_str
 
-    folder = resource_root()/'assets/game/expressway'
-    for name in ('daylight-sky.hdr', 'daylight.env', 'daylight-manifest.json'):
+    defines = {'MAX_LIGHTS': 1, 'ENABLE_SHADOWS': True, 'USE_330': True}
+    vertex = _load_shader_str('simplepbr.vert', defines.copy())
+    fragment = _load_shader_str('simplepbr.frag', defines.copy())
+    detail = Path(shader_path('asphalt-material.glsl').toOsSpecific()).read_text(encoding='utf-8')
+    fragment = fragment.replace('void main() {', detail+'\nvoid main() {')
+    fragment = fragment.replace('(texture2D(p3d_TextureBaseColor, v_texcoord) + p3d_TexAlphaOnly)',
+                                'asphalt_color()')
+    fragment = fragment.replace('p3d_Material.roughness * metal_rough.g',
+                                'max(0.55, texture2D(asphalt_roughness, v_texcoord).r)')
+    fragment = fragment.replace('normalize(v_view_tbn * normalmap)',
+                                'asphalt_normal(v_view_tbn[2], v_view_position)')
+    fragment = fragment.replace('normalize(v_world_tbn * normalmap)',
+                                'asphalt_normal(v_world_tbn[2], v_world_position)')
+    return Shader.make(Shader.SLGLSL, vertex, fragment)
+
+
+@lru_cache(maxsize=1)
+def city_plaster_shader():
+    """住宅灰泥与石墙共用原PBR照明，分别绑定米制尺度与表面强度。"""
+    from simplepbr._shaderutils import _load_shader_str
+
+    defines = {'MAX_LIGHTS': 1, 'ENABLE_SHADOWS': True, 'USE_330': True}
+    vertex = _load_shader_str('simplepbr.vert', defines.copy())
+    fragment = add_shadow_transition(_load_shader_str('simplepbr.frag', defines.copy()))
+    detail = Path(shader_path('city-plaster.glsl').toOsSpecific()).read_text(encoding='utf-8')
+    fragment = fragment.replace('void main() {', detail+'\nvoid main() {')
+    fragment = fragment.replace('(texture2D(p3d_TextureBaseColor, v_texcoord) + p3d_TexAlphaOnly)',
+                                'city_plaster_color()')
+    fragment = fragment.replace('p3d_Material.roughness * metal_rough.g',
+                                'max(0.7, texture2D(city_roughness, v_texcoord*city_tex_scale).r)')
+    fragment = fragment.replace('normalize(v_view_tbn * normalmap)',
+                                'city_surface_normal(v_view_tbn[2], v_view_position)')
+    fragment = fragment.replace('normalize(v_world_tbn * normalmap)',
+                                'city_surface_normal(v_world_tbn[2], v_world_position)')
+    return Shader.make(Shader.SLGLSL, vertex, fragment)
+
+
+@lru_cache(maxsize=2)
+def daylight_assets(folder=None):
+    """天空、空气透视和照明共用同一实拍；源图是线性HDR，不能再按sRGB解码。"""
+    folder = resource_root()/'assets/game/expressway' if folder is None else folder
+    environment, metadata = daylight_environment(folder)
+    sky_name = metadata.get('sky_file', 'daylight-sky.hdr')
+    for name in (sky_name, 'daylight.env', 'daylight-manifest.json'):
         if not (folder/name).is_file():
             raise FileNotFoundError(f'缺少晴天环境资源：{folder/name}')
     sky = Texture('coastal-daylight-sky')
-    if not sky.read(Filename.fromOsSpecific(str(folder/'daylight-sky.hdr'))):
+    if not sky.read(Filename.fromOsSpecific(str(folder/sky_name))):
         raise OSError('无法读取晴天HDR天空')
     sky.setFormat(Texture.FRgb16)
     sky.setWrapU(Texture.WMRepeat)
     sky.setWrapV(Texture.WMClamp)
     sky.setMinfilter(Texture.FTLinearMipmapLinear)
     sky.setAnisotropicDegree(4)
+    return sky, environment, metadata
+
+
+@lru_cache(maxsize=2)
+def daylight_environment(folder):
+    """共用离线过滤环境；仅需照明的视窗不重复读取整张HDR天空。"""
+    from simplepbr.envmap import EnvMap
+
+    for name in ('daylight.env', 'daylight-manifest.json'):
+        if not (folder/name).is_file():
+            raise FileNotFoundError(f'缺少晴天照明资源：{folder/name}')
     environment = EnvMap.from_file_path(Filename.fromOsSpecific(str(folder/'daylight.env')))
     metadata = json.loads((folder/'daylight-manifest.json').read_text(encoding='utf-8'))
-    return sky, environment, metadata
+    return environment, metadata
 
 
 def style_sky(sky, kit):

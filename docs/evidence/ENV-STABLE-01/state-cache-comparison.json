@@ -1,0 +1,811 @@
+{
+  "scope": "相同当前入口山脊450m、/Draw、1280x720/4xMSAA，分时段样本；GC使用高精度墙钟，Windows线程CPU计时粒度15.625ms不能用于单次GC成本。",
+  "decision": "仅短对照，未修改产品回收设置；后续须按同一场景生命周期确认缓存释放与稳定收益。",
+  "runs": [
+    {
+      "folder": "r10-current-full-gc",
+      "gc_rate": 1.0,
+      "frames": 1074,
+      "foreground": 1074,
+      "minimized": 0,
+      "frame_ms": {
+        "median": 27.131000000736094,
+        "p95": 47.933189999457674,
+        "p99": 51.64840600034946,
+        "max": 61.20830000145361
+      },
+      "gc_wall_ms": {
+        "median": 3.9981999980227556,
+        "p95": 7.760700001381338,
+        "max": 9.46750000002794
+      },
+      "progress_bins": {
+        "0-90": {
+          "median": 45.60864999984915,
+          "p95": 52.01412999940656,
+          "max": 58.77659999896423
+        },
+        "90-180": {
+          "median": 45.290350000868784,
+          "p95": 48.584225000558945,
+          "max": 50.984299999981886
+        },
+        "180-270": {
+          "median": 27.068299998063594,
+          "p95": 47.071920000780665,
+          "max": 52.06420000104117
+        },
+        "270-360": {
+          "median": 19.67549999972107,
+          "p95": 23.80767999929958,
+          "max": 26.522700001805788
+        },
+        "360-450": {
+          "median": 28.639800000746618,
+          "p95": 40.82967500016821,
+          "max": 61.20830000145361
+        }
+      },
+      "state_counts": [
+        {
+          "time": 15.764511000001221,
+          "render_states": 3847,
+          "transform_states": 1
+        },
+        {
+          "time": 15.94378190000134,
+          "render_states": 3870,
+          "transform_states": 1
+        },
+        {
+          "time": 16.332314200000837,
+          "render_states": 5840,
+          "transform_states": 1
+        },
+        {
+          "time": 16.65977019999991,
+          "render_states": 6199,
+          "transform_states": 1
+        },
+        {
+          "time": 17.014160300001095,
+          "render_states": 6219,
+          "transform_states": 1
+        },
+        {
+          "time": 17.427172800002154,
+          "render_states": 7596,
+          "transform_states": 1
+        },
+        {
+          "time": 17.826620300002105,
+          "render_states": 7655,
+          "transform_states": 1
+        },
+        {
+          "time": 18.280532500000845,
+          "render_states": 7931,
+          "transform_states": 1
+        },
+        {
+          "time": 18.709492699999828,
+          "render_states": 8292,
+          "transform_states": 1
+        },
+        {
+          "time": 19.192342599999392,
+          "render_states": 8308,
+          "transform_states": 1
+        },
+        {
+          "time": 19.74457690000054,
+          "render_states": 8929,
+          "transform_states": 1
+        },
+        {
+          "time": 20.253202700001566,
+          "render_states": 9277,
+          "transform_states": 1
+        },
+        {
+          "time": 20.760484700000234,
+          "render_states": 9293,
+          "transform_states": 1
+        },
+        {
+          "time": 21.33642200000031,
+          "render_states": 9949,
+          "transform_states": 1
+        },
+        {
+          "time": 21.923944400001346,
+          "render_states": 10298,
+          "transform_states": 1
+        },
+        {
+          "time": 22.474859100002504,
+          "render_states": 10338,
+          "transform_states": 1
+        },
+        {
+          "time": 23.075435599999764,
+          "render_states": 11035,
+          "transform_states": 1
+        },
+        {
+          "time": 23.72393160000138,
+          "render_states": 11037,
+          "transform_states": 1
+        },
+        {
+          "time": 24.347604300000967,
+          "render_states": 11313,
+          "transform_states": 1
+        },
+        {
+          "time": 24.98073370000202,
+          "render_states": 11329,
+          "transform_states": 1
+        },
+        {
+          "time": 25.63099560000046,
+          "render_states": 11340,
+          "transform_states": 1
+        },
+        {
+          "time": 26.287588200000755,
+          "render_states": 11343,
+          "transform_states": 1
+        },
+        {
+          "time": 26.951180100000784,
+          "render_states": 11347,
+          "transform_states": 1
+        },
+        {
+          "time": 27.906551000000036,
+          "render_states": 17343,
+          "transform_states": 1
+        },
+        {
+          "time": 28.45277630000055,
+          "render_states": 17343,
+          "transform_states": 1
+        },
+        {
+          "time": 29.00783610000144,
+          "render_states": 17343,
+          "transform_states": 1
+        },
+        {
+          "time": 29.577503500000603,
+          "render_states": 17343,
+          "transform_states": 1
+        },
+        {
+          "time": 30.12995420000152,
+          "render_states": 17343,
+          "transform_states": 1
+        },
+        {
+          "time": 31.201039300001867,
+          "render_states": 22227,
+          "transform_states": 1
+        },
+        {
+          "time": 32.65575230000104,
+          "render_states": 22786,
+          "transform_states": 1
+        },
+        {
+          "time": 34.07704190000004,
+          "render_states": 22064,
+          "transform_states": 1
+        },
+        {
+          "time": 35.73279570000159,
+          "render_states": 22221,
+          "transform_states": 1
+        },
+        {
+          "time": 37.04679220000253,
+          "render_states": 21664,
+          "transform_states": 1
+        },
+        {
+          "time": 38.37810770000215,
+          "render_states": 21738,
+          "transform_states": 1
+        },
+        {
+          "time": 39.727802900000825,
+          "render_states": 21965,
+          "transform_states": 1
+        },
+        {
+          "time": 41.39769069999966,
+          "render_states": 23085,
+          "transform_states": 1
+        },
+        {
+          "time": 42.75314540000181,
+          "render_states": 23923,
+          "transform_states": 1
+        },
+        {
+          "time": 44.1019938999998,
+          "render_states": 23066,
+          "transform_states": 1
+        },
+        {
+          "time": 45.47147849999965,
+          "render_states": 24056,
+          "transform_states": 1
+        },
+        {
+          "time": 47.10015410000051,
+          "render_states": 20500,
+          "transform_states": 1
+        },
+        {
+          "time": 48.22762960000182,
+          "render_states": 16441,
+          "transform_states": 1
+        },
+        {
+          "time": 49.072960800000146,
+          "render_states": 15351,
+          "transform_states": 1
+        },
+        {
+          "time": 49.850092399999994,
+          "render_states": 15685,
+          "transform_states": 1
+        },
+        {
+          "time": 50.590660100002424,
+          "render_states": 15795,
+          "transform_states": 1
+        },
+        {
+          "time": 51.30755440000212,
+          "render_states": 15210,
+          "transform_states": 1
+        },
+        {
+          "time": 52.28663629999937,
+          "render_states": 14777,
+          "transform_states": 1
+        },
+        {
+          "time": 52.933390100002725,
+          "render_states": 14421,
+          "transform_states": 1
+        },
+        {
+          "time": 53.54449999999997,
+          "render_states": 14165,
+          "transform_states": 1
+        },
+        {
+          "time": 54.13403400000243,
+          "render_states": 13993,
+          "transform_states": 1
+        },
+        {
+          "time": 54.73292070000025,
+          "render_states": 13729,
+          "transform_states": 1
+        },
+        {
+          "time": 55.31349780000164,
+          "render_states": 13586,
+          "transform_states": 1
+        },
+        {
+          "time": 55.86986370000159,
+          "render_states": 13127,
+          "transform_states": 1
+        },
+        {
+          "time": 56.46965170000112,
+          "render_states": 12798,
+          "transform_states": 1
+        },
+        {
+          "time": 57.03987039999993,
+          "render_states": 12819,
+          "transform_states": 1
+        },
+        {
+          "time": 57.5847090999996,
+          "render_states": 12815,
+          "transform_states": 1
+        },
+        {
+          "time": 58.14684860000125,
+          "render_states": 13003,
+          "transform_states": 1
+        },
+        {
+          "time": 58.69428030000199,
+          "render_states": 13125,
+          "transform_states": 1
+        },
+        {
+          "time": 59.30630350000138,
+          "render_states": 13198,
+          "transform_states": 1
+        },
+        {
+          "time": 59.98273550000158,
+          "render_states": 14311,
+          "transform_states": 1
+        },
+        {
+          "time": 60.86012450000271,
+          "render_states": 17217,
+          "transform_states": 1
+        },
+        {
+          "time": 61.87770280000041,
+          "render_states": 17837,
+          "transform_states": 1
+        },
+        {
+          "time": 62.888364100002946,
+          "render_states": 19400,
+          "transform_states": 1
+        },
+        {
+          "time": 64.060816600002,
+          "render_states": 20411,
+          "transform_states": 1
+        },
+        {
+          "time": 65.13920320000034,
+          "render_states": 19262,
+          "transform_states": 1
+        }
+      ],
+      "peak_render_states": 24056,
+      "owner_end": {
+        "tick": 4359,
+        "dropped_time": 0.0,
+        "monotonic": 24867.4172107
+      },
+      "views": [
+        {
+          "tick": 668,
+          "progress_m": 40.365165719734165,
+          "speed_mps": 13.493046760559082,
+          "collisions": 0
+        },
+        {
+          "tick": 1364,
+          "progress_m": 120.36623391931288,
+          "speed_mps": 14.000679969787598,
+          "collisions": 0
+        },
+        {
+          "tick": 1959,
+          "progress_m": 190.00894309081704,
+          "speed_mps": 13.469884872436523,
+          "collisions": 0
+        },
+        {
+          "tick": 2652,
+          "progress_m": 270.0499890593454,
+          "speed_mps": 14.080591201782227,
+          "collisions": 0
+        },
+        {
+          "tick": 4321,
+          "progress_m": 450.31711120924484,
+          "speed_mps": 11.842552185058594,
+          "collisions": 0
+        }
+      ]
+    },
+    {
+      "folder": "r11-quarter-gc",
+      "gc_rate": 0.25,
+      "frames": 1054,
+      "foreground": 1054,
+      "minimized": 0,
+      "frame_ms": {
+        "median": 28.59234999777982,
+        "p95": 50.37997500039637,
+        "p99": 56.54204599977674,
+        "max": 65.7482999995409
+      },
+      "gc_wall_ms": {
+        "median": 3.6605999994208105,
+        "p95": 8.347000000503613,
+        "max": 12.747700002364581
+      },
+      "progress_bins": {
+        "0-90": {
+          "median": 45.181450001109624,
+          "p95": 52.32577000042511,
+          "max": 60.88140000065323
+        },
+        "90-180": {
+          "median": 44.88770000170916,
+          "p95": 52.19636000110768,
+          "max": 62.97740000081831
+        },
+        "180-270": {
+          "median": 29.90460000000894,
+          "p95": 52.198500000304186,
+          "max": 65.7482999995409
+        },
+        "270-360": {
+          "median": 20.193749998725252,
+          "p95": 26.498475001062616,
+          "max": 36.23109999898588
+        },
+        "360-450": {
+          "median": 23.961499999131775,
+          "p95": 45.76794999957201,
+          "max": 55.59980000180076
+        }
+      },
+      "state_counts": [
+        {
+          "time": 16.279972299998917,
+          "render_states": 3850,
+          "transform_states": 1
+        },
+        {
+          "time": 16.46386209999764,
+          "render_states": 3870,
+          "transform_states": 1
+        },
+        {
+          "time": 16.838532800000394,
+          "render_states": 5875,
+          "transform_states": 1
+        },
+        {
+          "time": 17.15627029999814,
+          "render_states": 6204,
+          "transform_states": 1
+        },
+        {
+          "time": 17.496940599998197,
+          "render_states": 6219,
+          "transform_states": 1
+        },
+        {
+          "time": 17.910260499997094,
+          "render_states": 7601,
+          "transform_states": 1
+        },
+        {
+          "time": 18.315223499997956,
+          "render_states": 7691,
+          "transform_states": 1
+        },
+        {
+          "time": 18.757467600000382,
+          "render_states": 8002,
+          "transform_states": 1
+        },
+        {
+          "time": 19.185955599998124,
+          "render_states": 8310,
+          "transform_states": 1
+        },
+        {
+          "time": 19.684799299997394,
+          "render_states": 8929,
+          "transform_states": 1
+        },
+        {
+          "time": 20.22337939999852,
+          "render_states": 8938,
+          "transform_states": 1
+        },
+        {
+          "time": 20.725929299998825,
+          "render_states": 9274,
+          "transform_states": 1
+        },
+        {
+          "time": 21.232802799997444,
+          "render_states": 9293,
+          "transform_states": 1
+        },
+        {
+          "time": 21.84339270000055,
+          "render_states": 9963,
+          "transform_states": 1
+        },
+        {
+          "time": 22.458169599998655,
+          "render_states": 10178,
+          "transform_states": 1
+        },
+        {
+          "time": 23.008954499997344,
+          "render_states": 10334,
+          "transform_states": 1
+        },
+        {
+          "time": 23.586723000000347,
+          "render_states": 10339,
+          "transform_states": 1
+        },
+        {
+          "time": 24.243976800000382,
+          "render_states": 11038,
+          "transform_states": 1
+        },
+        {
+          "time": 24.86044050000055,
+          "render_states": 11304,
+          "transform_states": 1
+        },
+        {
+          "time": 25.46059249999962,
+          "render_states": 11376,
+          "transform_states": 1
+        },
+        {
+          "time": 26.089600600000267,
+          "render_states": 11340,
+          "transform_states": 1
+        },
+        {
+          "time": 26.718791799998144,
+          "render_states": 11389,
+          "transform_states": 1
+        },
+        {
+          "time": 27.362152399997285,
+          "render_states": 11347,
+          "transform_states": 1
+        },
+        {
+          "time": 28.390640599998733,
+          "render_states": 17345,
+          "transform_states": 1
+        },
+        {
+          "time": 28.94539629999781,
+          "render_states": 17369,
+          "transform_states": 1
+        },
+        {
+          "time": 29.502056400000583,
+          "render_states": 17348,
+          "transform_states": 1
+        },
+        {
+          "time": 30.057431699999142,
+          "render_states": 17348,
+          "transform_states": 1
+        },
+        {
+          "time": 30.605998799997906,
+          "render_states": 17342,
+          "transform_states": 1
+        },
+        {
+          "time": 31.41449250000005,
+          "render_states": 37258,
+          "transform_states": 1
+        },
+        {
+          "time": 32.80792709999878,
+          "render_states": 64882,
+          "transform_states": 1
+        },
+        {
+          "time": 34.21328829999766,
+          "render_states": 66240,
+          "transform_states": 1
+        },
+        {
+          "time": 35.90260599999965,
+          "render_states": 65636,
+          "transform_states": 1
+        },
+        {
+          "time": 37.26441859999977,
+          "render_states": 67171,
+          "transform_states": 1
+        },
+        {
+          "time": 38.60799079999924,
+          "render_states": 63309,
+          "transform_states": 1
+        },
+        {
+          "time": 40.04583609999827,
+          "render_states": 63484,
+          "transform_states": 1
+        },
+        {
+          "time": 41.6727284999979,
+          "render_states": 61332,
+          "transform_states": 1
+        },
+        {
+          "time": 43.0545060000004,
+          "render_states": 67819,
+          "transform_states": 1
+        },
+        {
+          "time": 44.390180899998086,
+          "render_states": 69235,
+          "transform_states": 1
+        },
+        {
+          "time": 45.83055550000063,
+          "render_states": 65636,
+          "transform_states": 1
+        },
+        {
+          "time": 47.64823809999871,
+          "render_states": 60174,
+          "transform_states": 1
+        },
+        {
+          "time": 48.87933089999933,
+          "render_states": 45246,
+          "transform_states": 1
+        },
+        {
+          "time": 49.86713500000042,
+          "render_states": 41756,
+          "transform_states": 1
+        },
+        {
+          "time": 50.63203929999872,
+          "render_states": 33402,
+          "transform_states": 1
+        },
+        {
+          "time": 51.39460019999751,
+          "render_states": 30592,
+          "transform_states": 1
+        },
+        {
+          "time": 52.42811729999812,
+          "render_states": 30623,
+          "transform_states": 1
+        },
+        {
+          "time": 53.18891859999712,
+          "render_states": 30248,
+          "transform_states": 1
+        },
+        {
+          "time": 53.88484989999779,
+          "render_states": 24696,
+          "transform_states": 1
+        },
+        {
+          "time": 54.49679159999869,
+          "render_states": 24889,
+          "transform_states": 1
+        },
+        {
+          "time": 55.11002240000016,
+          "render_states": 25701,
+          "transform_states": 1
+        },
+        {
+          "time": 55.68124909999824,
+          "render_states": 22634,
+          "transform_states": 1
+        },
+        {
+          "time": 56.253294899997854,
+          "render_states": 22728,
+          "transform_states": 1
+        },
+        {
+          "time": 56.8855244999977,
+          "render_states": 22826,
+          "transform_states": 1
+        },
+        {
+          "time": 57.359262599999056,
+          "render_states": 20930,
+          "transform_states": 1
+        },
+        {
+          "time": 57.92967529999805,
+          "render_states": 20879,
+          "transform_states": 1
+        },
+        {
+          "time": 58.51853370000026,
+          "render_states": 21328,
+          "transform_states": 1
+        },
+        {
+          "time": 59.048527200000535,
+          "render_states": 20250,
+          "transform_states": 1
+        },
+        {
+          "time": 59.56873479999922,
+          "render_states": 22460,
+          "transform_states": 1
+        },
+        {
+          "time": 60.164623000000574,
+          "render_states": 24359,
+          "transform_states": 1
+        },
+        {
+          "time": 60.79670289999922,
+          "render_states": 27009,
+          "transform_states": 1
+        },
+        {
+          "time": 61.60307180000018,
+          "render_states": 34299,
+          "transform_states": 1
+        },
+        {
+          "time": 62.672320699999545,
+          "render_states": 38393,
+          "transform_states": 1
+        },
+        {
+          "time": 63.739732799997,
+          "render_states": 46776,
+          "transform_states": 1
+        },
+        {
+          "time": 65.05776569999944,
+          "render_states": 53020,
+          "transform_states": 1
+        }
+      ],
+      "peak_render_states": 69235,
+      "owner_end": {
+        "tick": 4359,
+        "dropped_time": 0.0,
+        "monotonic": 24969.561291
+      },
+      "views": [
+        {
+          "tick": 667,
+          "progress_m": 40.14038245775279,
+          "speed_mps": 13.48674488067627,
+          "collisions": 0
+        },
+        {
+          "tick": 1364,
+          "progress_m": 120.25020721455799,
+          "speed_mps": 13.999117851257324,
+          "collisions": 0
+        },
+        {
+          "tick": 1963,
+          "progress_m": 190.34886563525652,
+          "speed_mps": 13.46779727935791,
+          "collisions": 0
+        },
+        {
+          "tick": 2653,
+          "progress_m": 270.0507906742591,
+          "speed_mps": 14.08057975769043,
+          "collisions": 0
+        },
+        {
+          "tick": 4320,
+          "progress_m": 450.1199710812247,
+          "speed_mps": 11.832174301147461,
+          "collisions": 0
+        }
+      ]
+    }
+  ]
+}

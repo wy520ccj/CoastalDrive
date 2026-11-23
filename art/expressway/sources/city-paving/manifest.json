@@ -1,0 +1,61 @@
+{
+  "source": "https://polyhaven.com/a/floor_pavement",
+  "authors": {
+    "Dario Barresi": "processing",
+    "Charlotte Baglioni": "photography"
+  },
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "dimensions_m": [
+    2.0,
+    2.0
+  ],
+  "files": [
+    {
+      "kind": "Diffuse",
+      "path": "assets/game/materials/floor_pavement_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/floor_pavement/floor_pavement_diff_1k.jpg",
+      "bytes": 680734,
+      "md5": "dc4b33a0fa482ebb727a5df5eec6729e",
+      "sha256": "dffb9e799cfd6e648c4ed526f1ddf3009789a9af2b62f26d272307aeff5dc950",
+      "color_space": "sRGB"
+    },
+    {
+      "kind": "nor_gl",
+      "path": "assets/game/materials/floor_pavement_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/floor_pavement/floor_pavement_nor_gl_1k.jpg",
+      "bytes": 734732,
+      "md5": "68599c7340d3ae0cecb981966f6dbc5e",
+      "sha256": "2570d2502679e4295416cfb39aa58f546ed17e022a086314f6496cb889937b09",
+      "color_space": "linear"
+    },
+    {
+      "kind": "Rough",
+      "path": "assets/game/materials/floor_pavement_rough_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/floor_pavement/floor_pavement_rough_1k.jpg",
+      "bytes": 257439,
+      "md5": "c12d1931e1ca12a700639920e32086bc",
+      "sha256": "e939acc480ef917d40efac3ded29d2bc2c53ed82cb9f08cb665bc5a8be3a1493",
+      "color_space": "linear"
+    }
+  ],
+  "source_pixels_modified": false,
+  "selection": "Grey large square concrete paving for design43; rejected pavement05 small setts and square_concrete_pavers fine patterned brown tile.",
+  "project_calibration": {
+    "linear_diffuse_mean_rgb": [
+      0.2482886942647971,
+      0.20661502683654415,
+      0.15832669532958707
+    ],
+    "relative_color_variation_weight": 0.8,
+    "normal_strength": 0.35,
+    "uv_metres_per_repeat": 2.0,
+    "vertex_color_defines": "existing warm grey paving albedo"
+  },
+  "preparation": {
+    "evidence": "logs/all-scene-20261029/city-paving-preparation.json",
+    "all_nine_city_maps_prepared": true,
+    "onscreen": false,
+    "scope": "64px hidden loading sample; not normal driving frame-time acceptance"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "scope": "依次scoped/root/root/scoped，同固定1280x720/4xMSAA、默认Draw与独立120Hz正常山脊270m；截图回读单列，非全步性能Gate",
+  "runs": [
+    {
+      "mode": "scoped",
+      "run": "r145-scoped-woodland-ridge",
+      "entry_seconds": 19.832416699999158,
+      "frames": {
+        "median": 22.033299999748124,
+        "p95": 26.864459998614617,
+        "p99": 31.513276000041518,
+        "max": 35.267399998701876
+      },
+      "owner_dropped": 0.0,
+      "collisions": 0,
+      "stream_max_step_ms": 15.844500001549022
+    },
+    {
+      "mode": "root",
+      "run": "r146-root-woodland-ridge",
+      "entry_seconds": 20.099342000001343,
+      "frames": {
+        "median": 22.86784999887459,
+        "p95": 26.786374999574036,
+        "p99": 29.73351499949787,
+        "max": 37.5504000003275
+      },
+      "owner_dropped": 0.0,
+      "collisions": 0,
+      "stream_max_step_ms": 16.17850000184262
+    },
+    {
+      "mode": "root",
+      "run": "r147-root-woodland-repeat",
+      "entry_seconds": 19.96288889999778,
+      "frames": {
+        "median": 22.801999999501277,
+        "p95": 26.503519999823762,
+        "p99": 28.707420000282582,
+        "max": 36.81299999880139
+      },
+      "owner_dropped": 0.0,
+      "collisions": 0,
+      "stream_max_step_ms": 18.91040000191424
+    },
+    {
+      "mode": "scoped",
+      "run": "r148-scoped-woodland-repeat",
+      "entry_seconds": 20.29342320000069,
+      "frames": {
+        "median": 21.612399999867193,
+        "p95": 25.888559999293637,
+        "p99": 28.194951999321333,
+        "max": 34.96550000272691
+      },
+      "owner_dropped": 0.0,
+      "collisions": 0,
+      "stream_max_step_ms": 17.368900000292342
+    }
+  ]
+}

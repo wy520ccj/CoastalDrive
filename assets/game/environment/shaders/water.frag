@@ -1,24 +1,42 @@
 #version 330
 uniform float sea_time;
 uniform sampler2D shore_distance;
+uniform sampler2D wave_normals;
+uniform samplerCube filtered_env_map;
+uniform vec3 camera_world_position;
+uniform vec3 coastal_sun_direction;
+uniform vec3 coastal_sun_color;
 in vec3 world;
 out vec4 fragColor;
 void main() {
     vec2 p = world.xy;
-    float swell = sin(p.x * 0.10 + p.y * 0.035 + sea_time * 0.27);
-    float wave = sin(p.y * 1.6 + sin(p.x * 0.21 + sea_time * 0.18) * 2.0 + sea_time * 0.55);
-    float breaks = smoothstep(0.55, 0.99, sin(p.x * 0.48 + p.y * 0.13));
-    // 超过像素采样密度的高频波纹逐渐淡出，减少远海闪烁。
-    float footprint = length(fwidth(p));
-    float glint = pow(max(wave, 0.0), 18.0) * breaks * (1.0 - smoothstep(0.3, 1.3, footprint));
-    vec2 shore_uv = (p + 256.0) / 640.0;
-    float coast = texture(shore_distance, shore_uv).r * 40.0;
-    if (any(lessThan(shore_uv, vec2(0.0))) || any(greaterThan(shore_uv, vec2(1.0)))) coast = 40.0;
-    vec3 blue = mix(vec3(0.055, 0.42, 0.35), vec3(0.014, 0.20, 0.32), smoothstep(1.0, 34.0, coast));
-    float wash = .35 * sin(p.x*.67+p.y*.43+sea_time*.7);
-    float foam = (1.0-smoothstep(.65, 2.3, coast+wash)) * (.65+.35*sin(p.x*1.9+p.y*1.7));
-    blue = mix(blue, vec3(.72,.80,.66), foam*.66);
-    blue += swell * vec3(0.007, 0.021, 0.026) * (1.0 - smoothstep(1.5, 9.0, footprint));
-    blue += glint * vec3(0.08, 0.12, 0.12);
-    fragColor = vec4(blue, 1.0);
+    vec2 shore_uv = (p+256.)/640.;
+    float coast = texture(shore_distance,shore_uv).r*40.;
+    if (any(lessThan(shore_uv,vec2(0.))) || any(greaterThan(shore_uv,vec2(1.)))) coast=40.;
+    float wash=.35*sin(p.x*.67+p.y*.43+sea_time*.7);
+    float foam=(1.-smoothstep(.65,2.3,coast+wash))*(.65+.35*sin(p.x*1.9+p.y*1.7));
+    // 多尺度风浪事先烘焙，自动mip过滤远处细浪；不在每像素叠加大量正弦。
+    vec3 first=texture(wave_normals,p/64.+sea_time*vec2(.003,.001)).rgb*2.-1.;
+    vec3 second=texture(wave_normals,vec2(-p.y,p.x)/28.+sea_time*vec2(-.002,.003)).rgb*2.-1.;
+    vec3 normal=normalize(vec3(first.xy+vec2(second.y,-second.x)*.42,first.z));
+    vec3 view=normalize(camera_world_position-world);
+    float nv=max(dot(normal,view),.001);
+    vec3 sky=textureLod(filtered_env_map,reflect(-view,normal),.35).rgb;
+    float fresnel=.02+.98*pow(1.-nv,5.);
+    vec3 color=vec3(.009,.039,.068)*(1.-fresnel)+sky*fresnel*.35;
+    // 同方向太阳的GGX高光被真实浪面打散，倒影不跟随屏幕或固定世界条带。
+    vec3 light=coastal_sun_direction;
+    vec3 half_vector=normalize(view+light);
+    float nl=max(dot(normal,light),0.);
+    float nh=max(dot(normal,half_vector),0.);
+    float vh=max(dot(view,half_vector),0.);
+    float roughness=.14+.18*(1.-length(first));
+    float a2=pow(roughness,4.);
+    float d=a2/(3.141592654*pow(nh*nh*(a2-1.)+1.,2.));
+    float k=roughness*roughness*.5;
+    float g=(nv/(nv*(1.-k)+k))*(nl/(nl*(1.-k)+k));
+    float f=.02+.98*pow(1.-vh,5.);
+    color+=coastal_sun_color*.65*d*g*f/(4.*nv+.0001);
+    color+=foam*vec3(.14,.17,.18);
+    fragColor=vec4(color,1.);
 }

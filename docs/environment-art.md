@@ -1,5 +1,11 @@
 # 海岸实时画面与资产边界
 
+2026-10-28最新：用户否定滨海卡顿与设计38当前成品，明确撞后会严重卡一段时间，并指出无限高速重复山体和粗盒城市未完成。性能优先接续[撞后卡顿证据](evidence/PERF-SMOOTH-01/post-impact.md)；山体已确认扫描模型UV展开图被错误三向平铺，城市实际入口为expressway_route的route-city盒体，均未修完。下一实质美术调整仍先研究/设计、再按图制作和真实运行对照，保留已认可地区天空/镜位；下面旧版本接受结论不覆盖本次否定。
+
+2026-10-26用户认可当前画面，停止继续扩展美术，转入[ENV-STABLE-01](tasks/ENV-STABLE-01.md)修复不合理细节、突变/闪烁和卡顿。当前模型、布局、草木覆盖、天空与光照作为接受基线；下面10月25日的否定结论仅对应当时版本，不覆盖本次新反馈。
+
+2026-10-25当前接续[ENV-REAL-01](tasks/ENV-REAL-01.md)，以正常随车中距离草树地石为核心，对照当前布局设计30、光照设计29和实际行驶图/视频。用户最新实测否定树LOD跳变、灰雾光照、卡顿与秃地；旧天空冻结假设按该反馈更新，仍先研究/设计再制作。本机原件二进制仅ignored logs，CC0短岩坡另存可编辑源。默认启动器已接入候选：中距草带/连续林地共场、成组砂岩与五种原树天空可见率离线缓存；灰度RGB只调环境光，源alpha和阴影深度保持。分发资产保持；新增分帧加载明确修改application/scene，物理未改。未获用户接受，旧短测不代表美术完成。
+
 UI v1 已获用户观感认可并暂时冻结。环境开发从保留侧碰修复的 `7588527` 开始，继续使用 `visual-identity-v1`，不回退 UI 或车辆配置。原 main、DS 和设计图均为只读参考。
 
 ## 按功能分区
@@ -63,3 +69,9 @@ UI v1 已获用户观感认可并暂时冻结。环境开发从保留侧碰修�
 2026-10-23：按用户继续提升实际驾驶场景的要求，GARAGE-DESIGN-02将高速路面改为Poly Haven Asphalt03的CC0实拍底色/GL法线/粗糙度，地面改为Leafy Grass实拍底色；原始像素、作者、下载SHA及独立工具保留。原生PBR、物理表面与全图几何保持；路边土带从岩壁竖向坐标改为地面平铺，原海岸网格不修改。目标设计20与实际差距、T1/图像/失败见[evidence/GARAGE-DESIGN-02/road-materials.md](evidence/GARAGE-DESIGN-02/road-materials.md)。不以表面材质增量宣布全场景完成。
 
 2026-10-23接续：用户否定植被候选“一眼假”和整体阴暗后，实际查看Xbox官方FH5海岸截图，再生成23晴天目标。高速接入同一张Poly Haven CC0晴空HDRI的天空/间接光/车身反射；驾驶HUD减少深底遮挡。植被改用完整Island Tree、Rooibos b/e与Grass Medium真实网格，保留原种植点/物理碰撞，拒绝远景剪贴树和过度减面后的秃树；原生LOD共享网格，设施合批不展开其内部几何。来源/失败/差距见[daylight-vegetation证据](evidence/GARAGE-DESIGN-02/daylight-vegetation.md)。这仍是进行中的候选：地面密度、山海细节、植被材质完整性和整体自然感尚未达到参考图，不能把功能通过记为美术通过。
+
+2026-10-28性能接续：运行岩岸改读`assets/game/expressway/runtime-rocks/*.bam`，避免每次进入道路重复转换原GLB和计算切线。修改原岩岸后，运行`.venv\Scripts\python.exe tools/environment/prepare_rock_runtime.py`重新生成；源/运行资源SHA与转换器版本保存于同目录`manifest.json`。原GLB保留，LOD、网格、材质、贴图和运行着色器保持；12组实际岩岸/LOD原新GPU像素零差。本次仅改变资源预处理时机，非新美术方案。加载数据、许可登记和验证边界见[性能证据](evidence/PERF-SMOOTH-01/README.md#2026-10-28-加载响应接续)。
+
+2026-10-28用户授权将生涯画面/性能经验推广至其它模式、UI与实验台，接[VISUAL-EXTEND-01](tasks/VISUAL-EXTEND-01.md)。先研究RenderPipeline实际画面及代码并生成设计36，再完成实验台视窗第一块：同一48d晴空原生环境独立保存在`assets/game/environment/daylight`，只读过滤环境/metadata，不为仅照明的视窗解码整张HDR。原模式现用天空保持，实验台沿用已有CC0 Asphalt03三贴图，局部输入随根释放；没有加入装饰物或物理。实际图/43项相关T1与后续范围见[证据](evidence/VISUAL-EXTEND-01/README.md)，人工/性能及其它入口尚未完成。
+
+2026-10-28海岸地表沿设计38接入已有CC0 Leafy Grass三贴图，2.5米世界尺度及原顶点色宏观分区，固定PBR/单太阳阴影不增加绘制通道；只处理inland，不改草片/礁石/四Geom源几何。实际同镜位对照及42项T1/正常短测见[地表证据](evidence/VISUAL-EXTEND-01/coastal-ground.md)。立体短草/整体视觉及性能仍未过，不能称全面完成。

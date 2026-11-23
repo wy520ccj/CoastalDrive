@@ -1,0 +1,195 @@
+{
+  "cache_key": {
+    "algorithm": 1,
+    "rays": 24,
+    "package_size": 1595037100,
+    "package_mtime_ns": 1788341456969115300
+  },
+  "trees": [
+    {
+      "scope": "本机原件的离线遮罩射线估计；非原引擎GI；游戏Simulation未参与",
+      "tree": "a",
+      "reference_sha256": "3565a982eda743c83bec53e6abfbe2cf7237e93199760479d7e4cf28bcde9fcc",
+      "rays": 24,
+      "radius_m": 5.0,
+      "bias_m": 0.04,
+      "source_atlas_sha256": "e766aab081a0d73d4dd52e95aa8dc4e40bb6be411c22f23f7d7f4244a5b38eb2",
+      "alpha_cutoff": 0.25,
+      "seconds": 3.0905829000002996,
+      "lods": [
+        {
+          "lod": 0,
+          "vertices": 9539,
+          "min": 0.0,
+          "mean": 0.41565328301359333,
+          "max": 1.0,
+          "file": "quercus_a.json"
+        },
+        {
+          "lod": 1,
+          "vertices": 4619,
+          "min": 0.0,
+          "mean": 0.3988507613480551,
+          "max": 1.0,
+          "file": "quercus_a_lod1.json"
+        },
+        {
+          "lod": 2,
+          "vertices": 2208,
+          "min": 0.0,
+          "mean": 0.43595259661835745,
+          "max": 1.0,
+          "file": "quercus_a_lod2.json"
+        }
+      ]
+    },
+    {
+      "scope": "本机原件的离线遮罩射线估计；非原引擎GI；游戏Simulation未参与",
+      "tree": "b",
+      "reference_sha256": "40a502d8d77c45dad09a792e82f5a7850e92495b2037bf34e18eae7177d29469",
+      "rays": 24,
+      "radius_m": 5.0,
+      "bias_m": 0.04,
+      "source_atlas_sha256": "e766aab081a0d73d4dd52e95aa8dc4e40bb6be411c22f23f7d7f4244a5b38eb2",
+      "alpha_cutoff": 0.25,
+      "seconds": 3.331906600000366,
+      "lods": [
+        {
+          "lod": 0,
+          "vertices": 10603,
+          "min": 0.0,
+          "mean": 0.4800213775975352,
+          "max": 1.0,
+          "file": "quercus_b.json"
+        },
+        {
+          "lod": 1,
+          "vertices": 4565,
+          "min": 0.0,
+          "mean": 0.46594560058415485,
+          "max": 1.0,
+          "file": "quercus_b_lod1.json"
+        },
+        {
+          "lod": 2,
+          "vertices": 2239,
+          "min": 0.0,
+          "mean": 0.5016748548459133,
+          "max": 1.0,
+          "file": "quercus_b_lod2.json"
+        }
+      ]
+    },
+    {
+      "scope": "本机原件的离线遮罩射线估计；非原引擎GI；游戏Simulation未参与",
+      "tree": "c",
+      "reference_sha256": "fb67c8c892e8eac3c653e0ba9fdd8e69d5bec3486b73c9e66d72ecd7386a2861",
+      "rays": 24,
+      "radius_m": 5.0,
+      "bias_m": 0.04,
+      "source_atlas_sha256": "e766aab081a0d73d4dd52e95aa8dc4e40bb6be411c22f23f7d7f4244a5b38eb2",
+      "alpha_cutoff": 0.25,
+      "seconds": 1.9476530000010825,
+      "lods": [
+        {
+          "lod": 0,
+          "vertices": 5957,
+          "min": 0.0,
+          "mean": 0.5116669464495551,
+          "max": 1.0,
+          "file": "quercus_c.json"
+        },
+        {
+          "lod": 1,
+          "vertices": 2897,
+          "min": 0.0,
+          "mean": 0.4784403405822115,
+          "max": 1.0,
+          "file": "quercus_c_lod1.json"
+        },
+        {
+          "lod": 2,
+          "vertices": 1403,
+          "min": 0.0,
+          "mean": 0.5112556426704681,
+          "max": 1.0,
+          "file": "quercus_c_lod2.json"
+        }
+      ]
+    },
+    {
+      "scope": "本机原件的离线遮罩射线估计；非原引擎GI；游戏Simulation未参与",
+      "tree": "d",
+      "reference_sha256": "5bfede2090fae36ebc4757390f1767e70a1ee55620b0a65e60b868151316823a",
+      "rays": 24,
+      "radius_m": 5.0,
+      "bias_m": 0.04,
+      "source_atlas_sha256": "e766aab081a0d73d4dd52e95aa8dc4e40bb6be411c22f23f7d7f4244a5b38eb2",
+      "alpha_cutoff": 0.25,
+      "seconds": 1.779275200000484,
+      "lods": [
+        {
+          "lod": 0,
+          "vertices": 5469,
+          "min": 0.0,
+          "mean": 0.5067120741147071,
+          "max": 1.0,
+          "file": "quercus_d.json"
+        },
+        {
+          "lod": 1,
+          "vertices": 2621,
+          "min": 0.0,
+          "mean": 0.47837975327483157,
+          "max": 1.0,
+          "file": "quercus_d_lod1.json"
+        },
+        {
+          "lod": 2,
+          "vertices": 1195,
+          "min": 0.0,
+          "mean": 0.5011854951185496,
+          "max": 1.0,
+          "file": "quercus_d_lod2.json"
+        }
+      ]
+    },
+    {
+      "scope": "本机原件的离线遮罩射线估计；非原引擎GI；游戏Simulation未参与",
+      "tree": "e",
+      "reference_sha256": "d90edeaced8a80326fda66e1bcbd0c6aca4a03eda1ec428faa9798345738d4f0",
+      "rays": 24,
+      "radius_m": 5.0,
+      "bias_m": 0.04,
+      "source_atlas_sha256": "e766aab081a0d73d4dd52e95aa8dc4e40bb6be411c22f23f7d7f4244a5b38eb2",
+      "alpha_cutoff": 0.25,
+      "seconds": 1.7033349000012095,
+      "lods": [
+        {
+          "lod": 0,
+          "vertices": 5274,
+          "min": 0.0,
+          "mean": 0.501611679939325,
+          "max": 1.0,
+          "file": "quercus_e.json"
+        },
+        {
+          "lod": 1,
+          "vertices": 2541,
+          "min": 0.0,
+          "mean": 0.4841433818706546,
+          "max": 1.0,
+          "file": "quercus_e_lod1.json"
+        },
+        {
+          "lod": 2,
+          "vertices": 1215,
+          "min": 0.0,
+          "mean": 0.5143689986282578,
+          "max": 1.0,
+          "file": "quercus_e_lod2.json"
+        }
+      ]
+    }
+  ]
+}

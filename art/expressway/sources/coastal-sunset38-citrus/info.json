@@ -1,0 +1,53 @@
+{
+  "type": 0,
+  "name": "Citrus Orchard Road (Pure Sky)",
+  "categories": [
+    "outdoor",
+    "natural light",
+    "nature",
+    "partly cloudy",
+    "sunrise-sunset",
+    "skies",
+    "low contrast",
+    "pure skies"
+  ],
+  "tags": [
+    "pure skies"
+  ],
+  "authors": {
+    "Dimitrios Savva": "Photography",
+    "Jarod Guest": "Processing"
+  },
+  "info": "Edited sky-only version of [Citrus Orchard Road](https://polyhaven.com/a/citrus_orchard_road).",
+  "whitebalance": 5539,
+  "date_taken": 1708841580,
+  "coords": [
+    -25.482239,
+    27.7642
+  ],
+  "evs_cap": 12,
+  "max_resolution": [
+    20480,
+    10240
+  ],
+  "files_hash": "798583777f51095f0063baa444e681df74735011",
+  "date_published": 1749772800,
+  "staging": null,
+  "description": "Unclipped, free 20K HDRI: low-contrast sunrise with partly cloudy sky, gentle warm light and soft ambient reflections for outdoor, natural lighting.",
+  "sponsors": [
+    "127083576"
+  ],
+  "category_id": "61ac0f4c-0977-548f-b345-f34c2d9eff35",
+  "attributes": {
+    "time_of_day": "sunrise",
+    "weather": "partly_cloudy",
+    "light_type": "natural",
+    "contrast": "low",
+    "environment": "outdoor",
+    "sky_view": "open"
+  },
+  "category": "Pure Skies",
+  "img_version": "3df74da1",
+  "download_count": 343528,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/citrus_orchard_road_puresky.png?width=256&height=256&format=webp&v=3df74da1"
+}

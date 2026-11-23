@@ -1,0 +1,271 @@
+{
+  "date": "2026-10-30",
+  "geometry_license": "Original project geometry",
+  "material_license": "Poly Haven CC0: White Plaster02 by Rob Tuytel; Rustic Stone Wall02 by Amal Kumar; Floor Pavement photographed by Charlotte Baglioni and processed by Dario Barresi; see sources manifests",
+  "status": "in progress; user accepts approximate distant buildings and prioritizes their surroundings and performance; no further facade refinement; existing shrubs redistributed to planted beds/wall feet and varied street-edge groups; buildings/material source unchanged; visual and full-scene driving gates open",
+  "design": "docs/design/garage-v2/45-city-street.png",
+  "sources": {
+    "src/environment/expressway_buildings.py": "a1b684013e8280609bbb2da9221b086dc276f253eb59c52f6faa5ef2afbf71c7",
+    "src/environment/expressway_city.py": "b040c82a1da7909ed012b3f8646932bab06e4afde65cc0ee00f54ed6f2570bb8",
+    "src/environment/expressway_route.py": "ae642716d7cd3abc95083b7d6abc9e6641f6d986fc0e29cf5f91a6a60e4eee37",
+    "src/environment/expressway_materials.py": "76a5943f6480948a6a0c32ae5c2a01d9b58ba8842d755c4bc791e8edc3cc8f0a",
+    "assets/game/expressway/shaders/city-plaster.glsl": "0af43e26d3813ef70a36d88f0fc3c18dbe0304bbfa0132762ad58f35fb1cab67",
+    "tools/environment/local_kcd_drive.py": "e2bb810819fb68a9bce3e7f540fa089a10eba518c89a21e8f544c12db95839de",
+    "tools/environment/kcd_local_environment.py": "b31094fea43f4ea61a141dae41f198ba1ead615261e55d942ac737913b3b9192"
+  },
+  "mainland": {
+    "street_offsets_m": [
+      41,
+      131
+    ],
+    "first_plot_center_m": 66,
+    "upper_terrace": "max(.85m, road height - 1.5m), flat from first street inner lane edge; normal 37.5-131m, transition to201m; bridge area uses original street offsets; lower coast .85m",
+    "shore_nominal_m": 340,
+    "physics": "unchanged",
+    "bridge_street_offsets_m": [
+      65,
+      155
+    ]
+  },
+  "models": [
+    {
+      "name": "city-building-0",
+      "footprint_m": "14 18",
+      "levels": [
+        {
+          "name": "city-near",
+          "geoms": 6,
+          "triangles": 8092
+        },
+        {
+          "name": "city-far",
+          "geoms": 3,
+          "triangles": 2304
+        }
+      ]
+    },
+    {
+      "name": "city-building-1",
+      "footprint_m": "18 20",
+      "levels": [
+        {
+          "name": "city-near",
+          "geoms": 6,
+          "triangles": 14064
+        },
+        {
+          "name": "city-far",
+          "geoms": 3,
+          "triangles": 4020
+        }
+      ]
+    },
+    {
+      "name": "city-building-2",
+      "footprint_m": "16 20",
+      "levels": [
+        {
+          "name": "city-near",
+          "geoms": 6,
+          "triangles": 11052
+        },
+        {
+          "name": "city-far",
+          "geoms": 3,
+          "triangles": 3132
+        }
+      ]
+    },
+    {
+      "name": "city-building-3",
+      "footprint_m": "18 22",
+      "levels": [
+        {
+          "name": "city-near",
+          "geoms": 6,
+          "triangles": 23656
+        },
+        {
+          "name": "city-far",
+          "geoms": 3,
+          "triangles": 6708
+        }
+      ]
+    }
+  ],
+  "verification_policy": "No foreground windows, focus changes, or desktop automation while user works. Necessary offscreen/background checks only; no repetition of unaffected valid checks.",
+  "courtyards": {
+    "ground": "Each local corner and tree root projected to existing terrain; original highway and physical tree band unchanged.",
+    "walls": "Same six-face forms and material groups; corners follow slope and bases buried .12m.",
+    "planters_and_parking": "Ground-following base, level top; shrubs on actual soil top, parked wheels .02m above level pad.",
+    "stairs": "Solid blocks down to measured ground; .15m risers join sloping entrance paving.",
+    "assembly": "Two boundary yields per garden added; terrain corner samples reused within that garden.",
+    "render": "logs/all-scene-20261029/city-garden-ground/03800m.png",
+    "verification": "logs/all-scene-20261029/T1-city-garden-ground-r2/summary.json"
+  },
+  "masonry": {
+    "source_manifest": "art/expressway/sources/city-stone/manifest.json",
+    "repeat_m": 1.5,
+    "cached_textures": 3,
+    "garden_visible_groups": 3,
+    "foundation_visible_groups": 1,
+    "loading_only_quad_hidden": true,
+    "prepared_material_maps": 9,
+    "render": "logs/all-scene-20261029/city-masonry-r1/03800m.png",
+    "render_version_note": "Visible material implementation rendered before adding the hidden loading-only preparation quad; no visible geometry/material settings changed afterward.",
+    "t1": "logs/all-scene-20261029/T1-city-masonry/summary.json",
+    "final_preparation_t1": "logs/all-scene-20261029/T1-city-masonry-prepare/summary.json",
+    "gpu_preparation": "logs/all-scene-20261029/city-masonry-preparation-r2.json"
+  },
+  "paving": {
+    "source_manifest": "art/expressway/sources/city-paving/manifest.json",
+    "repeat_m": 2,
+    "uv_metres": "across-road distance and continuous station modulo 600m; phase wraps by 300 full repeats",
+    "entrance_width_m": 2.96,
+    "entrance_end": "actual front facade at half building width; old duplicate garden slab removed",
+    "visible_groups_added": 0,
+    "render": "logs/all-scene-20261029/city-paving-r1/03800m.png",
+    "t1": "logs/all-scene-20261029/T1-city-paving-r3/summary.json",
+    "preparation": "logs/all-scene-20261029/city-paving-preparation.json",
+    "prepared_surface_maps": 9,
+    "performance_acceptance": false
+  },
+  "greenbelt": {
+    "design": "docs/design/garage-v2/45-city-street.png",
+    "trees_per_200m": 6,
+    "shrubs_per_200m": 12,
+    "groups_per_200m": 3,
+    "tree_heights_m": [
+      6,
+      6.5,
+      7,
+      10,
+      11,
+      11
+    ],
+    "each_source_tree_heights_m": {
+      "tree-0": [
+        6,
+        6.5,
+        7
+      ],
+      "tree-1": [
+        10,
+        11,
+        11
+      ]
+    },
+    "root_across_m": [
+      50,
+      57
+    ],
+    "protected_physics_band_m": 35,
+    "entrance_corridor_half_width_m": 5,
+    "captured_nodes": 360,
+    "captured_min_extra_corridor_clearance_m": 6.4795288724035345,
+    "scope": "Conservative model AABB projected to road station for added greenbelt only; not complete driving-camera visibility or performance acceptance.",
+    "render": "logs/all-scene-20261029/city-canopy/05140m.png",
+    "geometry_report": "logs/all-scene-20261029/city-canopy/summary.json",
+    "t1": "logs/all-scene-20261029/T1-city-canopy/summary.json",
+    "bridge_root_across_m": [
+      74,
+      81
+    ]
+  },
+  "near_city_composition": {
+    "design": "docs/design/garage-v2/44-city-chase.png",
+    "road_render": "logs/all-scene-20261029/city-near-final/05200m.png",
+    "overview_render": "logs/all-scene-20261029/city-near-final/05200m-city-overview.png",
+    "onscreen": false,
+    "physics_tick": 0,
+    "t1": "logs/all-scene-20261029/T1-city-near/summary.json",
+    "grass_t0": "logs/all-scene-20261029/T0-city-near-grass/summary.json",
+    "grass_site_cutoff_m": 55,
+    "street_inner_footpath_edge_m": 59.7,
+    "baseline": "logs/all-scene-20261029/city-near-before",
+    "visual_acceptance": false,
+    "performance_acceptance": false
+  },
+  "city_ground": {
+    "design": "docs/design/garage-v2/45-city-street.png",
+    "scope": "Existing local KCD2 material blend only; proprietary installations remain read-only; no new material files",
+    "lateral_transition_m": [
+      [
+        37.5,
+        44.5
+      ],
+      [
+        127.5,
+        134.5
+      ]
+    ],
+    "urban_normal_multiplier": 0.3,
+    "urban_parallax_multiplier": 0.25,
+    "courtyard_trees_per_200m": 2,
+    "courtyard_shrubs_per_200m": 4,
+    "render": "logs/all-scene-20261029/city-ground-final/05200m-city-overview.png",
+    "road_render": "logs/all-scene-20261029/city-ground-final/05200m.png",
+    "pixel_review": "logs/all-scene-20261029/city-ground-final/pixel-review.json",
+    "t1": "logs/all-scene-20261029/T1-city-layout/summary.json",
+    "performance_acceptance": false,
+    "human_acceptance": false,
+    "bridge_lateral_transition_m": [
+      [
+        61.5,
+        68.5
+      ],
+      [
+        151.5,
+        158.5
+      ]
+    ]
+  },
+  "street_visibility": {
+    "design": "docs/design/garage-v2/45-city-street.png",
+    "projection_review": "logs/all-scene-20261029/city-layout/projection-review.json",
+    "static_renders": [
+      "logs/all-scene-20261029/city-layout/03600m.png",
+      "logs/all-scene-20261029/city-layout/04400m.png"
+    ],
+    "t1": "logs/all-scene-20261029/T1-city-layout/summary.json",
+    "gpu_region_check": "logs/all-scene-20261029/city-layout/city-lawn-gpu.json",
+    "performance_acceptance": false,
+    "human_acceptance": false,
+    "bridge_render": "logs/all-scene-20261029/city-layout-bridge/05620m-city-overview.png",
+    "bridge_seed": 0,
+    "bridge_shadow_artifacts_open": true
+  },
+  "surroundings": {
+    "design": "docs/design/garage-v2/45-city-street.md",
+    "scope": "Existing tree and shrub composition; two outer-street trees moved to rear gardens, varied canopy heights, house geometry/material/layout unchanged",
+    "trees_per_200m": 24,
+    "shrubs_per_200m": 48,
+    "garden_ground_shrubs_per_200m": 16,
+    "garden_planter_shrubs_per_200m": 16,
+    "new_materials": 0,
+    "new_render_passes": 0,
+    "render": "logs/all-scene-20261029/city-canopy/05140m.png",
+    "overview": "logs/all-scene-20261029/city-canopy/05140m-city-overview.png",
+    "t1": "logs/all-scene-20261029/T1-city-canopy/summary.json",
+    "building_source_sha256": "a1b684013e8280609bbb2da9221b086dc276f253eb59c52f6faa5ef2afbf71c7",
+    "material_source_sha256": "76a5943f6480948a6a0c32ae5c2a01d9b58ba8842d755c4bc791e8edc3cc8f0a",
+    "performance_acceptance": false,
+    "human_acceptance": false,
+    "evidence": "docs/evidence/VISUAL-EXTEND-01/city-canopy.md"
+  },
+  "static_batch_candidate": {
+    "status": "rejected; default surroundings and buildings preserved",
+    "manifest": "art/expressway/candidates/city-static.json",
+    "production_restore": "logs/all-scene-20261029/city-static-before/restored.json"
+  },
+  "cost_review": {
+    "status": "Both placement and single-normal candidates rejected and original bytes restored; wood and shadow redraw now confirmed diagnostic priorities",
+    "evidence": "docs/evidence/VISUAL-EXTEND-01/city-verge-cost.md",
+    "verge_capture": "logs/all-scene-20261029/city-verge/summary.json",
+    "normal_capture": "logs/all-scene-20261029/city-normal/summary.json",
+    "part_diagnostic": "logs/all-scene-20261029/city-draw-parts/draw-parts.json",
+    "source_shadow_audit": "logs/all-scene-20261029/city-shadow-source-audit.json",
+    "production_unchanged": true,
+    "new_driving_fps_result": false
+  }
+}

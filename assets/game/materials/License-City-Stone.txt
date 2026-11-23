@@ -1,0 +1,7 @@
+Rustic Stone Wall 02 — Amal Kumar / Poly Haven
+https://polyhaven.com/a/rustic_stone_wall_02
+License: CC0 1.0 Universal. https://polyhaven.com/license
+
+Official 1K JPG diffuse, OpenGL normal and roughness maps, original pixels unchanged.
+Source width and height: 1.5 metres. Diffuse is sRGB; normal and roughness are linear data.
+Project calibration and original file hashes: art/expressway/sources/city-stone/manifest.json.

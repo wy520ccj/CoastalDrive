@@ -236,7 +236,8 @@ def test_scene_segment_unload_reload_and_rebase(kit):
     simulation = SimpleNamespace(stream=stream, origin_y=0, seed=23)
     scene.base = SimpleNamespace(session=SimpleNamespace(
         simulation=simulation, render_segments=lambda: tuple(stream.segments),
-        render_origin=lambda: simulation.origin_y))
+        render_origin=lambda: simulation.origin_y), pipeline=SimpleNamespace(exposure=1.0))
+    scene.previous_exposure = .75
     scene.sync_segments()
     old = scene.segment_nodes[2]
     initial = [scene.segment_nodes[i].getNumChildren() for i in range(4)]
@@ -253,6 +254,7 @@ def test_scene_segment_unload_reload_and_rebase(kit):
     scene.sync_segments()
     assert [scene.segment_nodes[i].getNumChildren() for i in range(4)] == initial
     scene.close()
+    assert scene.base.pipeline.exposure == .75
 
 
 def test_build_is_presentation_only(kit):

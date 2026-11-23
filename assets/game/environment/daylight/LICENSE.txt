@@ -1,0 +1,14 @@
+Kloofendal 48d Partly Cloudy (Pure Sky)
+Original photography: Greg Zaal
+Sky edits: Jarod Guest
+Source: https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky
+License: CC0-1.0 https://polyhaven.com/license
+
+Original 4K HDR bytes are preserved. Download URL, source MD5 and local SHA256
+are recorded in source.json. The local candidate aligns sun azimuth/elevation
+and prefilters a 128px lighting/reflection cube. It does not modify the original
+photograph or introduce generated sky pixels.
+
+This license applies to the Poly Haven photograph only. It grants no license
+for the proprietary KCD2 vegetation, terrain maps or probe used by the local
+study profile. Those assets and their derivatives remain excluded from release.

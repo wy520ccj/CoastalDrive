@@ -9,7 +9,7 @@ import gltf
 from panda3d.core import InternalName, MaterialAttrib, NodePath, TextureStage
 
 from coastal_map import nearest_point, offset_point, point_at
-from environment.foundation import asset_path, texture
+from environment.foundation import asset_path, style_ground, texture
 from environment.terrain import LIGHTHOUSE_POSITION, ROCK_BEDS, base_height, ground_height
 
 SLICE_START = 0
@@ -148,13 +148,8 @@ def placements():
 
 def build_slice(parent):
     root = parent.attachNewNode("coastal-visual-slice")
-    templates = {}
     for item in placements():
-        if item.model not in templates:
-            templates[item.model] = NodePath(
-                gltf.load_model(asset_path(f"models/{item.model}.glb"))
-            )
-        node = templates[item.model].copyTo(root)
+        node = model_template(item.model).copyTo(root)
         node.setPos(*item.position)
         node.setScale(*item.scale)
         node.setH(item.heading)
@@ -164,12 +159,19 @@ def build_slice(parent):
     return root
 
 
+@lru_cache(maxsize=24)
+def model_template(name):
+    """同一静态原件只转换一次；摆放与去除树皮都在节点副本上完成。"""
+    return NodePath(gltf.load_model(asset_path(f'models/{name}.glb')))
+
+
 def build_terrain(parent):
     node = NodePath(gltf.load_model(asset_path("terrain/coastal-terrain.glb")))
     node.reparentTo(parent)
     stage = TextureStage("terrain-detail")
     stage.setTexcoordName(InternalName.getTexcoordName("0"))
     node.setTexture(stage, texture("ground-detail"), 1)
+    style_ground(node)
     return node
 
 
@@ -182,7 +184,7 @@ def dress_existing_tree(root, variant):
             material = node.getGeomState(index).getAttrib(MaterialAttrib).getMaterial()
             if material.getName() == "leafsDark":
                 node.removeGeom(index)
-    crown = NodePath(gltf.load_model(asset_path(f"models/pine_tall_{variant}.glb")))
+    crown = model_template(f'pine_tall_{variant}').copyTo(root)
     for path in crown.findAllMatches("**/+GeomNode"):
         node = path.node()
         for index in reversed(range(node.getNumGeoms())):
@@ -193,7 +195,6 @@ def dress_existing_tree(root, variant):
     scale = (upper.z - lower.z) / top.z
     crown.setScale(scale)
     crown.setZ(lower.z)
-    crown.reparentTo(root)
 
 
 def road_clearance(item):

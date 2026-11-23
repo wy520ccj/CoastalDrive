@@ -1,0 +1,7 @@
+Floor Pavement — Charlotte Baglioni (Photography), Dario Barresi (Processing) / Poly Haven
+https://polyhaven.com/a/floor_pavement
+License: CC0 1.0 Universal. https://polyhaven.com/license
+
+Official 1K JPG diffuse, OpenGL normal and roughness maps, original pixels unchanged.
+Source width and height: 2 metres. Diffuse is sRGB; normal and roughness are linear data.
+Project calibration and file hashes: art/expressway/sources/city-paving/manifest.json.

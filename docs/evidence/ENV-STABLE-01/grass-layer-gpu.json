@@ -1,0 +1,56 @@
+{
+  "scope": "沿海120m原随车镜位；原状态全场像素差保留，严格0差仅检查同一实际完整草层。诊断固定顺序/隔离其他物体，不接产品，不宣称全场恒等",
+  "grass_geom_entries": 196,
+  "pixel_differences": [
+    {
+      "pair": [
+        "legacy",
+        "early"
+      ],
+      "max_rgb8": 1,
+      "changed_channels": 4
+    },
+    {
+      "pair": [
+        "legacy",
+        "legacy-repeat"
+      ],
+      "max_rgb8": 0,
+      "changed_channels": 0
+    },
+    {
+      "pair": [
+        "early",
+        "early-repeat"
+      ],
+      "max_rgb8": 1,
+      "changed_channels": 2
+    }
+  ],
+  "grass_layer_pixel_differences": [
+    {
+      "pair": [
+        "legacy",
+        "early"
+      ],
+      "max_rgb8": 0,
+      "changed_channels": 0
+    },
+    {
+      "pair": [
+        "legacy",
+        "legacy-repeat"
+      ],
+      "max_rgb8": 0,
+      "changed_channels": 0
+    },
+    {
+      "pair": [
+        "early",
+        "early-repeat"
+      ],
+      "max_rgb8": 0,
+      "changed_channels": 0
+    }
+  ]
+}

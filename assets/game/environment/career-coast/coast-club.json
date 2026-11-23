@@ -1,0 +1,20 @@
+{
+  "course": "coast-club",
+  "sha256": "51512d1367528bac5647969fb490df460132519f068a5bc950afaa8e7daaab8b",
+  "sources": {
+    "src/career_courses.py": "4983b146e57b4a218fcf844597eb371777df3db4bd2b5c5e2efbd82c4b59b63d",
+    "src/career_terrain.py": "1074414e949f9368ea737d15fd4e87a5ec397036cbb526c740a718cf57306b5c",
+    "tools/environment/prepare_career_coast.py": "a3dd6ee28f8e5aa29d734e4885f077db5435ecd7d9baf101525f58d02af28003"
+  },
+  "original_triangles": 17531,
+  "refined_original_triangles": 3062,
+  "triangles": 66721,
+  "vertices": 33676,
+  "grid_step": 2,
+  "file_bytes": 1166126,
+  "protected_radius": 35,
+  "height_change_start": 38,
+  "background_triangles": 7524,
+  "background_vertices": 3886,
+  "scope": "Original visual mesh; physics terrain remains unchanged; rendered/performance acceptance pending"
+}

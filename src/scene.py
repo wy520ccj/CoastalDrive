@@ -43,6 +43,7 @@ from coastal_map import (
     strip_mesh,
 )
 from environment import foundation
+from environment.career_coast import _enabled as coast_candidate
 from environment.coastal_slice import build_slice, build_terrain, dress_existing_tree
 from environment.water import style_water
 from ghost_visual import GHOST_MASK, GhostVisual
@@ -192,6 +193,13 @@ def asphalt_texture():
     return texture
 
 
+@lru_cache(maxsize=8)
+def roadside_model_template(filename):
+    """原路旁静态模型共享顶点；每个实例仍持有独立节点与材质状态。"""
+    path = resource_root()/'assets/game'/filename
+    return NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+
+
 @lru_cache(maxsize=1)
 def ground_texture():
     path = resource_root() / "assets/game/materials/grass_ground_diff_2k.jpg"
@@ -256,8 +264,23 @@ class Scene:
         "wheel-back-right",
     )
 
-    def __init__(self, base):
+    @staticmethod
+    def prepare_course_terrain(curve):
+        """有限赛道的同一份地形单独准备，避免与资源加载合成一次长阻塞。"""
+        from career_courses import CareerCourse
+
+        if isinstance(curve, CareerCourse):
+            from career_terrain import terrain
+
+            terrain(curve.course_id)
+            if coast_candidate(curve.course_id):
+                from environment.career_coast import _data
+
+                _data(curve.course_id)
+
+    def __init__(self, base, *, initial_stream_budget_ms=None):
         self.base = base
+        self.initial_stream_budget_ms = initial_stream_budget_ms
         self.render = base.render.attachNewNode("coastal-scene")
         self.segment_nodes = {}
         self.segment_builds = {}
@@ -273,6 +296,9 @@ class Scene:
         self.ghost_lap = None
         self.ghost_error = ""
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
+        self.coastal_daylight = None
+        self._career_backdrop = None
+        self.previous_exposure = base.pipeline.exposure
         self.setup_lighting()
         self.setup_scene()
         self.braking_markers = BrakingMarkers(self.render, base.ui_font, self.sun_path)
@@ -281,6 +307,8 @@ class Scene:
         self.sprint_markers = SprintMarkers(self.render, base.ui_font, self.sun_path)
         self.overtake_markers = OvertakeMarkers(self.render, base.ui_font, self.sun_path)
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
+        if base.session.simulation.track == 'coastal':
+            foundation.setup_daylight(self)
         if base.session.simulation.track == "endless":
             from environment.expressway_materials import style_sky
 
@@ -290,11 +318,31 @@ class Scene:
             set_vehicle_reflection(self.render, environment)
             for part in (self.player, *self.wheels):
                 set_vehicle_reflection(part, environment)
+            self.render.setShader(self.expressway_kit["distance-shader"])
+            from career_courses import CareerCourse
+
+            curve = base.session.simulation.stream.curve
+            if isinstance(curve, CareerCourse) and curve.course_id in ('coast-club', 'coast-final'):
+                foundation.setup_daylight(self)
+            if isinstance(curve, CareerCourse) and coast_candidate(curve.course_id):
+                from environment.career_coast import _backdrop, _water_shader, _water_surface
+
+                self._career_backdrop = _backdrop(curve.course_id)
+                self._career_backdrop.setShader(self.expressway_kit['route-terrain-shader'], 1)
+                self._career_backdrop.setTexture(self.expressway_kit['ground'])
+                self._career_backdrop.setShaderInput('expressway_rock', self.expressway_kit['rock'])
+                self._career_backdrop.setMaterial(self.expressway_kit['surface-material'])
+                self._career_backdrop.reparentTo(self.render)
+                self.ocean.removeNode()
+                vertices, faces = _water_surface(curve)
+                self.ocean = make_mesh('career-ocean', vertices, faces, Vec4(1))
+                self.ocean.setShader(_water_shader(), 1)
+                self.ocean.reparentTo(self.render)
+                self.render.setShaderInput('career_origin_y', 0.)
             rotation = Mat4()
             self.sky.getQuat().conjugate().extractToMatrix(rotation)
-            self.render.setShaderInput("expressway_sky", self.expressway_kit["sky"])
+            self.render.setShaderInput("expressway_sky", self.sky.getTexture())
             self.render.setShaderInput("expressway_sky_inverse", rotation)
-            self.render.setShader(self.expressway_kit["distance-shader"])
 
     def setup_lighting(self) -> None:
         ambient = AmbientLight("coastal-ambient")
@@ -335,7 +383,9 @@ class Scene:
         self.sun_path.setPos(position + Vec3(-55, -75, 125))
         self.sun_path.lookAt(position)
         simulation = self.base.session.simulation
-        if simulation.track == "endless":
+        if self.coastal_daylight is not None:
+            foundation.update_daylight(self, position)
+        elif simulation.track == "endless":
             from environment.expressway import stabilize_sun
 
             stabilize_sun(self.sun_path, position, self.base.session.render_origin())
@@ -384,7 +434,12 @@ class Scene:
             build_slice(self.render)
         # Batch static road markings and barriers before adding the moving car.
         if track != "endless":
+            # 水面每帧更新时间，不能把初始sea_time固化进静态Geom状态。
+            if track == "coastal":
+                self.ocean.detachNode()
             self.render.flattenStrong()
+            if track == "coastal":
+                self.ocean.reparentTo(self.render)
         trace = self.base.startup_trace
         if trace is not None:
             trace.mark("environment_assets_loaded")
@@ -470,6 +525,9 @@ class Scene:
 
     def setup_endless(self):
         """Build reusable endless-road templates and the initially streamed segments."""
+        # 时间在合批范围外统一更新，新旧路段共享同一快照相位。
+        self.render.setShaderInput('sea_time', 0.)
+        self.render.setShaderInput('expressway_sky_tint', Vec3(1))
         self.endless_templates = self.render.attachNewNode("endless-templates")
         self.endless_templates.hide()
         self.endless_tree_templates = [
@@ -485,7 +543,7 @@ class Scene:
         self.expressway_kit = load_kit(
             self.base.loader, self.endless_templates, self.endless_tree_templates
         )
-        self.sync_segments()
+        self.sync_segments(budget_ms=self.initial_stream_budget_ms)
 
     def sync_segments(self, budget_ms=None, distance=None):
         """装卸窗口不变；驾驶中分摊远端美术，完整节点才挂入场景。"""
@@ -669,10 +727,8 @@ class Scene:
             node.show() if visible else node.hide()
 
     def load_model(self, filename: str) -> NodePath:
-        path = resource_root() / "assets" / "game" / filename
         root = NodePath(filename)
-        model = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
-        model.reparentTo(root)
+        model = roadside_model_template(filename).copyTo(root)
         # Kenney GLBs face -Y after import; the simulation root always faces +Y.
         model.setH(180)
         return root
@@ -687,16 +743,23 @@ class Scene:
         if self.base.session.simulation.track == "coastal":
             self.ocean.setShaderInput("sea_time", state.time)
         if self.base.session.simulation.track == "endless":
+            self.render.setShaderInput('sea_time', state.time)
             simulation = self.base.session.simulation
             curve = simulation.stream.curve
             global_y = state.player.position[1] + state.origin_y
             distance = curve.project((state.player.position[0], global_y))[0] if curve else global_y
             self.sync_segments(budget_ms=3, distance=distance)
             if self.ocean is not None:
-                self.ocean.setY(state.player.position[1])
+                if self._career_backdrop is not None:
+                    self.ocean.setY(-state.origin_y)
+                    self.render.setShaderInput('career_origin_y', state.origin_y)
+                else:
+                    self.ocean.setY(state.player.position[1])
                 if self.base.session.simulation.road.curve is None:
                     self.ocean.setShaderInput("sea_time", state.time)
                     self.ocean.setShaderInput("origin_y", state.origin_y)
+            if self._career_backdrop is not None:
+                self._career_backdrop.setY(-state.origin_y)
         self.player.setPos(*state.player.position)
         self.player.setHpr(state.player.heading, state.player.pitch, state.player.roll)
         for node, wheel in zip(self.wheels, state.player.wheels):
@@ -745,6 +808,7 @@ class Scene:
         self.ghost.apply(pose, state.player.position, enabled)
 
     def close(self):
+        self.base.pipeline.exposure = self.previous_exposure
         self.sun_path.node().setShadowCaster(False)
         for root, steps in self.segment_builds.values():
             steps.close()

@@ -1,0 +1,16 @@
+{
+  "status": "rejected; not imported by runtime",
+  "reason": "Normal chase-camera sea opening insufficient; stop same blend route and review near-road mesh and sightline",
+  "normal_view_marker_pixels": {
+    "coast-club120": 0,
+    "coast-club520": 91,
+    "coast-final520": 0,
+    "coast-final1120": 0
+  },
+  "geometry": "art/expressway/candidates/career-coast/geometry.py",
+  "source_snapshot": "logs/all-scene-20261029/career-coast-rejected-source",
+  "water_gpu_function": "logs/all-scene-20261029/career-coast-sample-r2/water-time.json",
+  "default_terrain_vegetation_water_restored": true,
+  "physics_sources_unchanged": true,
+  "root_cause_review": "Original 8m grid and conservative 48m unchanged band retain a lip close to 3.2m eye level. Review local mesh construction before another art implementation."
+}

@@ -1,0 +1,95 @@
+{
+  "passed": false,
+  "scope": "固定相机和权威状态，仅替换表现时间；验证实际Geom输入及GPU像素，不冒充真实120Hz驾驶。",
+  "ocean_node": "render/coastal-scene/start-grid",
+  "captures": [
+    {
+      "seconds": 0.0,
+      "file": "water-00-0s.png",
+      "effective_water": [
+        {
+          "node": "render/coastal-scene/start-grid",
+          "geom": 0,
+          "time": 0.0
+        }
+      ],
+      "water_roi_sha256": "e95bcbd2ef899616a1486d979a11be35a37cfc67e3a3129d8379e8361342285a"
+    },
+    {
+      "seconds": 0.0,
+      "file": "water-01-0s.png",
+      "effective_water": [
+        {
+          "node": "render/coastal-scene/start-grid",
+          "geom": 0,
+          "time": 0.0
+        }
+      ],
+      "water_roi_sha256": "e95bcbd2ef899616a1486d979a11be35a37cfc67e3a3129d8379e8361342285a"
+    },
+    {
+      "seconds": 0.5,
+      "file": "water-02-0.5s.png",
+      "effective_water": [
+        {
+          "node": "render/coastal-scene/start-grid",
+          "geom": 0,
+          "time": 0.0
+        }
+      ],
+      "water_roi_sha256": "e95bcbd2ef899616a1486d979a11be35a37cfc67e3a3129d8379e8361342285a"
+    },
+    {
+      "seconds": 1.0,
+      "file": "water-03-1s.png",
+      "effective_water": [
+        {
+          "node": "render/coastal-scene/start-grid",
+          "geom": 0,
+          "time": 0.0
+        }
+      ],
+      "water_roi_sha256": "e95bcbd2ef899616a1486d979a11be35a37cfc67e3a3129d8379e8361342285a"
+    },
+    {
+      "seconds": 2.0,
+      "file": "water-04-2s.png",
+      "effective_water": [
+        {
+          "node": "render/coastal-scene/start-grid",
+          "geom": 0,
+          "time": 0.0
+        }
+      ],
+      "water_roi_sha256": "e95bcbd2ef899616a1486d979a11be35a37cfc67e3a3129d8379e8361342285a"
+    }
+  ],
+  "differences": [
+    {
+      "changed_pixels": 0,
+      "mean_channel_difference": 0.0,
+      "maximum_channel_difference": 0
+    },
+    {
+      "changed_pixels": 0,
+      "mean_channel_difference": 0.0,
+      "maximum_channel_difference": 0
+    },
+    {
+      "changed_pixels": 0,
+      "mean_channel_difference": 0.0,
+      "maximum_channel_difference": 0
+    },
+    {
+      "changed_pixels": 0,
+      "mean_channel_difference": 0.0,
+      "maximum_channel_difference": 0
+    }
+  ],
+  "roi_normalized": [
+    0.92,
+    0.44,
+    0.99,
+    0.63
+  ]
+}

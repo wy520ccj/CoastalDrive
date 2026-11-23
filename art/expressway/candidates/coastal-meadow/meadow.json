@@ -1,0 +1,57 @@
+{
+  "source": "art\\expressway\\sources\\vegetation\\grass_medium_01\\textures",
+  "license": "CC0-1.0",
+  "size_m": [
+    4,
+    4
+  ],
+  "height_m": [
+    0.07,
+    0.13
+  ],
+  "regions": [
+    [
+      0.0,
+      0.0,
+      0.18,
+      0.16
+    ],
+    [
+      0.2,
+      0.0,
+      0.45,
+      0.14
+    ],
+    [
+      0.54,
+      0.0,
+      0.75,
+      0.11
+    ],
+    [
+      0.17,
+      0.14,
+      0.37,
+      0.27
+    ],
+    [
+      0.6,
+      0.12,
+      0.85,
+      0.26
+    ]
+  ],
+  "models": [
+    {
+      "name": "coastal-meadow-lod0",
+      "triangles": 6144,
+      "plants": 1024
+    },
+    {
+      "name": "coastal-meadow-lod1",
+      "triangles": 1536,
+      "plants": 256
+    }
+  ],
+  "scope": "图24低草地被候选，待实际驾驶画面验收"
+}

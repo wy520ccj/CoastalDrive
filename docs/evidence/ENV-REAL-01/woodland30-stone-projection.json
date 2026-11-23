@@ -1,0 +1,38 @@
+[
+  {
+    "lateral": -29,
+    "s": 150,
+    "screen_center_px": [
+      8.273863792419434,
+      261.12829998135567
+    ],
+    "in_frustum": true
+  },
+  {
+    "lateral": -22,
+    "s": 172,
+    "screen_center_px": [
+      431.8788242340088,
+      238.92530634999275
+    ],
+    "in_frustum": true
+  },
+  {
+    "lateral": -28,
+    "s": 178,
+    "screen_center_px": [
+      416.60892248153687,
+      234.5888663828373
+    ],
+    "in_frustum": true
+  },
+  {
+    "lateral": -24,
+    "s": 166,
+    "screen_center_px": [
+      340.04775524139404,
+      243.11714842915535
+    ],
+    "in_frustum": true
+  }
+]

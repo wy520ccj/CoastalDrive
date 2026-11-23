@@ -1,0 +1,170 @@
+{
+  "scope": "四次独立默认/Draw、独立120Hz山脊270m；相同原Controller和HD2样板；依次开/关/关/开木本阴影过滤。各次实际tick/位置略有差异，非逐帧同输入GPU净计时。截图回读帧剔除；主进程CPU不含物理进程。",
+  "runs": [
+    {
+      "folder": "r04-filtered-normal-drive",
+      "filter": "filtered",
+      "entry_seconds": 23.35461159999977,
+      "display_frames": 748,
+      "foreground_frames": 748,
+      "minimized_frames": 0,
+      "frame_ms": {
+        "median": 27.71500000017113,
+        "p95": 33.50812000135192,
+        "p99": 36.30365199969674,
+        "max": 88.28729999913776
+      },
+      "owner_dropped_time": 0.0,
+      "views": [
+        {
+          "tick": 667,
+          "progress_m": 40.02821454306939,
+          "speed_mps": 13.48359203338623,
+          "collisions": 0
+        },
+        {
+          "tick": 1365,
+          "progress_m": 120.25072645219691,
+          "speed_mps": 13.999120712280273,
+          "collisions": 0
+        },
+        {
+          "tick": 1962,
+          "progress_m": 190.12327421553522,
+          "speed_mps": 13.469165802001953,
+          "collisions": 0
+        },
+        {
+          "tick": 2655,
+          "progress_m": 270.1688884281952,
+          "speed_mps": 14.07913589477539,
+          "collisions": 0
+        }
+      ]
+    },
+    {
+      "folder": "r05-unfiltered-normal-drive",
+      "filter": "unfiltered",
+      "entry_seconds": 22.292705799998657,
+      "display_frames": 731,
+      "foreground_frames": 731,
+      "minimized_frames": 0,
+      "frame_ms": {
+        "median": 28.232849999767495,
+        "p95": 33.58460500057845,
+        "p99": 36.58489599954922,
+        "max": 45.08700000042154
+      },
+      "owner_dropped_time": 0.0,
+      "views": [
+        {
+          "tick": 666,
+          "progress_m": 40.02771357150949,
+          "speed_mps": 13.483565330505371,
+          "collisions": 0
+        },
+        {
+          "tick": 1363,
+          "progress_m": 120.13344746843052,
+          "speed_mps": 13.9975004196167,
+          "collisions": 0
+        },
+        {
+          "tick": 1963,
+          "progress_m": 190.34886563525652,
+          "speed_mps": 13.46779727935791,
+          "collisions": 0
+        },
+        {
+          "tick": 2653,
+          "progress_m": 270.0507906742591,
+          "speed_mps": 14.08057975769043,
+          "collisions": 0
+        }
+      ]
+    },
+    {
+      "folder": "r06-unfiltered-normal-drive",
+      "filter": "unfiltered",
+      "entry_seconds": 22.5990993000014,
+      "display_frames": 734,
+      "foreground_frames": 734,
+      "minimized_frames": 0,
+      "frame_ms": {
+        "median": 28.567200000907178,
+        "p95": 32.66899999925954,
+        "p99": 35.468079999918714,
+        "max": 42.62610000114364
+      },
+      "owner_dropped_time": 0.0,
+      "views": [
+        {
+          "tick": 666,
+          "progress_m": 40.139747638829554,
+          "speed_mps": 13.486692428588867,
+          "collisions": 0
+        },
+        {
+          "tick": 1361,
+          "progress_m": 120.0159623167781,
+          "speed_mps": 13.995831489562988,
+          "collisions": 0
+        },
+        {
+          "tick": 1960,
+          "progress_m": 190.1219956834664,
+          "speed_mps": 13.469173431396484,
+          "collisions": 0
+        },
+        {
+          "tick": 2652,
+          "progress_m": 270.0499890593454,
+          "speed_mps": 14.080591201782227,
+          "collisions": 0
+        }
+      ]
+    },
+    {
+      "folder": "r07-filtered-normal-drive",
+      "filter": "filtered",
+      "entry_seconds": 22.405897399999958,
+      "display_frames": 770,
+      "foreground_frames": 770,
+      "minimized_frames": 0,
+      "frame_ms": {
+        "median": 27.19699999943259,
+        "p95": 30.83397000100376,
+        "p99": 33.67381199961528,
+        "max": 47.80170000049111
+      },
+      "owner_dropped_time": 0.0,
+      "views": [
+        {
+          "tick": 667,
+          "progress_m": 40.14038245775279,
+          "speed_mps": 13.48674488067627,
+          "collisions": 0
+        },
+        {
+          "tick": 1363,
+          "progress_m": 120.13344746843052,
+          "speed_mps": 13.9975004196167,
+          "collisions": 0
+        },
+        {
+          "tick": 1962,
+          "progress_m": 190.23582141549394,
+          "speed_mps": 13.468480110168457,
+          "collisions": 0
+        },
+        {
+          "tick": 2653,
+          "progress_m": 270.0507906742591,
+          "speed_mps": 14.08057975769043,
+          "collisions": 0
+        }
+      ]
+    }
+  ],
+  "limits": "无稳定60FPS或长帧修复结论；不把该批约1ms中位差归因过滤加速，GPU净成本仍未隔离。"
+}

@@ -1,0 +1,49 @@
+{
+  "license": "CC0-1.0",
+  "files": [
+    {
+      "path": "art/expressway/sources/grass-bermuda-01/textures/grass_bermuda_01_diff_1k.jpg",
+      "md5": "234be9f52cfcd3380c7f782baaa841c3",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/grass_bermuda_01/grass_bermuda_01_diff_1k.jpg",
+      "bytes": 175425,
+      "sha256": "ef202eeb8f8fb3312446009acecc87e5679a7d612e4dee859d8a849e00af5fcb"
+    },
+    {
+      "path": "art/expressway/sources/grass-bermuda-01/textures/grass_bermuda_01_arm_1k.jpg",
+      "md5": "87c58d5d3345d579eab570f7eb446313",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/grass_bermuda_01/grass_bermuda_01_arm_1k.jpg",
+      "bytes": 500088,
+      "sha256": "38190d342fe951c33ff8c37dd2e3de37aca4cc7633e91be8b0d1c1f71057a641"
+    },
+    {
+      "path": "art/expressway/sources/grass-bermuda-01/grass_bermuda_01.bin",
+      "md5": "2940aa3405004b62983fd70bede8e47f",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/grass_bermuda_01/grass_bermuda_01.bin",
+      "bytes": 32260,
+      "sha256": "b98be48b43afb9d57f6c722d918a49996635064b829b16dc14ef4a48c0f04dae"
+    },
+    {
+      "path": "art/expressway/sources/grass-bermuda-01/textures/grass_bermuda_01_nor_gl_1k.jpg",
+      "md5": "73a585e0963ff6bf3cefa845cbee0645",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/grass_bermuda_01/grass_bermuda_01_nor_gl_1k.jpg",
+      "bytes": 709845,
+      "sha256": "4475b37d6e4d217ce03547216f62d1ef6e65cafda2355fd0cb2aeb6d919b9338"
+    },
+    {
+      "path": "art/expressway/sources/grass-bermuda-01/grass_bermuda_01_1k.gltf",
+      "md5": "a1bdd74118d2387a42dba4f605226f87",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/grass_bermuda_01/grass_bermuda_01_1k.gltf",
+      "bytes": 32912,
+      "sha256": "a1e5bb7fcf33721dc4844d7acacab80759fccec659f1ea643f8701afc542e207"
+    },
+    {
+      "path": "art/expressway/sources/grass-bermuda-01/textures/grass_bermuda_01_alpha_1k.png",
+      "md5": "274285abb11b3b7a0fd277b9923d1074",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/grass_bermuda_01/grass_bermuda_01_alpha_1k.png",
+      "bytes": 59564,
+      "sha256": "e58b3052aad2f107cdd763e437f80ed8fb5a31bcc43b44023f7f767cb3d9888e"
+    }
+  ],
+  "source": "https://polyhaven.com/a/grass_bermuda_01",
+  "author": "Rico Cilliers"
+}

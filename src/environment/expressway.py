@@ -62,6 +62,18 @@ def load_kit(loader, parent, old_trees):
             raise FileNotFoundError(f"缺少高速视觉模块：{path}")
         kit[name] = loader.loadModel(Filename.fromOsSpecific(str(path)))
         kit[name].reparentTo(parent)
+    # 原龙门架网格不动，山脊专用牌面只替换这一张纹理。
+    warning = Texture("ridge-gantry")
+    warning.load(image("ridge-gantry"))
+    original = kit["gantry"].findTexture("*")
+    warning.setFormat(original.getFormat())
+    warning.setMinfilter(original.getMinfilter())
+    warning.setMagfilter(original.getMagfilter())
+    warning.setWrapU(original.getWrapU())
+    warning.setWrapV(original.getWrapV())
+    warning.setAnisotropicDegree(original.getAnisotropicDegree())
+    kit["ridge-gantry"] = kit["gantry"].copyTo(parent)
+    kit["ridge-gantry"].replaceTexture(original, warning)
     kit["aggregate"] = loader.loadTexture(Filename.fromOsSpecific(str(folder / "aggregate.png")))
     kit["aggregate"].setWrapU(Texture.WMRepeat)
     kit["aggregate"].setWrapV(Texture.WMRepeat)
@@ -130,6 +142,22 @@ def load_kit(loader, parent, old_trees):
     kit["surface-material"] = surface
     for name in KIT_NAMES + SIGN_NAMES:
         kit[name].setMaterial(surface,1)
+    from environment.expressway_buildings import load_city_models
+
+    kit['city-shrub'] = kit['fine-shrubs']
+    kit['city-models'] = load_city_models(parent, surface)
+    kit['city-parked-cars'] = []
+    from skins import apply_skin
+
+    for number, name in enumerate(('traffic_compact_v1', 'traffic_sedan_v1')):
+        path = resource_root()/'assets/game/vehicles'/f'{name}.glb'
+        car = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+        car.setPythonTag('vehicle-quality', 'traffic')
+        apply_skin(car, (4, 1)[number])
+        car.clearModelNodes()
+        car.flattenStrong()
+        car.reparentTo(parent)
+        kit['city-parked-cars'].append(car)
     return kit
 
 

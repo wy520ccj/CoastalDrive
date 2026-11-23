@@ -1,0 +1,221 @@
+{
+  "scope": "默认/Draw、独立120Hz物理会话、正常跟车；Controller通过Control执行，不是人工驾驶或完整物理性能Gate",
+  "hard_lod": false,
+  "hide_grass": false,
+  "flat_roots": false,
+  "legacy_root_transport": false,
+  "legacy_woodland_state": false,
+  "no_sky_transmission": false,
+  "display_frames": 825,
+  "views": [
+    {
+      "tick": 665,
+      "progress_m": 40.02707875258625,
+      "speed_mps": 13.483511924743652,
+      "collisions": 0
+    },
+    {
+      "tick": 1363,
+      "progress_m": 120.24946653733777,
+      "speed_mps": 13.999101638793945,
+      "collisions": 0
+    },
+    {
+      "tick": 1959,
+      "progress_m": 190.00894309081704,
+      "speed_mps": 13.469884872436523,
+      "collisions": 0
+    },
+    {
+      "tick": 2653,
+      "progress_m": 270.16755331185215,
+      "speed_mps": 14.079153060913086,
+      "collisions": 0
+    }
+  ],
+  "entry_to_driving_seconds": 20.770596100002876,
+  "stream_work": {
+    "frame_ms": 0.04859999899053946,
+    "max_step_ms": 17.157399997813627,
+    "completed": 14,
+    "cancelled": 0,
+    "phase": "sign-batch",
+    "near_pending": 0
+  },
+  "woodland_maps": [
+    {
+      "segment": 0,
+      "size": [
+        276,
+        276
+      ]
+    },
+    {
+      "segment": 1,
+      "size": [
+        283,
+        282
+      ]
+    },
+    {
+      "segment": -1,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "segment": 2,
+      "size": [
+        273,
+        273
+      ]
+    },
+    {
+      "segment": -2,
+      "size": [
+        184,
+        184
+      ]
+    },
+    {
+      "segment": 3,
+      "size": [
+        273,
+        274
+      ]
+    },
+    {
+      "segment": -3,
+      "size": [
+        158,
+        158
+      ]
+    },
+    {
+      "segment": 4,
+      "size": [
+        279,
+        280
+      ]
+    },
+    {
+      "segment": -4,
+      "size": [
+        158,
+        158
+      ]
+    },
+    {
+      "segment": 5,
+      "size": [
+        254,
+        254
+      ]
+    },
+    {
+      "segment": -5,
+      "size": [
+        158,
+        158
+      ]
+    },
+    {
+      "segment": 6,
+      "size": [
+        157,
+        157
+      ]
+    },
+    {
+      "segment": 7,
+      "size": [
+        157,
+        157
+      ]
+    }
+  ],
+  "sizes": [
+    [
+      1280,
+      720
+    ]
+  ],
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "render_buffers": [
+    {
+      "name": "filter-base",
+      "multisamples": 4
+    }
+  ],
+  "all_frames": {
+    "wall_frame_ms": {
+      "median": 25.405699998373166,
+      "p95": 29.64135999936843,
+      "p99": 31.992371999367606,
+      "max": 302.45510000531795
+    },
+    "parent_cpu_ms": {
+      "median": 31.25,
+      "p95": 62.5,
+      "p99": 78.125,
+      "max": 328.125
+    },
+    "update_wall_ms": {
+      "median": 1.192399999126792,
+      "p95": 3.857300001254766,
+      "p99": 6.041019999829586,
+      "max": 14.171599999826867
+    },
+    "update_cpu_ms": {
+      "median": 0.0,
+      "p95": 31.25,
+      "p99": 46.875,
+      "max": 62.5
+    },
+    "stream_frame_ms": {
+      "median": 0.05029999738326296,
+      "p95": 0.09024000028148281,
+      "p99": 4.414371997117995,
+      "max": 12.561799994728062
+    }
+  },
+  "without_capture_readback": {
+    "wall_frame_ms": {
+      "median": 25.3950000005716,
+      "p95": 29.51730499880796,
+      "p99": 31.63869200318004,
+      "max": 38.6687999998685
+    },
+    "parent_cpu_ms": {
+      "median": 31.25,
+      "p95": 62.5,
+      "p99": 78.125,
+      "max": 78.125
+    },
+    "update_wall_ms": {
+      "median": 1.1903500017069746,
+      "p95": 3.8727500021195667,
+      "p99": 6.042804999888174,
+      "max": 14.171599999826867
+    },
+    "update_cpu_ms": {
+      "median": 0.0,
+      "p95": 31.25,
+      "p99": 46.875,
+      "max": 62.5
+    },
+    "stream_frame_ms": {
+      "median": 0.05029999738326296,
+      "p95": 0.09066000020538903,
+      "p99": 4.417662996856958,
+      "max": 12.561799994728062
+    }
+  },
+  "owner_end": {
+    "tick": 2690,
+    "dropped_time": 0.0,
+    "monotonic": 38112.484298
+  },
+  "limits": "parent_cpu不含独立物理进程；update_wall不是完整物理求解/IPC等待分解，不通过全步性能Gate"
+}

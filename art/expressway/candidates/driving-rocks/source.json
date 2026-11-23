@@ -1,0 +1,60 @@
+{
+  "source": "Poly Haven coastal_cliff_01, CC0-1.0, existing registered 2K scan",
+  "process": "Three 22m sections; original UV/materials retained; ends embedded in bank; three LODs",
+  "models": [
+    {
+      "name": "bank-a-lod0",
+      "source_center_x": -28.0,
+      "crop_width_m": 22,
+      "triangles": 19772
+    },
+    {
+      "name": "bank-a-lod1",
+      "source_center_x": -28.0,
+      "crop_width_m": 22,
+      "triangles": 4943
+    },
+    {
+      "name": "bank-a-lod2",
+      "source_center_x": -28.0,
+      "crop_width_m": 22,
+      "triangles": 1129
+    },
+    {
+      "name": "bank-b-lod0",
+      "source_center_x": 0.0,
+      "crop_width_m": 22,
+      "triangles": 15696
+    },
+    {
+      "name": "bank-b-lod1",
+      "source_center_x": 0.0,
+      "crop_width_m": 22,
+      "triangles": 3923
+    },
+    {
+      "name": "bank-b-lod2",
+      "source_center_x": 0.0,
+      "crop_width_m": 22,
+      "triangles": 896
+    },
+    {
+      "name": "bank-c-lod0",
+      "source_center_x": 28.0,
+      "crop_width_m": 22,
+      "triangles": 11037
+    },
+    {
+      "name": "bank-c-lod1",
+      "source_center_x": 28.0,
+      "crop_width_m": 22,
+      "triangles": 2759
+    },
+    {
+      "name": "bank-c-lod2",
+      "source_center_x": 28.0,
+      "crop_width_m": 22,
+      "triangles": 630
+    }
+  ]
+}

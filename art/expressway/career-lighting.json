@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-30",
+  "status": "Regional lighting wired; full coastal career scenery and driving acceptance remain open",
+  "designs": [
+    "docs/design/garage-v2/38-coastal-sunset.png",
+    "docs/design/garage-v2/46-career-coast.png"
+  ],
+  "courses": [
+    "coast-club",
+    "coast-final"
+  ],
+  "unaffected_regions": [
+    "ridge-club",
+    "ordinary-highway",
+    "fixed-coastal-lighting"
+  ],
+  "source_sky_sha256": "d6a88bb8c31d8f0e99033b8a2ca5b93a20ac7491eae7064edd00c22f2b348ac3",
+  "source_environment_sha256": "ce4b99946df1dbfe4d9e279aaf6d88b1b1ddaaeb2a18bef1d8f998b07bda7de9",
+  "career_sky_diffuse_scale": 2.6,
+  "fixed_coastal_sky_diffuse_scale": 0.65,
+  "exposure_ev": -2.3,
+  "sources": {
+    "src/scene.py": "1a10b17a3dd347121ee04ceac2cea59d0516392130b8952735e514068cd14b82",
+    "src/environment/foundation.py": "f109a7762803d4b2bb43d278a5c0a6017c0f65e69fe83dee55a359b3aeb4d15e",
+    "src/environment/expressway_route.py": "ae642716d7cd3abc95083b7d6abc9e6641f6d986fc0e29cf5f91a6a60e4eee37",
+    "tools/environment/local_kcd_drive.py": "e2bb810819fb68a9bce3e7f540fa089a10eba518c89a21e8f544c12db95839de",
+    "assets/game/expressway/shaders/distance-haze.glsl": "9d37c8e3586c7919660c18365d6c8701c0796eeba6f2602e66c443ec38aecad9",
+    "assets/game/environment/coastal-sunset/daylight-manifest.json": "053579b73333142dab2532f2b32d2d1ba31c2fd0101a4f26b74c58f2ed8cea61",
+    "tools/environment/prepare_coastal_sunset.py": "e647f45cda6631c39bff1ec5fc48b46e39953cc015e3ad9e504d8b006b8de9fc",
+    "tools/environment/capture_regional.py": "65365ff063508937d5447727f7eb2a927695d239730685c796ab1a4a47591486"
+  },
+  "protected_sources_unchanged": {
+    "src/career_courses.py": true,
+    "src/career_terrain.py": true,
+    "src/curve_mesh.py": true,
+    "src/session.py": true,
+    "src/vehicle.py": true,
+    "src/highway_driver.py": true,
+    "src/environment/expressway_city.py": true
+  },
+  "final_capture": "logs/all-scene-20261029/career-light-final/summary.json",
+  "final_t1": "logs/all-scene-20261029/T1-career-shore2-isolated-r2/summary.json",
+  "candidate": "art/expressway/candidates/career-coast/status.json",
+  "evidence": "docs/evidence/VISUAL-EXTEND-01/career-coast.md",
+  "onscreen": false,
+  "tick_unchanged": 60,
+  "no_new_driving_fps_result": true,
+  "terrain_candidate": "art/expressway/career-coast.json"
+}

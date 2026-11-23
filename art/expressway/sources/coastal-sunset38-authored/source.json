@@ -1,0 +1,16 @@
+{
+  "file": "authored-sunset.pfm",
+  "source": "CoastalDrive design38 authored panorama",
+  "authors": {
+    "CoastalDrive": "ImageGen directed sky asset"
+  },
+  "license": "Project-authored generated asset; reference panorama CC0",
+  "original_png_sha256": "cc76448bf4cfaf43df3040942f3104f6ab75444b8bfcecc8d8ef2d7063d1efe2",
+  "sha256": "62c13a691d4791da739f861a0c873e54e02ad20c1889e7c27e9ad1c2b6de2739",
+  "sun_pixel": [
+    1536,
+    506
+  ],
+  "face_png_sha256": "bac255f404f6ce803674aa51b1580bfda233a7b0811be03dce0260b489d97f18",
+  "processing": "native perspective sky face; no latitude stretching; inverse simplepbr filmic; not captured radiometric HDR"
+}

@@ -1,0 +1,52 @@
+{
+  "baseline": "r15-driving-baseline",
+  "current": "r102-current-daylight-coast",
+  "rows": 4505,
+  "recorded_driving_fields_identical": true,
+  "retained_original_resource_bytes": {
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "d52b96fd1296b5a5ee09d26622697ac7e223e58ea859693e16de314fa58b89b5",
+    "assets\\game\\expressway\\daylight-sky.hdr": "1f92cbf17e46659ff37c9770d065280da226896b0f56091c4c1fca071da7fbeb",
+    "assets\\game\\expressway\\daylight.env": "277f5d31d085c235ab4abdfcbbde9f5533e01dc711e3dc65c1ac57aacddbf319",
+    "assets\\game\\expressway\\photographed-vegetation.bam": "88820231ff0a58ae5440432a6c2d078823af9dc9bb2f800ad39dfa325d5030be"
+  },
+  "source_unchanged": {
+    "src/main.py": "382a07b6016f75b14ff63b5afa47496a91e09f8e64f4f4425c36b955d9c9ded6",
+    "src/simulation.py": "3012b87be3b0e5cda7f31132cc3f7d21ac12448a23700d6f3c585c0703044364",
+    "src/vehicle.py": "8c54c9e3107587fbd24dcb527702e0097cd395d1368c9936864939a58652b95f",
+    "src/vehicle_dynamics.py": "5fcaeeaa0e4335720e939174065a7977b07e348191159cd6bef9e11118a07ef7",
+    "src/highway_segments.py": "b4319700adf731b7eac0c76bb6ad2a3e5594938f3243e273018eb412d5ffa3c1",
+    "src/curve_mesh.py": "2ecde807e4d10d08d28793ae0533d709ef18b10f905943756d70ff8864594206",
+    "src/career_terrain.py": "1074414e949f9368ea737d15fd4e87a5ec397036cbb526c740a718cf57306b5c",
+    "src/sky_dome.py": "d0d7c2d8580b0391ac6d0270a5a957f3f21d9209b5abfe4a082bde1daad96ed1"
+  },
+  "new_daylight_source": {
+    "source": {
+      "size": 20674857,
+      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+      "md5": "816340c969d2e60d659051d13ac3c4dc",
+      "file": "kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+      "sha256": "3061c00a16ecae748e84fd6c44c04804f539c118bb66325db858bad87b11bf88",
+      "source": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+      "authors": {
+        "Greg Zaal": "Original",
+        "Jarod Guest": "Sky edits"
+      },
+      "license": "CC0-1.0",
+      "status": "design29 candidate; not yet runtime default"
+    },
+    "sky_heading_degrees": -34.1015625,
+    "source_sun_elevation_degrees": 47.8125,
+    "directional_sun": [
+      -0.6715589761734009,
+      8.224225373207247e-17,
+      0.7409511208534241
+    ],
+    "cube_size": 128,
+    "prefiltered_samples": 64,
+    "indirect_radiance_limit": 4.0,
+    "sky_sha256": "3061c00a16ecae748e84fd6c44c04804f539c118bb66325db858bad87b11bf88",
+    "environment_sha256": "d56453e7bcebbf012d8c7c75e0e0fa76de854de07514e76d2514d235635f229a"
+  },
+  "scope": "Only recorded inputs/positions/heading/time/origin/progress/collisions; not full Snapshot or realtime performance.",
+  "note": "旧晴空原文件保留，但本机默认可见天空/反射/漫反射已换为设计29实拍，不代表外观冻结"
+}
