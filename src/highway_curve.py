@@ -23,6 +23,7 @@ class HighwayCurve:
         self.seed = seed
         self.height = 12 if hills else 0
         self.base_height = 16 if hills else 0
+        self._signs = {}
         self.y_table = [0.0]
         previous = self.forward_slope(0)
         for s in range(1, CELL_LENGTH + 1):
@@ -38,8 +39,13 @@ class HighwayCurve:
         return math.sqrt(1 - (60 * d)**2 - (self.height * d)**2)
 
     def signs(self, index):
+        cached = self._signs.get(index)
+        if cached is not None:
+            return cached
         bits = _mix(self.seed ^ _mix(index))
-        return (-1 if bits & 1 else 1), (-1 if bits & 2 else 1)
+        result = (-1 if bits & 1 else 1), (-1 if bits & 2 else 1)
+        self._signs[index] = result
+        return result
 
     # 道路参数在实例生命周期内固定，复用完全相同的采样；缓存有上限，不近似位置。
     def sample(self, distance, lateral=0):
@@ -47,13 +53,18 @@ class HighwayCurve:
         local = distance - index * CELL_LENGTH
         t = local / CELL_LENGTH
         side, hill = self.signs(index)
-        x = side * 60 * bump(t)
-        z = self.base_height + hill * self.height * bump(t)
-        row = min(int(local), CELL_LENGTH - 1)
+        b = bump(t)
+        x = side * 60 * b
+        z = self.base_height + hill * self.height * b
+        row = int(local)
+        if row >= CELL_LENGTH:
+            row = CELL_LENGTH - 1
         fraction = local - row
-        y = index * self.advance + self.y_table[row] * (1 - fraction) + self.y_table[row + 1] * fraction
-        dx, dz = side * 60 * slope(t), hill * self.height * slope(t)
-        dy = self.forward_slope(t)
+        y_table = self.y_table
+        y = index * self.advance + y_table[row] * (1 - fraction) + y_table[row + 1] * fraction
+        d = slope(t)
+        dx, dz = side * 60 * d, hill * self.height * d
+        dy = math.sqrt(1 - dx * dx - dz * dz)
         horizontal = math.hypot(dx, dy)
         return MapPoint(
             x + lateral * dy / horizontal,
@@ -63,11 +74,26 @@ class HighwayCurve:
             math.degrees(math.atan2(dz, horizontal)),
         )
 
+    def heading_at(self, distance):
+        index = math.floor(distance / CELL_LENGTH)
+        t = (distance - index * CELL_LENGTH) / CELL_LENGTH
+        side, hill = self.signs(index)
+        d = slope(t)
+        dx, dz = side * 60 * d, hill * self.height * d
+        dy = math.sqrt(1 - dx * dx - dz * dz)
+        return math.degrees(math.atan2(-dx, dy))
+
     def distance_at_y(self, y):
         index = math.floor(y / self.advance)
         local_y = y - index * self.advance
-        row = max(0, min(CELL_LENGTH - 1, bisect_right(self.y_table, local_y) - 1))
-        fraction = (local_y - self.y_table[row]) / (self.y_table[row + 1] - self.y_table[row])
+        y_table = self.y_table
+        row = bisect_right(y_table, local_y) - 1
+        if row < 0:
+            row = 0
+        elif row >= CELL_LENGTH:
+            row = CELL_LENGTH - 1
+        y0 = y_table[row]
+        fraction = (local_y - y0) / (y_table[row + 1] - y0)
         return index * CELL_LENGTH + row + fraction
 
     def on_asphalt(self, x, y):
@@ -75,9 +101,13 @@ class HighwayCurve:
         index = math.floor(distance / CELL_LENGTH)
         side, _ = self.signs(index)
         center_x = side * 60 * bump((distance - index * CELL_LENGTH) / CELL_LENGTH)
-        # This centreline point has the same y. Its inner 6.5 m lies inside the road.
-        if abs(x - center_x) < 6.5:
+        # This centreline point has the same y. Its inner 6.5 m lies inside the road;
+        # given max |dx/dy| < 0.211, points beyond 8.5 m in x cannot lie within 6.75 m laterally.
+        offset = abs(x - center_x)
+        if offset < 6.5:
             return True
+        if offset > 8.5:
+            return False
         return abs(self.project((x, y))[1]) <= 6.75
 
     def project(self, position):

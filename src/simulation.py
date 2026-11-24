@@ -298,10 +298,12 @@ class Simulation:
         sampled_at_ns = time.perf_counter_ns() if self._impact_diagnostic is not None else None
         samples = []
         post_motion = {}
-        player_mat = self._chassis.getTransform().getMat()
-        inverse = type(player_mat)(player_mat)
-        inverse.invertInPlace()
-        for manifold, other, player_is_a in self._player_manifolds() if manifolds is None else manifolds:
+        active_manifolds = tuple(self._player_manifolds()) if manifolds is None else manifolds
+        if active_manifolds:
+            player_mat = self._chassis.getTransform().getMat()
+            inverse = type(player_mat)(player_mat)
+            inverse.invertInPlace()
+        for manifold, other, player_is_a in active_manifolds:
             material, barrier_side = self._contact_material(other.getName())
             source_id = self._source_id(other)
             for point in manifold.getManifoldPoints():
@@ -817,9 +819,14 @@ class Simulation:
             # 子步接触完整累加，撞击事件与接触年龄仍只按120Hz更新一次。
             manifolds = tuple(self._player_manifolds())
             self._read_impact_contacts(before, accumulated=accumulated, publish=final, manifolds=manifolds)
-            traffic_contacts.update(body for body in self._traffic_bodies
-                                    if body not in self._retired_traffic
-                                    and self._world.contactTestPair(self._chassis, body).getNumContacts() > 0)
+            if self._traffic_bodies:
+                player_pos = self._chassis.getTransform().getPos()
+                for body in self._traffic_bodies:
+                    if body in self._retired_traffic or body in traffic_contacts:
+                        continue
+                    diff = body.getTransform().getPos() - player_pos
+                    if diff.lengthSquared() <= 144.0 and self._world.contactTestPair(self._chassis, body).getNumContacts() > 0:
+                        traffic_contacts.add(body)
             self._count_player_collisions(manifolds)
 
         # 车身撞击带来速度/姿态突变，单个8.33ms机械步会使接触活动集交替发散。

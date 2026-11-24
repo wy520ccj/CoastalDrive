@@ -18,22 +18,29 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
     prepared = []
     if substeps > 1:
         for car, action in cars:
-            force, torque = Vec3(car._chassis.getTotalForce()), Vec3(car._chassis.getTotalTorque())
-            initial = tuple(state.steering for state in car.tires.states[:2])
+            chassis = car._chassis
+            force, torque = Vec3(chassis.getTotalForce()), Vec3(chassis.getTotalTorque())
+            has_external = force.lengthSquared() != 0.0 or torque.lengthSquared() != 0.0
+            needs_angles = car.coupled_suspension or car.config.unsprung_enabled or not car._native_action
+            initial = tuple(state.steering for state in car.tires.states[:2]) if needs_angles else None
             request = car.prepare_command(action) if isinstance(action, VehicleCommand) else car.prepare_control(action)
-            prepared.append((request, initial, wheel_angles(car.steering.angle, car.config), force, torque))
+            target = wheel_angles(car.steering.angle, car.config) if needs_angles else None
+            prepared.append((request, initial, target, force, torque, has_external))
     dt = FIXED_DT / substeps
     # 本120Hz拍只积分动态刚体；道路流送/重定位在本函数之外完成。
     # 静态支撑几何在两个机械子步间保持不变，车辆姿态和接点仍逐子步重读。
     static_shapes = (static_support_shapes(world, None, BitMask32.bit(0), cache=static_cache, packet_cache=packet_cache)
                      if any(car.coupled_suspension and car.config.finite_drivetrain for car, _action in cars) else None)
+    parallel = (workers is not None and len(cars) > 1 and substeps > 1
+                and not any(car.config.unsprung_enabled for car, _action in cars))
     for index in range(substeps):
-        before = {car._chassis: (Vec3(car._chassis.getLinearVelocity()),
-                                Vec3(car._chassis.getAngularVelocity()),
-                                Vec3(car._chassis.getTransform().getPos())) for car, _action in cars}
+        before = ({car._chassis: (Vec3(car._chassis.getLinearVelocity()),
+                                  Vec3(car._chassis.getAngularVelocity()),
+                                  Vec3(car._chassis.getTransform().getPos())) for car, _action in cars}
+                  if observe is not None else None)
         numerical = []
         pending = []
-        parallel = workers is not None and len(cars)>1 and substeps>1 and not any(car.config.unsprung_enabled for car,_action in cars)
+        step_num = index + 1
         for i, (car, action) in enumerate(cars):
             if substeps == 1:
                 # 非耦合模型仍可有内部轮胎细分，沿用原串行入口的多次请求/提交。
@@ -49,19 +56,23 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
                 if inputs is not None:
                     numerical.append((stages, inputs))
             else:
-                request, initial, target, force, torque = prepared[i]
-                if index:
+                request, initial, target, force, torque, has_external = prepared[i]
+                if index and has_external:
                     # Bullet每次推进后清空持续力；保留调用方本拍施加的真实外力/力矩。
                     car._chassis.applyCentralForce(force)
                     car._chassis.applyTorque(torque)
-                angles = tuple(a + (b - a) * (index + 1) / substeps for a, b in zip(initial, target))
-                stages = car.physics_stages(request, dt, tire_substeps=1, angles=angles,
-                                            accumulate=index > 0, static_shapes=static_shapes,complete_tires=parallel)
-                inputs = next(stages, None)
-                if inputs is not None:
-                    numerical.append((stages, inputs))
-                    if parallel:
-                        pending.append(workers.submit(inputs, static_shapes, material))
+                if initial is not None:
+                    angles = (initial[0] + (target[0] - initial[0]) * step_num / substeps,
+                              initial[1] + (target[1] - initial[1]) * step_num / substeps)
+                    stages = car.physics_stages(request, dt, tire_substeps=1, angles=angles,
+                                                accumulate=index > 0, static_shapes=static_shapes, complete_tires=parallel)
+                    inputs = next(stages, None)
+                    if inputs is not None:
+                        numerical.append((stages, inputs))
+                        if parallel:
+                            pending.append(workers.submit(inputs, static_shapes, material))
+                else:
+                    car.physics_stages(request, dt)
         # 各车读完本子步后求末状态，再按原车辆/轮端顺序提交；Bullet仍只推进一次。
         requests = [inputs for _stages, inputs in numerical]
         results = (workers.results(requests, pending, query_lock) if parallel

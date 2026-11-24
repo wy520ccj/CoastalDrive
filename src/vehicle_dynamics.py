@@ -38,10 +38,12 @@ def aerodynamic_force(speed, config=CAR):
 
 def aerodynamic_load(velocity, wind, config=CAR):
     """通用标量CdA模型，阻力沿完整三维相对空气速度的反向。"""
-    relative = tuple(v-w for v,w in zip(velocity,wind))
-    speed = math.sqrt(sum(x*x for x in relative))
+    rx = velocity[0] - wind[0]
+    ry = velocity[1] - wind[1]
+    rz = velocity[2] - wind[2]
+    speed = math.sqrt(sum((rx * rx, ry * ry, rz * rz)))
     factor = .5 * config.air_density * config.drag_coefficient * config.frontal_area * speed
-    return relative, tuple(-factor*x for x in relative)
+    return (rx, ry, rz), (-factor * rx, -factor * ry, -factor * rz)
 
 
 def axle_loads(acceleration, grade, config=CAR):

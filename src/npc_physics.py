@@ -26,7 +26,8 @@ class TrafficVehicle(Vehicle):
                                    stability=replace(config.stability, esc_enabled=False))
         super().__init__(*args, **kwargs)
         # 完整车原生切向力为零；启用原生轮胎后使用真实接点力臂，避免停车时持续俯仰漂移。
-        for wheel in self._vehicle.getWheels():
+        self._wheels = tuple(self._vehicle.getWheels())
+        for wheel in self._wheels:
             wheel.setRollInfluence(1.)
         self.native_dt = 1 / 240
         self._native_request = None
@@ -66,33 +67,45 @@ class TrafficVehicle(Vehicle):
         drive, drag, pressures = request
         previous_dt = self.native_dt
         self.native_dt = dt
-        velocity = self._chassis.getLinearVelocity()
-        position = self._chassis.getTransform().getPos()
+        chassis = self._chassis
+        velocity = chassis.getLinearVelocity()
+        position = chassis.getTransform().getPos()
         road = self.on_asphalt(position.x, position.y)
-        mu = self.config.road_friction if road else self.config.grass_friction
-        air_velocity, air_force = aerodynamic_load(tuple(velocity), tuple(self.wind), self.config)
-        self._chassis.applyCentralForce(Vec3(*air_force))
-        radius = self.config.wheel_radius
+        config = self.config
+        mu = config.road_friction if road else config.grass_friction
+        air_velocity, air_force = aerodynamic_load(velocity, self.wind, config)
+        chassis.applyCentralForce(Vec3(air_force[0], air_force[1], air_force[2]))
+        radius = config.wheel_radius
         # 同一120Hz请求的两个子步保留轮端执行器值；材质/子步长变化时仍立即重写。
         if request is not self._native_request or dt != previous_dt or mu != self._native_mu:
-            for i, wheel in enumerate(self._vehicle.getWheels()):
+            vehicle = self._vehicle
+            weights = self._drive_weights
+            front_share = config.front_brake_share
+            rear_share = 1.0 - front_share
+            brake_torque = config.brake_torque
+            for i, wheel in enumerate(self._wheels):
                 wheel.setFrictionSlip(mu)
-                self._vehicle.applyEngineForce(drive * self._drive_weights[i] / radius, i)
-                share = self.config.front_brake_share if i < 2 else 1 - self.config.front_brake_share
-                torque = self.config.brake_torque * pressures[i] * share / 2 + drag * self._drive_weights[i]
+                weight = weights[i]
+                vehicle.applyEngineForce(drive * weight / radius, i)
+                share = front_share if i < 2 else rear_share
+                torque = brake_torque * pressures[i] * share / 2 + drag * weight
                 # Bullet原生制动上限是每世界子步的冲量。
-                self._vehicle.setBrake(torque * dt / radius, i)
+                vehicle.setBrake(torque * dt / radius, i)
             self._native_request, self._native_mu = request, mu
-        self.dynamics = DynamicsState(air_relative_velocity=air_velocity, aerodynamic_force_vector=air_force,
-            aerodynamic_power=sum(force * speed for force, speed in zip(air_force, velocity)))
+        self.dynamics = DynamicsState(
+            air_relative_velocity=air_velocity,
+            aerodynamic_force_vector=air_force,
+            aerodynamic_power=sum((air_force[0] * velocity.x, air_force[1] * velocity.y, air_force[2] * velocity.z)),
+        )
         return iter(())
 
     def after_step(self, previous_velocity):
         pose = self._chassis.getTransform()
         orientation = pose.getQuat()
         body_spin = self._chassis.getAngularVelocity().dot(orientation.getRight())
-        wheels = self._vehicle.getWheels()
-        self.tires.omega = [wheel.getDeltaRotation() / self.native_dt - body_spin for wheel in wheels]
+        wheels = self._wheels
+        native_dt = self.native_dt
+        self.tires.omega = [wheel.getDeltaRotation() / native_dt - body_spin for wheel in wheels]
         self.tires.rotation = [wheel.getRotation() for wheel in wheels]
         acceleration = (self._chassis.getLinearVelocity() - previous_velocity) / FIXED_DT
         self._acceleration = acceleration.dot(orientation.getForward())
@@ -107,7 +120,8 @@ class TrafficVehicle(Vehicle):
             return
         motion = (pose.getPos() - previous_pose.getPos()).length() / FIXED_DT
         rotation = pose.getQuat() * previous_pose.getQuat().conjugate()
-        angular = 2 * math.atan2(math.sqrt(sum(rotation[i] ** 2 for i in (1, 2, 3))), abs(rotation[0])) / FIXED_DT
+        rx, ry, rz = rotation[1], rotation[2], rotation[3]
+        angular = 2 * math.atan2(math.sqrt(rx * rx + ry * ry + rz * rz), abs(rotation[0])) / FIXED_DT
         grounded = all(wheel.getRaycastInfo().isInContact() for wheel in wheels)
         # 原生轮胎按一遍顺序冲量求解；制动停车的厘米/秒以下漂移进入可被碰撞唤醒的原生休眠。
         self._park_quiet = self._park_quiet + 1 if parking and grounded and motion <= .01 and angular <= .001 else 0

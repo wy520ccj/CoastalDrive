@@ -524,7 +524,10 @@ class LocalVegetation:
             def lighting(scene, position):
                 self.original_lighting(scene, position)
                 if scene.base.session.simulation.track == 'endless':
-                    scene.render.setShaderInput('local_origin_y', float(scene.base.session.render_origin()))
+                    origin = float(scene.base.session.render_origin())
+                    current = scene.render.getShaderInput('local_origin_y')
+                    if current.getValueType() == current.MInvalid or current.getVector().x != origin:
+                        scene.render.setShaderInput('local_origin_y', origin)
                     if scene.coastal_daylight is None:
                         source_sun(scene, position, self.parameters,
                                    intensity=DAYLIGHT_SUN_SCALE if self.daylight is not None else .8)

@@ -187,6 +187,7 @@ def _load_geometry(reference):
         else:
             curve = HighwayCurve.__new__(HighwayCurve)
             curve.seed,curve.height,curve.base_height,curve.y_table,curve.advance = curve_values
+            curve._signs = {}
             curve.sample = lru_cache(maxsize=8192)(curve.sample)
     _worker_material = track,curve,origin
     _worker_version = reference

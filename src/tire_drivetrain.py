@@ -134,18 +134,61 @@ class DrivetrainStep:
 
 
 @lru_cache(maxsize=32)
-def native_joint_workspace(config, thread):
-    """每线程顺序求解复用工作区；当前子步状态在原生入口完整重置。"""
+def _native_joint_workspace(thread):
     return joint_workspace()
 
 
+def native_joint_workspace(config, thread):
+    """每线程顺序求解复用工作区；当前子步状态在原生入口完整重置。"""
+    return _native_joint_workspace(thread)
+
+
 @lru_cache(maxsize=32)
-def native_mechanical_workspace(config, thread):
-    """每线程顺序复用分区数值；当前状态、容量、几何仍逐子步刷新。"""
+def _native_mechanical_workspace(thread):
     return joint_mechanical_workspace()
 
 
-def native_contact_geometry(system):
+def native_mechanical_workspace(config, thread):
+    """每线程顺序复用分区数值；当前状态、容量、几何仍逐子步刷新。"""
+    return _native_mechanical_workspace(thread)
+
+
+def _unsupported_near_wheels(shapes, kinematics, velocity, angular, dt):
+    """保守包络内无未接管刚体时，可直接走已支持表面的原生求解路径。"""
+    from wheel_contact_kernels import prepared_support_candidates
+
+    if velocity is None or angular is None or dt <= 0. or dt > 0.02:
+        return True
+    linear_speed = math.sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] + velocity[2] * velocity[2])
+    angular_speed = math.sqrt(angular[0] * angular[0] + angular[1] * angular[1] + angular[2] * angular[2])
+    low_x = low_y = low_z = math.inf
+    high_x = high_y = high_z = -math.inf
+    for plane in kinematics:
+        if plane is None:
+            continue
+        surface = plane.surface
+        ox, oy, oz = surface.offset
+        hx, hy, hz = plane.hub
+        dx, dy, dz = plane.direction
+        radius = surface.wheel_radius
+        reach = surface.reach
+        hub_r = math.sqrt(hx * hx + hy * hy + hz * hz) + abs(reach) + radius
+        pad = radius + surface.width * 0.5 + 0.35 + (linear_speed + 60.0) * dt + (angular_speed + 30.0) * dt * hub_r
+        sx, sy, sz = ox + hx - radius * dx, oy + hy - radius * dy, oz + hz - radius * dz
+        ex, ey, ez = ox + hx + reach * dx, oy + hy + reach * dy, oz + hz + reach * dz
+        low_x = min(low_x, sx - pad, ex - pad)
+        low_y = min(low_y, sy - pad, ey - pad)
+        low_z = min(low_z, sz - pad, ez - pad)
+        high_x = max(high_x, sx + pad, ex + pad)
+        high_y = max(high_y, sy + pad, ey + pad)
+        high_z = max(high_z, sz + pad, ez + pad)
+    if low_x > high_x:
+        return False
+    candidates = prepared_support_candidates(shapes.native, (low_x, low_y, low_z), (high_x, high_y, high_z))
+    return any(not supported for _body, supported, _parts in candidates)
+
+
+def native_contact_geometry(system, *, velocity=None, angular=None, dt=0.):
     """准备真实几何；未接管的形状保留原世界查询，共同机械迭代仍用原生内核。"""
     from panda3d.core import BitMask32
 
@@ -155,6 +198,7 @@ def native_contact_geometry(system):
 
     complete = []
     direct_shapes = None
+    checked_shapes = {}
 
     def world_query(velocity, angular, dt):
         result = finite_contact_system(system, velocity, angular, dt)
@@ -173,11 +217,23 @@ def native_contact_geometry(system):
                     plane.surface.world, plane.surface.chassis, BitMask32.bit(0)))
             shapes = direct_shapes
         if isinstance(shapes, StaticSupportShapes):
-            if not shapes.joint_supported:
-                return joint_contact_query_prepare(world_query)
-            if shapes.joint_surfaces is None:
-                shapes.joint_surfaces = joint_surface_prepare(shapes)
-            complete.append(shapes.joint_surfaces)
+            if shapes.joint_supported:
+                if shapes.joint_surfaces is None:
+                    shapes.joint_surfaces = joint_surface_prepare(shapes)
+                complete.append(shapes.joint_surfaces)
+            else:
+                key = id(shapes)
+                near_unsupported = checked_shapes.get(key)
+                if near_unsupported is None:
+                    near_unsupported = _unsupported_near_wheels(shapes, system.kinematics, velocity, angular, dt)
+                    checked_shapes[key] = near_unsupported
+                if near_unsupported:
+                    return joint_contact_query_prepare(world_query)
+                if shapes.supported_joint_surfaces is None:
+                    shapes.supported_joint_surfaces = joint_surface_prepare(
+                        tuple(group for group in shapes if group[1])
+                    )
+                complete.append(shapes.supported_joint_surfaces)
         else:
             if not all(supported for _body, supported, _parts in shapes):
                 return joint_contact_query_prepare(world_query)
@@ -213,17 +269,21 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return mass_response_prepared(mobility_coefficients, vector)
 
     configurations = (config, config, rear_config, rear_config)
-    tire_hardware = tuple((car.slip_speed, car.tire_contact_stiffness, car.tire_contact_damping,
-                           car.tire_shape, car.tire_curvature) for car in configurations)
-    wheel_loads = tuple(frame.load for frame in frames)
-    wheel_supported = tuple(frame.supported for frame in frames)
-    tire_compliance = tuple(car.tire_compliance for car in configurations)
+    front_hw = (config.slip_speed, config.tire_contact_stiffness, config.tire_contact_damping,
+                config.tire_shape, config.tire_curvature)
+    rear_hw = (rear_config.slip_speed, rear_config.tire_contact_stiffness, rear_config.tire_contact_damping,
+               rear_config.tire_shape, rear_config.tire_curvature)
+    tire_hardware = (front_hw, front_hw, rear_hw, rear_hw)
+    wheel_loads = (frames[0].load, frames[1].load, frames[2].load, frames[3].load)
+    wheel_supported = (frames[0].supported, frames[1].supported, frames[2].supported, frames[3].supported)
+    tire_compliance = (config.tire_compliance, config.tire_compliance,
+                       rear_config.tire_compliance, rear_config.tire_compliance)
 
     native = (shaft and all(tire_compliance) and suspension is not None
               and suspension.kinematics is not None
               and all(plane is None or type(plane.surface).__name__ in ('WorldSurface', 'FrozenWorldSurface')
                       for plane in suspension.kinematics))
-    geometry = native_contact_geometry(suspension) if native else None
+    geometry = native_contact_geometry(suspension, velocity=velocity, angular=angular, dt=dt) if native else None
     prepared_native = geometry is not None and hard_gear
 
     def load_parameters():

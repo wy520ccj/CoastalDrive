@@ -325,8 +325,10 @@ def source_sun(scene, position, parameters, *, intensity=.8):
     sun.setPos(offset)
     sun.lookAt(0, 0, 0)
     inverse = sun.getQuat().conjugate()
-    origin = scene.base.session.render_origin()
-    scene.render.setShaderInput('local_origin_y', float(origin))
+    origin = float(scene.base.session.render_origin())
+    current_origin = scene.render.getShaderInput('local_origin_y')
+    if current_origin.getValueType() == current_origin.MInvalid or current_origin.getVector().x != origin:
+        scene.render.setShaderInput('local_origin_y', origin)
     heading = math.radians(scene.base.session.current.player.heading)
     center = position + Vec3(-math.sin(heading), math.cos(heading), 0) * CANOPY_SHADOW_LEAD
     light_position = inverse.xform(center + offset + Vec3(0, origin, 0))

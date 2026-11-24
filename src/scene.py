@@ -8,6 +8,7 @@ from time import perf_counter
 import gltf
 from panda3d.core import (
     AmbientLight,
+    ClockObject,
     DirectionalLight,
     Filename,
     Fog,
@@ -17,11 +18,14 @@ from panda3d.core import (
     GeomVertexData,
     GeomVertexFormat,
     GeomVertexWriter,
+    GraphicsEngine,
     Mat4,
     Material,
     NodePath,
     PNMImage,
+    PTAFloat,
     Quat,
+    ShaderInput,
     Texture,
     TexturePool,
     Vec3,
@@ -298,6 +302,18 @@ class Scene:
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
         self.coastal_daylight = None
         self._career_backdrop = None
+        # 复用场景根级逐帧浮点 ShaderInput，避免每帧触发全场景组合 RenderState 失效。
+        stage_count = GraphicsEngine.getGlobalPtr().getThreadingModel().getDrawStage() + 1
+        self._sea_time_values = tuple(PTAFloat.emptyArray(1) for _ in range(stage_count))
+        self._sea_time_inputs = tuple(ShaderInput("sea_time", value) for value in self._sea_time_values)
+        self._sea_time_slot = -1
+        self._career_origin_y_values = tuple(PTAFloat.emptyArray(1) for _ in range(stage_count))
+        self._career_origin_y_inputs = tuple(
+            ShaderInput("career_origin_y", value) for value in self._career_origin_y_values
+        )
+        self._career_origin_y_slot = -1
+        self._traffic_visible = []
+        self._traffic_signal_visible = []
         self.previous_exposure = base.pipeline.exposure
         self.setup_lighting()
         self.setup_scene()
@@ -338,7 +354,7 @@ class Scene:
                 self.ocean = make_mesh('career-ocean', vertices, faces, Vec4(1))
                 self.ocean.setShader(_water_shader(), 1)
                 self.ocean.reparentTo(self.render)
-                self.render.setShaderInput('career_origin_y', 0.)
+                self._set_render_career_origin_y(0.)
             rotation = Mat4()
             self.sky.getQuat().conjugate().extractToMatrix(rotation)
             self.render.setShaderInput("expressway_sky", self.sky.getTexture())
@@ -455,6 +471,8 @@ class Scene:
         self.traffic = []
         self.traffic_wheels = []
         self.traffic_signals = []
+        self._traffic_visible = []
+        self._traffic_signal_visible = []
         traffic_count = len(self.base.session.current.traffic)
         for model_id, skin in zip(
             traffic_models(self.base.session.seed, traffic_count),
@@ -467,6 +485,7 @@ class Scene:
             batch_driving_geometry(car, wheels)
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)
+            self._traffic_visible.append(True)
             lights = []
             rear = {"traffic-compact": -1.79, "traffic-sedan": -2.085,
                     "traffic-wagon": -2.06}[model_id]
@@ -480,6 +499,7 @@ class Scene:
                 lamp.hide()
                 lights.append(lamp)
             self.traffic_signals.append(lights)
+            self._traffic_signal_visible.append([False, False])
         if trace is not None:
             trace.mark("traffic_vehicles_loaded")
 
@@ -523,10 +543,24 @@ class Scene:
         reflector.setPos(position[0], position[1], position[2] + 0.26)
         reflector.reparentTo(parent)
 
+    def _set_render_sea_time(self, value: float) -> None:
+        slot = ClockObject.getGlobalClock().getFrameCount() % len(self._sea_time_values)
+        self._sea_time_values[slot][0] = float(value)
+        if slot != self._sea_time_slot:
+            self.render.setShaderInput(self._sea_time_inputs[slot])
+            self._sea_time_slot = slot
+
+    def _set_render_career_origin_y(self, value: float) -> None:
+        slot = ClockObject.getGlobalClock().getFrameCount() % len(self._career_origin_y_values)
+        self._career_origin_y_values[slot][0] = float(value)
+        if slot != self._career_origin_y_slot:
+            self.render.setShaderInput(self._career_origin_y_inputs[slot])
+            self._career_origin_y_slot = slot
+
     def setup_endless(self):
         """Build reusable endless-road templates and the initially streamed segments."""
         # 时间在合批范围外统一更新，新旧路段共享同一快照相位。
-        self.render.setShaderInput('sea_time', 0.)
+        self._set_render_sea_time(0.)
         self.render.setShaderInput('expressway_sky_tint', Vec3(1))
         self.endless_templates = self.render.attachNewNode("endless-templates")
         self.endless_templates.hide()
@@ -593,9 +627,13 @@ class Scene:
                 elapsed = (perf_counter() - step_start) * 1000
                 self.segment_work["max_step_ms"] = max(self.segment_work["max_step_ms"], elapsed)
                 self.segment_work["phase"] = phase
+        origin = self.base.session.render_origin()
         for index, root in self.segment_nodes.items():
             x, y, z = anchor(stream.curve, index)
-            root.setPos(x, y - self.base.session.render_origin(), z)
+            target_y = y - origin
+            pos = root.getPos()
+            if abs(pos.x - x) > 1e-6 or abs(pos.y - target_y) > 1e-6 or abs(pos.z - z) > 1e-6:
+                root.setPos(x, target_y, z)
         self.segment_work["near_pending"] = sum(abs(i - center) <= 3 for i in missing
                                                 if i not in self.segment_nodes)
         self.segment_work["frame_ms"] = (perf_counter() - started) * 1000
@@ -743,7 +781,7 @@ class Scene:
         if self.base.session.simulation.track == "coastal":
             self.ocean.setShaderInput("sea_time", state.time)
         if self.base.session.simulation.track == "endless":
-            self.render.setShaderInput('sea_time', state.time)
+            self._set_render_sea_time(state.time)
             simulation = self.base.session.simulation
             curve = simulation.stream.curve
             global_y = state.player.position[1] + state.origin_y
@@ -752,7 +790,8 @@ class Scene:
             if self.ocean is not None:
                 if self._career_backdrop is not None:
                     self.ocean.setY(-state.origin_y)
-                    self.render.setShaderInput('career_origin_y', state.origin_y)
+                    self.ocean.setShaderInput("sea_time", state.time)
+                    self._set_render_career_origin_y(state.origin_y)
                 else:
                     self.ocean.setY(state.player.position[1])
                 if self.base.session.simulation.road.curve is None:
@@ -765,25 +804,32 @@ class Scene:
         for node, wheel in zip(self.wheels, state.player.wheels):
             node.setPos(*wheel.position)
             node.setQuat(Quat(*wheel.orientation))
-        for node, wheels, car in zip(self.traffic, self.traffic_wheels, state.traffic):
-            node.setPos(*car.position)
-            node.setHpr(car.heading, car.pitch, car.roll)
+        blink_on = int(state.time * 2.5) % 2 == 0
+        for index, (node, wheels, car) in enumerate(zip(self.traffic, self.traffic_wheels, state.traffic)):
             if car.active:
-                node.show()
+                node.setPos(*car.position)
+                node.setHpr(car.heading, car.pitch, car.roll)
+                was_visible = self._traffic_visible[index]
+                if not was_visible:
+                    node.show()
+                    self._traffic_visible[index] = True
                 for wheel_node, wheel in zip(wheels, car.wheels):
                     wheel_node.setPos(*wheel.position)
                     wheel_node.setQuat(Quat(*wheel.orientation))
-                    wheel_node.show()
-            else:
+                    if not was_visible:
+                        wheel_node.show()
+            elif self._traffic_visible[index]:
                 node.hide()
                 for wheel_node in wheels:
                     wheel_node.hide()
-        for lights, car in zip(self.traffic_signals, state.traffic):
-            for side, lamp in zip((-1, 1), lights):
-                if car.active and (car.hazards or car.signal == side) and int(state.time * 2.5) % 2 == 0:
-                    lamp.show()
-                else:
-                    lamp.hide()
+                self._traffic_visible[index] = False
+        for index, (lights, car) in enumerate(zip(self.traffic_signals, state.traffic)):
+            visible = self._traffic_signal_visible[index]
+            for side_index, (side, lamp) in enumerate(zip((-1, 1), lights)):
+                should_show = car.active and (car.hazards or car.signal == side) and blink_on
+                if should_show != visible[side_index]:
+                    lamp.show() if should_show else lamp.hide()
+                    visible[side_index] = should_show
 
     def set_ghost(self, lap):
         if lap is self.ghost_lap:

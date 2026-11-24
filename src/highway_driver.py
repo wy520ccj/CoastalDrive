@@ -304,14 +304,22 @@ class HighwayDriver(Driver):
             action = self.control(local_car, local_traffic, FLAT_ROAD,
                                   [FLAT_ROAD.locate(c) for c in [local_car, *local_traffic]],
                                   lane_neighbors=lane_neighbors)
-            steering = super().control(car, traffic, road, locations)
+            steering = super().control(car, traffic, road, locations, steering_only=True)
             if self.recovering:
                 return steering
             distance = locations[0][0]
             speed_limit = self.cruise
+            curve = road.curve
+            from highway_curve import HighwayCurve
+
+            use_heading = isinstance(curve, HighwayCurve)
             for ahead in range(0, max(20, int(abs(car.speed) * 2)), 5):
-                a, b = road.sample(distance + ahead, self.lane), road.sample(distance + ahead + 8, self.lane)
-                curvature = abs(math.radians((b.heading - a.heading + 180) % 360 - 180)) / 8
+                if use_heading:
+                    a_h, b_h = curve.heading_at(distance + ahead), curve.heading_at(distance + ahead + 8)
+                else:
+                    a_h = road.sample(distance + ahead, self.lane).heading
+                    b_h = road.sample(distance + ahead + 8, self.lane).heading
+                curvature = abs(math.radians((b_h - a_h + 180) % 360 - 180)) / 8
                 speed_limit = min(speed_limit, math.sqrt(2.5 / max(curvature, 0.0001) + 5 * ahead))
             if car.speed > speed_limit + 0.5:
                 return Control(steering.steering, 0, max(action.brake, min(1, (car.speed - speed_limit) * 0.2)))
@@ -324,7 +332,7 @@ class HighwayDriver(Driver):
         else:
             self.target_lateral = road.lanes[self.lane] + self.avoid_offset
             self.preview_lateral = self.target_lateral
-        steering_action = super().control(car, traffic, road, locations)
+        steering_action = super().control(car, traffic, road, locations, steering_only=True)
         if self.recovering:
             self.cancel()
             return steering_action

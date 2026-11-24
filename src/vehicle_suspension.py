@@ -73,6 +73,7 @@ class Suspension:
         self.state = SuspensionState()
         self._support_shapes = None
         self._candidate_cache = {}
+        self._surface_cache = None
 
     def clear_queries(self):
         """车辆移除时释放静态候选引用；reset直接重建悬架。"""
@@ -104,6 +105,7 @@ class Suspension:
             self.state.normal_force, (tuple(origin), tuple(direction), hub_arms, axes, lengths, rests, hits),
             (world, chassis, self.envelope, static_shapes, candidates, chassis.getAngularDamping()),
             (WorldSurface, SupportPlane, SuspensionInput))
+        self._surface_cache = None
         # 四轮共用的大盒可能包含护栏；迭代时各轮重取自己的覆盖盒，避免远侧轮反复扫栏。
         if candidates['hulls']:
             for plane in system.kinematics:
@@ -145,35 +147,49 @@ class Suspension:
 
     def contacts(self, system, step, on_asphalt):
         states = []
+        cached = self._surface_cache if (self._surface_cache is not None and self._surface_cache[0] is self.geometry
+                                         and self._surface_cache[1] is on_asphalt) else None
+        cached_labels = cached[2] if cached is not None else None
         for i, (point, normal, _alignment, rest) in enumerate(self.geometry):
             supported = system.touching[i] and step.axial_force[i] > 0.
             alignment = system.alignment[i]
             force = step.axial_force[i] / alignment if supported else 0.
             raw = step.raw_axial_force[i] / alignment if supported else 0.
+            if supported:
+                surface = (cached_labels[i] if cached_labels is not None and cached_labels[i] is not None
+                           else ("asphalt" if on_asphalt(point[0], point[1]) else "grass"))
+            else:
+                surface = None
             states.append(WheelContactState(
                 supported, point if supported else None, normal if supported else None, raw, force,
                 rest - system.geometry[i] if supported else rest - step.compression[i],
-                system.geometry[i] if supported else step.compression[i], None,
-                ("asphalt" if on_asphalt(point[0], point[1]) else "grass") if supported else None))
+                system.geometry[i] if supported else step.compression[i], None, surface))
         return tuple(states)
 
     def candidates(self, system, on_asphalt):
         """候选接点只提供坐标；实际轮荷由共同机械方程决定。"""
-        return tuple(WheelContactState(
-            eligible, point if eligible else None, normal if eligible else None, 0., 0.,
-            rest - compression, compression, None,
-            ("asphalt" if on_asphalt(point[0], point[1]) else "grass") if eligible else None)
-            for (point, normal, _alignment, rest), eligible, compression in
-            zip(self.geometry, system.touching, system.geometry))
+        labels = []
+        states = []
+        for (point, normal, _alignment, rest), eligible, compression in zip(
+            self.geometry, system.touching, system.geometry
+        ):
+            surface = ("asphalt" if on_asphalt(point[0], point[1]) else "grass") if eligible else None
+            labels.append(surface)
+            states.append(WheelContactState(
+                eligible, point if eligible else None, normal if eligible else None, 0., 0.,
+                rest - compression, compression, None, surface))
+        self._surface_cache = (self.geometry, on_asphalt, tuple(labels))
+        return tuple(states)
 
     def publish(self, initial_system, final_system, substeps, on_asphalt, tick, impulses):
         """损耗/功累加全拍，力与接触标签保留最后实际施力子步；子步明细同时保存。"""
         config = self.config
         initial = initial_system.compression
         step = substeps[-1][1]
-        losses = ("damping_dissipation", "elastic_numerical_dissipation", "body_numerical_dissipation",
-                  "contact_offset_work", "energy_residual", "body_work")
-        step = replace(step, **{name: sum(getattr(part, name) for _dt, part in substeps) for name in losses})
+        if len(substeps) > 1:
+            losses = ("damping_dissipation", "elastic_numerical_dissipation", "body_numerical_dissipation",
+                      "contact_offset_work", "energy_residual", "body_work")
+            step = replace(step, **{name: sum(getattr(part, name) for _dt, part in substeps) for name in losses})
         linear, angular_impulse = impulses
         states = self.contacts(final_system, step, on_asphalt)
         loads = tuple(contact.normal_load for contact in states)

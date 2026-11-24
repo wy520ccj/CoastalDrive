@@ -99,7 +99,7 @@ class Driver:
     config: VehicleConfig = CAR
     input_config: InputConfig = GAME_INPUT
 
-    def control(self, car, traffic, road, locations):
+    def control(self, car, traffic, road, locations, *, steering_only=False):
         distance, lateral = locations[0]
         p = road.sample(distance, self.lane)
         heading_error = (car.heading - p.heading + 180) % 360 - 180
@@ -120,10 +120,11 @@ class Driver:
             else:
                 return Control(brake=1)
         lookahead = 5 + abs(car.speed) * 0.65
-        target = road.sample(distance + lookahead, self.lane)
         preview = self.preview_lateral if self.preview_lateral is not None else self.target_lateral
         if preview is not None:
             target = road.sample_lateral(distance + lookahead, preview)
+        else:
+            target = road.sample(distance + lookahead, self.lane)
         dx, dy = target.x - car.position[0], target.y - car.position[1]
         error = math.atan2(-dx, dy) - math.radians(car.heading)
         distance_to_target = math.hypot(dx, dy)
@@ -136,6 +137,8 @@ class Driver:
             2 * self.config.wheelbase * math.sin(tracking_error), distance_to_target
         ))
         steering = max(-1, min(1, -angle / steering_limit(car.speed, self.config, self.input_config)))
+        if steering_only:
+            return Control(steering)
         desired = self.cruise
         if not road.closed and not road.endless:
             # The finite preview ends here. Wait on the road until safe to recycle.

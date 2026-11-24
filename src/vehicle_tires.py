@@ -67,8 +67,13 @@ class Tires:
         origin = pose.getPos()
         orientation = pose.getQuat()
         inv_inertia = chassis.getInvInertiaTensorWorld()
-        tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
-                             for b in range(3)) for a in range(3))
+        c00 = inv_inertia.getCell(0, 0)
+        c01 = (inv_inertia.getCell(0, 1) + inv_inertia.getCell(1, 0)) / 2
+        c02 = (inv_inertia.getCell(0, 2) + inv_inertia.getCell(2, 0)) / 2
+        c11 = inv_inertia.getCell(1, 1)
+        c12 = (inv_inertia.getCell(1, 2) + inv_inertia.getCell(2, 1)) / 2
+        c22 = inv_inertia.getCell(2, 2)
+        tensor = ((c00, c01, c02), (c01, c11, c12), (c02, c12, c22))
         config = self.config
         envelope_geometry = ({"width": config.wheel_width, "shoulder": config.wheel_shoulder_radius,
                               "crown": config.wheel_crown_height}
@@ -192,8 +197,14 @@ class Tires:
                                      if config.tire_compliance else ((0.0, 0.0), 0.0))
                     projected.append(elastic)
                     frame_dissipation[i] += loss
-                free_velocity = tuple(chassis.getLinearVelocity()[a] + external_velocity[a] * fraction for a in range(3))
-                free_angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] * fraction for a in range(3))
+                lin_v = chassis.getLinearVelocity()
+                ang_v = chassis.getAngularVelocity()
+                free_velocity = (lin_v.x + external_velocity[0] * fraction,
+                                 lin_v.y + external_velocity[1] * fraction,
+                                 lin_v.z + external_velocity[2] * fraction)
+                free_angular = (ang_v.x + external_angular[0] * fraction,
+                                ang_v.y + external_angular[1] * fraction,
+                                ang_v.z + external_angular[2] * fraction)
                 if config.finite_drivetrain:
                     if suspension is not None:
                         # 固定当拍路面资格，实际离地/再支撑由本子步求出的轮荷决定。
