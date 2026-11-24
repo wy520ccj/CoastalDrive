@@ -1,11 +1,11 @@
 {
-  "source": "CoastalDrive Panda3D renderer; existing project vehicles and roads",
-  "process": "Fixed camera capture with no UI; original PNGs copied without pixel edits",
+  "source": "CoastalDrive Panda3D renderer; current live scene vehicles sky and roads",
+  "process": "Live camera capture with synced road segments and sky dome; no UI and no pixel edits",
   "cases": [
     {
       "event": "first-drive",
       "image": "first-drive.png",
-      "sha256": "209e0a814dde2ab95ae523895083e141d886d6580207155fc660099ef287812f",
+      "sha256": "388743448e1115ff9ea379781babe8c8574e0f55e35f103717852ce98ad0c9c5",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
@@ -15,7 +15,7 @@
     {
       "event": "parking",
       "image": "parking.png",
-      "sha256": "e41edcf72a507f12056787c0b0ec41780146375b2446c7a478e3970dcd1fc831",
+      "sha256": "b8d1c85bbea4df3be027dcdcbc8bd5939694021909e9c817f1d74c9ca939fe67",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
@@ -25,7 +25,7 @@
     {
       "event": "slalom",
       "image": "slalom.png",
-      "sha256": "d44cd405780a83f3c3b4e09e0faf3077921b0fc052930309bd068a22e15d5d06",
+      "sha256": "5f52631fe70402f69e7109152e9146033daf812574c8c06e4b58b2f2a641deb8",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
@@ -35,7 +35,7 @@
     {
       "event": "coast-sprint",
       "image": "coast-sprint.png",
-      "sha256": "23eddc69b0965ab4aa9688fd3890c526226341b17af7d924177247bc07818933",
+      "sha256": "29995d64cf4ae7f964542fe4de909d02ff6aad2c487375030d5bbb3662979ff6",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
@@ -45,7 +45,7 @@
     {
       "event": "ridge-run",
       "image": "ridge-run.png",
-      "sha256": "8d97e5250614715e2522d02012f4f3d4e27dd4b60e714a6506ac05accfffc76e",
+      "sha256": "0f1804874197a6a1833ef8bf97fb4a47fcc8f102bad76ac29d40edbe5937b694",
       "initialisation_ticks": 152,
       "driving_steps": 0,
       "tick": 152,
@@ -55,10 +55,20 @@
     {
       "event": "coastal-cup",
       "image": "coastal-cup.png",
-      "sha256": "5267da6345c8cddef491606fd8d2f2ef7fe0bc3348ef48de235a17d25aec9940",
+      "sha256": "2c77165b341f264814fef57d5fbcb059c4573ace7fc3c3f8dcbfb14b202986f0",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    },
+    {
+      "event": "chase-valley",
+      "image": "chase-valley.png",
+      "sha256": "dd6576b31834016a75cb5638e7d65133ef1a9ecfbab260933533a1479b9cd982",
+      "initialisation_ticks": 148,
+      "driving_steps": 0,
+      "tick": 148,
       "design_id": "game-tuned",
       "visual": "sports"
     }

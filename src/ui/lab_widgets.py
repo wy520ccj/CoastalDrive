@@ -1,4 +1,4 @@
-"""实验室专用控件样式与卡片几何；控件仍由DirectGUI编辑。"""
+"""界面几何与控件原语：黑曜石圆角细描边卡片、单选圆环指示器、摄影渐隐遮罩与琥珀金按钮材质。"""
 
 import math
 from functools import lru_cache
@@ -14,13 +14,33 @@ from panda3d.core import (
     GeomVertexWriter,
     PNMImage,
     Texture,
+    TransparencyAttrib,
 )
 
 from ui import theme
 
-# 辅助文字与描边直接引用全局暖阳画廊令牌。
-MUTED = theme.MUTED
-BORDER = theme.HAIRLINE
+# 专家试验台明净浅瓷工程令牌（高对比浅底图表/数据可读性，与暗色工坊隔离不互相污染）。
+MUTED = (0.345, 0.388, 0.458, 1)
+BORDER = (0.815, 0.840, 0.878, 1)
+LAB_BG = (0.942, 0.948, 0.958, 1)
+LAB_HEADER = (0.988, 0.990, 0.995, 1)
+LAB_CARD = (0.996, 0.997, 0.999, 1)
+LAB_SURFACE = (0.948, 0.956, 0.968, 1)
+LAB_FIELD = (0.938, 0.948, 0.964, 1)
+LAB_FIELD_FOCUS = (0.855, 0.922, 0.975, 1)
+LAB_FIELD_DISABLED = (0.920, 0.928, 0.940, 1)
+LAB_TEXT = (0.082, 0.105, 0.145, 1)
+LAB_DISABLED_TEXT = (0.580, 0.615, 0.670, 1)
+LAB_GRID = (0.875, 0.895, 0.925, 1)
+LAB_TRACK = (0.820, 0.850, 0.890, 1)
+LAB_ACCENT_A = (0.090, 0.420, 0.640, 1)
+LAB_TINT_A = (0.895, 0.945, 0.985, 1)
+LAB_LINE_A = (0.640, 0.790, 0.905, 1)
+LAB_ACCENT_B = (0.845, 0.335, 0.085, 1)
+LAB_TINT_B = (0.992, 0.935, 0.895, 1)
+LAB_LINE_B = (0.920, 0.735, 0.620, 1)
+LAB_SUCCESS = (0.060, 0.490, 0.320, 1)
+LAB_ERROR = (0.760, 0.160, 0.140, 1)
 
 
 class LabOptionMenu(DirectOptionMenu):
@@ -85,23 +105,91 @@ def rounded_panel(parent, name, box, color, radius=.025):
     return result
 
 
-@lru_cache(maxsize=4)
-def button_textures(variant):
-    """程序绘制暖阳画廊圆角按钮材质：primary(赤陶橙红) / dark(顶栏暖杏仁胶囊) / secondary(象牙奶油描边)。"""
-    if variant is True or variant == "primary":
-        fills = ((.88, .33, .16), (.95, .40, .21), (.78, .27, .12), (.82, .78, .73))
-        border_rgb = (.88, .33, .16)
-    elif variant == "dark":
-        fills = ((.94, .90, .845), (.88, .82, .745), (.82, .76, .68), (.92, .89, .85))
-        border_rgb = (.82, .755, .675)
+def skewed_panel(parent, name, box, color, skew=.010):
+    """克制圆角微倾标签条（保留函数名兼容全站，改为参考图同款克制圆角精密徽标）。"""
+    left, right, bottom, top = box
+    radius = min((right - left) * 0.25, (top - bottom) * 0.25, max(0.004, abs(skew) * 0.45))
+    node = rounded_panel(parent, name, box, color, radius)
+    node.setTransparency(TransparencyAttrib.MAlpha)
+    return node
+
+
+def radio_dot(parent, name, cx, cz, radius, *, selected=False, installed=False):
+    """参考图同款右侧精密单选圆环：未选空心细环、已装白点、当前选中琥珀金发光圆环。"""
+    group = parent.attachNewNode(name)
+    group.setTransparency(TransparencyAttrib.MAlpha)
+    ring_col = theme.AMBER if selected else theme.DARK_SUB if installed else (0.36, 0.41, 0.50, 0.85)
+    rounded_panel(group, name + "-outer",
+                  (cx - radius, cx + radius, cz - radius, cz + radius), ring_col, radius)
+    inner_r = radius * 0.78
+    rounded_panel(group, name + "-cut",
+                  (cx - inner_r, cx + inner_r, cz - inner_r, cz + inner_r),
+                  theme.AMBER_WASH if selected else theme.CARBON_CARD, inner_r)
+    if selected or installed:
+        core_r = radius * 0.44
+        rounded_panel(group, name + "-core",
+                      (cx - core_r, cx + core_r, cz - core_r, cz + core_r),
+                      theme.AMBER if selected else theme.WHITE, core_r)
+    return group
+
+
+def gradient_panel(parent, name, box, color_a, color_b, *, horizontal=False):
+    """顶点渐变遮罩：在摄影与车库布景边缘营造平滑黑曜石渐隐，突出主体与字迹层次。"""
+    left, right, bottom, top = box
+    data = GeomVertexData(name, GeomVertexFormat.getV3c4(), Geom.UHStatic)
+    pos = GeomVertexWriter(data, "vertex")
+    col = GeomVertexWriter(data, "color")
+    if horizontal:
+        corners = (
+            (left, bottom, color_a),
+            (right, bottom, color_b),
+            (right, top, color_b),
+            (left, top, color_a),
+        )
     else:
-        fills = ((.992, .976, .946), (.955, .915, .860), (.91, .86, .795), (.94, .915, .88))
-        border_rgb = (.835, .775, .695)
+        corners = (
+            (left, bottom, color_a),
+            (right, bottom, color_a),
+            (right, top, color_b),
+            (left, top, color_b),
+        )
+    for x, z, rgba in corners:
+        pos.addData3f(x, 0, z)
+        col.addData4f(*rgba)
+    triangles = GeomTriangles(Geom.UHStatic)
+    triangles.addVertices(0, 1, 2)
+    triangles.addVertices(0, 2, 3)
+    geom = Geom(data)
+    geom.addPrimitive(triangles)
+    node = GeomNode(name)
+    node.addGeom(geom)
+    result = parent.attachNewNode(node)
+    result.setTransparency(TransparencyAttrib.MAlpha)
+    result.setDepthTest(False)
+    result.setDepthWrite(False)
+    return result
+
+
+@lru_cache(maxsize=8)
+def button_textures(variant):
+    """精密圆角按钮材质：lab_primary(赛道暖橙实心) / primary(落日琥珀金实心) / dark(黑曜石细描边) / secondary(明净浅白描边)。"""
+    if variant == "lab_primary":
+        fills = ((.880, .365, .115), (.940, .430, .175), (.760, .295, .080), (.78, .80, .84))
+        border_rgb = (.880, .365, .115)
+    elif variant is True or variant == "primary":
+        fills = ((.949, .690, .255), (1.000, .765, .355), (.835, .585, .175), (.78, .80, .84))
+        border_rgb = (.949, .690, .255)
+    elif variant == "dark":
+        fills = ((.105, .128, .172), (.155, .188, .250), (.075, .092, .128), (.082, .096, .126))
+        border_rgb = (.245, .292, .375)
+    else:
+        fills = ((.994, .996, .999), (.936, .950, .972), (.882, .902, .936), (.93, .94, .96))
+        border_rgb = (.795, .825, .868)
     textures = []
-    width, height, radius = 256, 64, 12
+    width, height, radius = 256, 64, 10
     for index, fill in enumerate(fills):
         image = PNMImage(width, height, 4)
-        border = fill if (variant is True or variant == "primary") else border_rgb
+        border = fill if (variant in (True, "primary", "lab_primary")) else border_rgb
         for y in range(height):
             for x in range(width):
                 dx = max(radius-x-.5, x+.5-(width-radius), 0.)
@@ -109,7 +197,7 @@ def button_textures(variant):
                 distance = math.hypot(dx, dy)
                 alpha = min(1., max(0., radius+.5-distance))
                 edge = min(x+.5, width-x-.5, y+.5, height-y-.5, radius-distance)
-                color = border if edge < 1.3 else fill
+                color = border if edge < 1.4 else fill
                 image.setXelA(x, y, *color, alpha)
         texture = Texture(f"lab-button-{variant}-{index}")
         texture.load(image)

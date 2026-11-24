@@ -1,4 +1,4 @@
-"""工程曲线绘制；只消费记录值，未定义信号断开连线。"""
+"""工程曲线绘制（落日黑曜石遥测示波卡）；只消费记录值，未定义信号断开连线。"""
 
 import math
 
@@ -6,11 +6,19 @@ from direct.gui.DirectGui import OnscreenText
 from panda3d.core import LineSegs, TextNode
 
 from lab_signals import SIGNAL_BY_KEY
-from ui import theme
-from ui.lab_widgets import BORDER, MUTED, rounded_panel
+from ui.lab_widgets import (
+    BORDER,
+    LAB_ACCENT_A,
+    LAB_ACCENT_B,
+    LAB_CARD,
+    LAB_GRID,
+    LAB_TEXT,
+    MUTED,
+    rounded_panel,
+)
 
-TEXT = theme.INK
-COLORS = (theme.SEA, theme.ORANGE)
+TEXT = LAB_TEXT
+COLORS = (LAB_ACCENT_A, LAB_ACCENT_B)
 
 
 class LabPlot:
@@ -19,7 +27,7 @@ class LabPlot:
         self.font, self.box, self.keys = font, box, (key,)
         left, right, bottom, top = box
         rounded_panel(self.root, "signal-border", (left-.004, right+.004, bottom-.004, top+.004), BORDER, .024)
-        rounded_panel(self.root, "signal-card", box, theme.PAPER_LIGHT, .022)
+        rounded_panel(self.root, "signal-card", box, LAB_CARD, .022)
         self.title = OnscreenText(parent=self.root, font=font, text="", fg=TEXT,
             pos=(left+.055, top-.062), scale=.036, align=TextNode.ALeft, mayChange=True)
         self.readout = OnscreenText(parent=self.root, font=font, text="", fg=MUTED,
@@ -53,7 +61,7 @@ class LabPlot:
             label.destroy()
         self.axis_labels.clear()
         grid = LineSegs()
-        grid.setColor(.89, .845, .785, 1)
+        grid.setColor(*LAB_GRID)
         for index in range(round((high-low)/step)+1):
             value = low+index*step
             z = z0+(value-low)/(high-low)*(z1-z0)
@@ -61,20 +69,20 @@ class LabPlot:
             grid.drawTo(x1, 0, z)
             label = f"{value:.4g}"
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font, text=label, fg=MUTED,
-                pos=(x0-.022, z-.008), scale=.030, align=TextNode.ARight))
+                pos=(x0-.022, z-.008), scale=.029, align=TextNode.ARight))
         for index in range(5):
             x = x0+index*(x1-x0)/4
             grid.moveTo(x, 0, z0)
             grid.drawTo(x, 0, z1)
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font,
                 text=f"{self.duration*index/4:.1f}", fg=MUTED,
-                pos=(x, z0-.046), scale=.030))
+                pos=(x, z0-.046), scale=.029))
         self.lines.attachNewNode(grid.create())
         for slot, rows in indexed:
             color = COLORS[slot]
             for channel, key in enumerate(self.keys):
                 curve = LineSegs()
-                curve.setThickness(2.2)
+                curve.setThickness(2.4)
                 curve.setColor(*color)
                 connected = False
                 for index, row in enumerate(rows):
@@ -104,7 +112,7 @@ class LabPlot:
         left, right, bottom, top = self.box
         x = left+.14+min(1., time/self.duration)*(right-left-.205)
         lines = LineSegs()
-        lines.setColor(*theme.INK)
+        lines.setColor(*LAB_TEXT)
         lines.moveTo(x, 0, bottom+.115)
         lines.drawTo(x, 0, top-.135)
         self.cursor.attachNewNode(lines.create())

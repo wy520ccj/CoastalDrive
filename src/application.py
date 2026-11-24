@@ -1624,18 +1624,20 @@ class CoastalDrive(ShowBase):
                                    for state in ("normal", "pressed", "hover", "disabled"))
         self.primary_states = tuple(self.loader.loadTexture(theme.asset_filename(f"components/primary-{state}.png"))
                                     for state in ("normal", "pressed", "hover", "normal"))
+        dark_btn_colors = ((0.048, 0.064, 0.092, 0.66), (0.095, 0.125, 0.175, 0.84),
+                           (0.140, 0.180, 0.240, 0.88), (0.048, 0.064, 0.092, 0.36))
         self.lab_return_button = DirectButton(
             parent=self.hud.root, text="返回实验台", text_font=self.ui_font,
-            text_fg=theme.INK, text_scale=.045, text_pos=(0, -.016),
+            text_fg=theme.WHITE, text_scale=.042, text_pos=(0, -.014),
             frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .86),
-            frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            frameColor=dark_btn_colors, relief=DGG.FLAT,
             command=self.return_from_test_drive, pressEffect=False,
         )
         self.ghost_button = DirectButton(
             parent=self.hud.root, text="幽灵：暂无", text_font=self.ui_font,
-            text_fg=theme.INK, text_scale=.042, text_pos=(0, -.016),
+            text_fg=theme.WHITE, text_scale=.040, text_pos=(0, -.014),
             frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .71),
-            frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            frameColor=dark_btn_colors, relief=DGG.FLAT,
             command=self.toggle_ghost, pressEffect=False,
         )
         self.ghost_button.hide()
@@ -2406,29 +2408,36 @@ class CoastalDrive(ShowBase):
         self.ghost_button.show()
 
     def layout_driving_buttons(self):
-        """滨海小按钮沿用原回调；其它入口保留原样式和位置。"""
+        """滨海小按钮沿用原回调；统一使用轻透黑曜石驾驶按钮样式。"""
         coastal = self.session.simulation.track == 'coastal' or self.budget_active
+        dark_btn_colors = ((0.048, 0.064, 0.092, 0.66), (0.095, 0.125, 0.175, 0.84),
+                           (0.140, 0.180, 0.240, 0.88), (0.048, 0.064, 0.092, 0.36))
         if coastal != self._driving_buttons_coastal:
             self._driving_buttons_coastal = coastal
             self._coastal_ghost_available = None
-            for button, scale, height in ((self.lab_return_button, .045, .86),
-                                          (self.ghost_button, .042, .71)):
-                button['frameTexture'] = None if coastal else self.button_states
-                button['frameColor'] = ((.035, .075, .10, .68), (.08, .16, .20, .85),
-                                        (.13, .24, .28, .85), (.035, .075, .10, .40)) if coastal else (1, 1, 1, 1)
-                button['text_fg'] = (1, 1, 1, 1) if coastal else theme.INK
+            for button, scale, height in ((self.lab_return_button, .042, .86),
+                                          (self.ghost_button, .040, .71)):
+                button['frameTexture'] = None
+                button['frameColor'] = dark_btn_colors
+                button['text_fg'] = theme.WHITE
                 button['text_scale'] = .035 if coastal else scale
-                button['text_pos'] = (0, -.012 if coastal else -.016)
+                button['text_pos'] = (0, -.012 if coastal else -.014)
                 button['frameSize'] = (-.25, .25, -.048, .048) if coastal else (-.34, .34, -.055, .055)
                 button.setZ((.87 if button is self.lab_return_button else .74) if coastal else height)
         x = self.getAspectRatio()-(.325 if coastal else .44)
         self.lab_return_button.setX(x)
         self.ghost_button.setX(x)
-        if coastal:
-            available = self.session.reference_ghost is not None
-            if available != self._coastal_ghost_available:
-                self.ghost_button['text_fg'] = (1, 1, 1, 1) if available else (.60, .65, .68, 1)
-                self._coastal_ghost_available = available
+        # 生涯 HUD 右上角自带 Esc 暂停按钮，任何进入生涯 HUD 的状态都隐藏返回按钮避免重叠。
+        career_hud_active = (self.career_active or self.hud._career_active
+                             or (self.session.simulation.track == 'endless'
+                                 and self.session.highway.snapshot.career is not None
+                                 and not (self.session.highway.snapshot.engineering is not None
+                                          and self.session.highway.snapshot.engineering.assessment == 'road')))
+        self.lab_return_button.hide() if career_hud_active else self.lab_return_button.show()
+        available = self.session.reference_ghost is not None
+        if available != self._coastal_ghost_available:
+            self.ghost_button['text_fg'] = theme.WHITE if available else (0.58, 0.64, 0.72, 1)
+            self._coastal_ghost_available = available
 
     def refresh_panel(self):
         phase = self.session.phase
@@ -2483,7 +2492,12 @@ class CoastalDrive(ShowBase):
         self._shown_phase = panel_state
         self.lab_return_button['text'] = ('返回方案' if self.budget_active else '返回赛事' if self.career_active else
                                         '返回海岸工坊' if self.workshop_garage_return else '返回实验台')
-        self.lab_return_button.hide() if self.career_active else self.lab_return_button.show()
+        career_hud_active = (self.career_active or self.hud._career_active
+                             or (self.session.simulation.track == 'endless'
+                                 and self.session.highway.snapshot.career is not None
+                                 and not (self.session.highway.snapshot.engineering is not None
+                                          and self.session.highway.snapshot.engineering.assessment == 'road')))
+        self.lab_return_button.hide() if career_hud_active else self.lab_return_button.show()
         self.driving_cards.hide()
         self.panel_title.show()
         self.panel.setScale(1.)

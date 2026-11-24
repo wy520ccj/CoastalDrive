@@ -6,7 +6,7 @@ from panda3d.core import LineSegs
 
 from road_review import focus_position, gate_crossings, sample_at
 from slalom_lesson import GATES
-from ui import theme
+from ui.lab_widgets import LAB_ACCENT_A, LAB_ACCENT_B, LAB_CARD, LAB_TEXT, LAB_TRACK
 from virtual_test_driver import target_x
 
 
@@ -14,14 +14,14 @@ class RoadReviewPanel:
     def __init__(self, app, owner):
         self.app, self.owner = app, owner
         self.records, self.gates = (), []
-        self.root = DirectFrame(parent=owner.root, frameColor=theme.PAPER_LIGHT,
+        self.root = DirectFrame(parent=owner.root, frameColor=LAB_CARD,
             frameSize=(-1.70, 1.70, -.86, .79), sortOrder=103, state=DGG.NORMAL)
         app.text("道路复盘 · 同位置对照", -1.52, .64, .055, parent=self.root, font=app.heading_font)
         app.button("返回结果", 1.30, .65, .49, self.hide, parent=self.root)
         self.names = app.text("", -1.52, .56, .029, parent=self.root)
         app.text("A海蓝 / B橙色 / 灰线目标 · 按首次向前到达位置插值；未到达处留空\n"
                  "只读完成步，不推进物理；横轴道路进度、纵轴左右位置，两轴比例不同。",
-                 -1.52, .49, .031, theme.SEA, parent=self.root)
+                 -1.52, .49, .031, LAB_ACCENT_A, parent=self.root)
         self.gate_buttons = []
         for index, (_, x) in enumerate(GATES):
             button = app.button(f"{index+1} {'左' if x < 0 else '右' if x > 0 else '中'}", -1.27+index*.50,
@@ -33,11 +33,11 @@ class RoadReviewPanel:
         self.details = [app.text("", x, -.27, .032, parent=self.root) for x in (-1.52, .15)]
         self.slider = DirectSlider(parent=self.root, range=(0., 320.), value=0., pageSize=5.,
             frameSize=(-1.40, 1.40, -.030, .030), frameVisibleScale=(1., .12),
-            frameColor=(.77, .82, .80, 1.), thumb_frameColor=theme.ORANGE,
+            frameColor=LAB_TRACK, thumb_frameColor=LAB_ACCENT_B,
             thumb_frameSize=(-.018, .018, -.025, .025), thumb_relief=DGG.FLAT,
             relief=DGG.FLAT, borderWidth=(0, 0), pos=(0., 0., -.51), command=self.seek)
         app.text("拖动比较同位置。请求−1…1为该步保持比例，响应为前轮等效转角；t从起步计。",
-                 -1.52, -.61, .029, theme.SEA, parent=self.root)
+                 -1.52, -.61, .029, LAB_ACCENT_A, parent=self.root)
         self.load_button = app.button("载回 B 继续试验", 1.12, -.73, 1., owner.load_right,
                    parent=self.root, accent=True)
         self.drive_button = app.button("驾驶 B 过门", 0., -.73, .96, owner.drive_slalom, parent=self.root)
@@ -85,7 +85,7 @@ class RoadReviewPanel:
         for distance in range(0, 321, 2):
             target.drawTo(*self.point(distance, target_x(distance))) if distance else target.moveTo(*self.point(0., 0.))
         self.lines.attachNewNode(target.create())
-        for record, color in zip(self.records, (theme.SEA, theme.ORANGE)):
+        for record, color in zip(self.records, (LAB_ACCENT_A, LAB_ACCENT_B)):
             path = LineSegs()
             path.setColor(*color)
             path.setThickness(2.)
@@ -103,7 +103,7 @@ class RoadReviewPanel:
         self.cursor.removeNode()
         self.cursor = self.root.attachNewNode("review-position")
         mark = LineSegs()
-        mark.setColor(*theme.INK)
+        mark.setColor(*LAB_TEXT)
         mark.moveTo(*self.point(distance, -6.))
         mark.drawTo(*self.point(distance, 6.))
         self.cursor.attachNewNode(mark.create())
@@ -118,7 +118,7 @@ class RoadReviewPanel:
                 detail.setText(f"{'AB'[index]} · 未到达此处；终点之后不补数据")
                 continue
             dot = LineSegs()
-            dot.setColor(*(theme.SEA if index == 0 else theme.ORANGE))
+            dot.setColor(*(LAB_ACCENT_A if index == 0 else LAB_ACCENT_B))
             dot.setThickness(3.)
             x, _, z = self.point(distance, sample["x"])
             dot.moveTo(x-.012, 0., z)

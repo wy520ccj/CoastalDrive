@@ -35,7 +35,8 @@ def reflection_shader(use_330):
             'vec3 world_view = normalize(vec3(camera_world_position.xy, -camera_world_position.z) - '
             'vec3(v_world_position.xy, -v_world_position.z));',
         'color.rgb += emission;': 'color.rgb += emission;\n'
-            '    color.a *= 0.20 * (1.0 - smoothstep(0.0, 0.85, -v_world_position.z));',
+            '    color.rgb *= vec3(1.06, 0.90, 0.74);\n'
+            '    color.a *= 0.34 * (1.0 - smoothstep(0.0, 0.95, -v_world_position.z));',
     }
     for original, replacement in changes.items():
         if fragment.count(original) != 1:

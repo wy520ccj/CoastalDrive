@@ -6,8 +6,16 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectEntry, DirectFrame
 from panda3d.core import TextNode
 
-from ui import theme
 from ui.lab_diagrams import car, lengths
+from ui.lab_widgets import (
+    LAB_ACCENT_A,
+    LAB_ACCENT_B,
+    LAB_BG,
+    LAB_CARD,
+    LAB_FIELD,
+    LAB_TEXT,
+    MUTED,
+)
 from ui.virtual_driver import VirtualDriverPanel
 from vehicle_designs import vehicle_design
 from vehicle_schemes import compare_schemes, list_schemes, save_scheme, sync_road_progress
@@ -19,9 +27,9 @@ class SchemesPanel:
         self.schemes = []
         self.indices = [0, 0]
         self.menus = [None, None]
-        self.root = DirectFrame(parent=app.root, frameColor=theme.PAPER_LIGHT,
+        self.root = DirectFrame(parent=app.root, frameColor=LAB_BG,
                                 frameSize=(-1.78, 1.78, -1.5, 1.5), sortOrder=97, state=DGG.NORMAL)
-        DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.70, 1.70, -.93, .79))
+        DirectFrame(parent=self.root, frameColor=LAB_CARD, frameSize=(-1.70, 1.70, -.93, .79))
         glyphs = TextNode('scheme-button-glyphs')
         glyphs.setFont(app.font)
         glyphs.setText('关闭保存当前试验为新方案载回B方案比较AB曲线驾驶虚拟试车员‹›')
@@ -29,29 +37,29 @@ class SchemesPanel:
         app.text("我的方案", -1.50, .68, .070, parent=self.root, font=app.heading_font)
         app.button("关闭", 1.47, .73, .28, self.hide, parent=self.root)
         app.text("选择两套方案进行对比。", -1.50, .55, .040,
-                 theme.MUTED, parent=self.root)
-        self.save_panel = DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT,
+                 MUTED, parent=self.root)
+        self.save_panel = DirectFrame(parent=self.root, frameColor=LAB_CARD,
             frameSize=(-1.78, 1.78, -1, .45), sortOrder=100, state=DGG.NORMAL)
         app.text("保存方案", -1.45, .28, .048, parent=self.save_panel)
         self.name_entry = DirectEntry(parent=self.save_panel, initialText="我的方案", text_font=app.font,
-            text_fg=theme.INK, scale=.042, width=1.9/.042, numLines=1, focus=0,
-            frameColor=theme.PAPER, pos=(-1.45, 0, -.02), relief=DGG.FLAT,
+            text_fg=LAB_TEXT, scale=.042, width=1.9/.042, numLines=1, focus=0,
+            frameColor=LAB_FIELD, pos=(-1.45, 0, -.02), relief=DGG.FLAT,
             focusInCommand=app.blur_entries)
         app.button("保存", 1.04, -.78, .55, self.save_current, parent=self.save_panel, accent=True)
         app.button("取消", .34, -.78, .55, self.close_save, parent=self.save_panel)
         self.save_panel.hide()
         app.button("保存新方案", -1.13, -.83, .70, self.toggle_save, parent=self.root)
-        self.details = DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT,
+        self.details = DirectFrame(parent=self.root, frameColor=LAB_CARD,
             frameSize=(-1.78, 1.78, -1, .36), sortOrder=99, state=DGG.NORMAL)
         app.text("方案详情", -1.47, .24, .046, parent=self.details)
         self.left_text = app.text("", -1.45, .10, .040, parent=self.details)
         self.right_text = app.text("", .10, .10, .040, parent=self.details)
         for target in (self.left_text, self.right_text):
             target.textNode.setWordwrap(36)
-        self.comparison = app.text("", -1.45, -.13, .040, theme.SEA, parent=self.details)
+        self.comparison = app.text("", -1.45, -.13, .040, LAB_ACCENT_A, parent=self.details)
         self.metric_headers = []
         for label, x in (('指标', -1.42), ('方案 A', -.22), ('方案 B', .58), ('差值 B−A', 1.38)):
-            node = app.text(label, x, -.22, .040, theme.MUTED, parent=self.details)
+            node = app.text(label, x, -.22, .040, MUTED, parent=self.details)
             if label != '指标':
                 node['align'] = TextNode.ARight
             self.metric_headers.append(node)
@@ -60,30 +68,30 @@ class SchemesPanel:
             z = -.30-index*.065
             row = []
             for x in (-1.42, -.22, .58, 1.38):
-                node = app.text('', x, z, .040, theme.INK if x != 1.38 else theme.SEA, parent=self.details)
+                node = app.text('', x, z, .040, LAB_TEXT if x != 1.38 else LAB_ACCENT_A, parent=self.details)
                 if x != -1.42:
                     node['align'] = TextNode.ARight
                 row.append(node)
             self.metric_rows.append(row)
-        self.comparison_note = app.text('', -1.45, -.62, .040, theme.MUTED, parent=self.details)
+        self.comparison_note = app.text('', -1.45, -.62, .040, MUTED, parent=self.details)
         self.comparison_note.textNode.setWordwrap(66)
         app.button("收起", 1.23, -.83, .38, self.details.hide, parent=self.details)
         self.details.hide()
-        self.empty_guide = [app.text(label, x, -.18, .040, theme.MUTED, parent=self.root)
+        self.empty_guide = [app.text(label, x, -.18, .040, MUTED, parent=self.root)
                            for x, label in ((-1.38, '1 完成试验'), (-.38, '2 保存方案'), (.62, '3 改装再试'))]
-        self.status = app.text("", -1.50, -.71, .040, theme.SEA, parent=self.root)
+        self.status = app.text("", -1.50, -.71, .040, LAB_ACCENT_A, parent=self.root)
         self.status.textNode.setWordwrap(85)
         self.hero = self.root.attachNewNode('scheme-hero')
         self.hero_title = app.text('', -1.42, -.20, .047, parent=self.root)
         self.hero_values = [app.text('', x, -.29, .052, color, parent=self.root)
-                            for x, color in ((-1.42, theme.SEA), (.15, theme.ORANGE))]
-        self.hero_note = app.text('', -1.42, -.59, .040, theme.MUTED, parent=self.root)
+                            for x, color in ((-1.42, LAB_ACCENT_A), (.15, LAB_ACCENT_B))]
+        self.hero_note = app.text('', -1.42, -.59, .040, MUTED, parent=self.root)
         app.button('车辆与数据 ›', -.34, -.83, .78, self.toggle_details, parent=self.root)
         self.load_button = app.button("载入方案二", .43, -.83, .68, self.load_right, parent=self.root)
         self.curves_button = app.button("比较曲线", .18, -.83, .84, self.show_curves, parent=self.details)
         self.drive_button = app.button("试驾方案二", 1.19, -.83, .76, self.drive_right, parent=self.root, accent=True)
         for side, x in enumerate((-1.50, .07)):
-            app.text('方案一' if side == 0 else '方案二', x, .42, .040, theme.MUTED, parent=self.root)
+            app.text('方案一' if side == 0 else '方案二', x, .42, .040, MUTED, parent=self.root)
             app.button("‹", x+.065, .32, .10, lambda s=side: self.move(s, -1), parent=self.root)
             app.button("›", x+1.365, .32, .10, lambda s=side: self.move(s, 1), parent=self.root)
         self.virtual_driver = VirtualDriverPanel(app, self)
@@ -111,7 +119,7 @@ class SchemesPanel:
         self.hero_note.setText('')
         if not self.schemes:
             return
-        for x, color in ((-.79, theme.SEA), (.79, theme.ORANGE)):
+        for x, color in ((-.79, LAB_ACCENT_A), (.79, LAB_ACCENT_B)):
             car(self.hero, x, -.06, .94, color)
         if comparison is not None and comparison['rows']:
             label, a, b, unit = comparison['rows'][0]

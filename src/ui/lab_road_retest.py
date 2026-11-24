@@ -8,9 +8,18 @@ from direct.gui.DirectGui import DirectFrame
 from panda3d.core import TransparencyAttrib
 
 from road_retest import RoadRetest, measured
-from ui import theme
 from ui.lab_plot import LabPlot
-from ui.lab_widgets import rounded_panel
+from ui.lab_widgets import (
+    BORDER,
+    LAB_ACCENT_A,
+    LAB_ACCENT_B,
+    LAB_CARD,
+    LAB_SURFACE,
+    LAB_TEXT,
+    LAB_TRACK,
+    MUTED,
+    rounded_panel,
+)
 
 
 class RoadRetestPanel:
@@ -18,42 +27,43 @@ class RoadRetestPanel:
         self.app, self.comparison, self.report_path = app, None, None
         self.last_plot = 0.
         self.metrics = []
-        self.root = DirectFrame(parent=app.root, frameColor=(.04, .10, .14, .70),
+        self.root = DirectFrame(parent=app.root, frameColor=(.06, .08, .11, .48),
             frameSize=(-1.78, 1.78, -1, 1), sortOrder=120, state=DGG.NORMAL)
         self.root.setTransparency(TransparencyAttrib.MAlpha)
-        DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.70, 1.70, -.86, .79))
+        rounded_panel(self.root, 'retest-edge', (-1.704, 1.704, -.864, .794), BORDER, .026)
+        rounded_panel(self.root, 'retest-card', (-1.70, 1.70, -.86, .79), LAB_CARD, .024)
         app.text('道路 A/B · 标准复测', -1.52, .64, .060, parent=self.root, font=app.heading_font)
-        app.text('保存硬件 → 同工况试验 → 对比收益与代价', -1.52, .54, .035, theme.MUTED, parent=self.root)
+        app.text('保存硬件 → 同工况试验 → 对比收益与代价', -1.52, .54, .035, MUTED, parent=self.root)
         app.button('试验条件', 1.00, .65, .48, self.toggle_details, parent=self.root)
         app.button('关闭', 1.45, .65, .28, self.hide, parent=self.root)
-        rounded_panel(self.root, 'protocol', (-1.56, 1.56, .37, .48), theme.PAPER)
-        self.protocol = app.text('', -1.48, .405, .036, theme.SEA, parent=self.root)
+        rounded_panel(self.root, 'protocol', (-1.56, 1.56, .37, .48), LAB_SURFACE)
+        self.protocol = app.text('', -1.48, .405, .036, LAB_ACCENT_A, parent=self.root)
         self.cards = []
-        for x, color, title in ((-1.56, theme.SEA, 'A · 改装前'), (-.50, theme.ORANGE, 'B · 改装后'),
-                                (.56, theme.INK, 'B − A · 复测差值')):
-            rounded_panel(self.root, 'metric-card', (x, x+1., .07, .33), theme.PAPER)
+        for x, color, title in ((-1.56, LAB_ACCENT_A, 'A · 改装前'), (-.50, LAB_ACCENT_B, 'B · 改装后'),
+                                (.56, LAB_TEXT, 'B − A · 复测差值')):
+            rounded_panel(self.root, 'metric-card', (x, x+1., .07, .33), LAB_SURFACE)
             DirectFrame(parent=self.root, frameColor=color, frameSize=(x, x+.012, .12, .28))
             app.text(title, x+.06, .263, .036, color, parent=self.root)
             value = app.text('—', x+.06, .157, .072, color, parent=self.root, font=app.heading_font)
-            detail = app.text('', x+.06, .097, .035, theme.MUTED, parent=self.root)
+            detail = app.text('', x+.06, .097, .035, MUTED, parent=self.root)
             self.cards.append((value, detail))
         self.plots = [LabPlot(self.root, app.font, box, key) for box, key in (
             ((-1.56, -.03, -.48, .03), 'speed'), ((.03, 1.56, -.48, .03), 'ax'))]
-        self.progress = app.text('', -1.52, -.56, .035, theme.SEA, parent=self.root)
+        self.progress = app.text('', -1.52, -.56, .035, LAB_ACCENT_A, parent=self.root)
         self.bars = []
-        for left, right, color in ((-1.52, -.03, theme.SEA), (.03, 1.52, theme.ORANGE)):
-            DirectFrame(parent=self.root, frameColor=theme.PAPER, frameSize=(left, right, -.595, -.582))
+        for left, right, color in ((-1.52, -.03, LAB_ACCENT_A), (.03, 1.52, LAB_ACCENT_B)):
+            DirectFrame(parent=self.root, frameColor=LAB_TRACK, frameSize=(left, right, -.595, -.582))
             self.bars.append(DirectFrame(parent=self.root, frameColor=color,
                 frameSize=(0, 0, -.595, -.582), pos=(left, 0, 0)))
-        self.result = app.text('', -1.52, -.66, .035, theme.MUTED, parent=self.root)
+        self.result = app.text('', -1.52, -.66, .035, MUTED, parent=self.root)
         self.run_button = app.button('运行参考 A/B', -1.10, -.75, .92, self.start, parent=self.root, accent=True)
         self.export_button = app.button('导出 A/B', 0., -.75, .72, self.export, parent=self.root)
         self.back_button = app.button('返回道路对照', 1.10, -.75, .92, self.back, parent=self.root)
         self.back_button['state'] = DGG.NORMAL if app.on_back is not None else DGG.DISABLED
-        self.details = DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT,
+        self.details = DirectFrame(parent=self.root, frameColor=LAB_CARD,
             frameSize=(-1.57, 1.57, -.49, .48), sortOrder=10, state=DGG.NORMAL)
         app.text('本次标准工况', -1.45, .35, .047, parent=self.details, font=app.heading_font)
-        self.info = app.text('', -1.45, .23, .036, theme.MUTED, parent=self.details)
+        self.info = app.text('', -1.45, .23, .036, MUTED, parent=self.details)
         self.info.textNode.setWordwrap(78)
         app.button('收起条件', 1.15, -.39, .54, self.toggle_details, parent=self.details)
         self.details.hide()

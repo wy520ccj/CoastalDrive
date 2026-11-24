@@ -63,11 +63,11 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         assert app.session.driving_mode is DrivingMode.GAME
         assert app.session.simulation.input_config is DrivingMode.GAME.input_config
         assert [b["text"] for b in app.main_menu.buttons] == [
-            "计时挑战", "滨海自由驾驶", "海岸生涯", "我的车库", "声音设置", "退出游戏", "专家试验台", "驾驶辅助  F2", "无限高速"]
+            "计时挑战", "滨海自由驾驶", "生涯赛事", "海岸车库", "声音设置", "退出", "专家试验台  ›", "驾驶辅助", "无限高速", "继续赛季"]
         old_world = app.session.simulation
         app.messenger.send("f2")
         assert app.driving_mode_page and app.panel_option_count == 4
-        assert [b["text"] for b in app.buttons[:4]] == ["开启", "开启", "开启", "Esc   返回首页"]
+        assert [b["text"] for b in app.buttons[:4]] == ["开启", "开启", "开启", "Esc  返回首页"]
         assert app.driving_cards.active and app.panel_note.isHidden()
         assert app.buttons[0].getX() == app.buttons[1].getX() == app.buttons[2].getX()
         assert app.buttons[0].getZ() > app.buttons[1].getZ() > app.buttons[2].getZ()
@@ -114,7 +114,7 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         view = app.hud.coastal
         assert "刹车·倒车" in view.primary_keys.getText()
         assert view.assist_lights[0]['frameColor'] == SOFT
-        assert all(light['frameColor'] == (.38,.44,.47,1) for light in view.assist_lights[1:])
+        assert all(light['frameColor'] == (0.36, 0.42, 0.50, 0.72) for light in view.assist_lights[1:])
         for widget in (view.primary_keys,view.secondary_keys):
             lower,upper = widget.getTightBounds(view.help_frame)
             assert lower.x >= 0 and upper.x <= 510

@@ -14,9 +14,19 @@ from lab_game_comparison import (
     reference_vehicle,
 )
 from lab_records import LabRecord, export_record
-from ui import theme
 from ui.lab_feedback import error_text, log_error
-from ui.lab_widgets import rounded_panel
+from ui.lab_widgets import (
+    BORDER,
+    LAB_ACCENT_A,
+    LAB_ACCENT_B,
+    LAB_CARD,
+    LAB_ERROR,
+    LAB_SURFACE,
+    LAB_TEXT,
+    LAB_TRACK,
+    MUTED,
+    rounded_panel,
+)
 
 
 class DesignLoopPanel:
@@ -26,7 +36,7 @@ class DesignLoopPanel:
         self.completed_records = None
         self.record = None
         self.report_path = None
-        self.root = DirectFrame(parent=app.root, frameColor=(.04, .10, .14, .55),
+        self.root = DirectFrame(parent=app.root, frameColor=(.06, .08, .11, .45),
                                 frameSize=(-1.78, 1.78, -1, 1), sortOrder=85, state=DGG.NORMAL)
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         # 动态指标更新时保留固定操作的字形，避免仍显示的按钮文字被回收。
@@ -34,30 +44,31 @@ class DesignLoopPanel:
         glyphs.setFont(app.font)
         glyphs.setText('关闭返回工作台运行游戏对照保存车辆并试驾打开报告重试导出')
         self.button_geometry = glyphs.generate()
-        DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.70, 1.70, -.86, .79))
+        rounded_panel(self.root, 'link-edge', (-1.704, 1.704, -.864, .794), BORDER, .026)
+        rounded_panel(self.root, 'link-card', (-1.70, 1.70, -.86, .79), LAB_CARD, .024)
         app.text("保存与试驾", -1.52, .64, .060, parent=self.root, font=app.heading_font)
         self.close_button = app.button("关闭", 1.50, .65, .27, self.hide, parent=self.root)
-        self.info = app.text("", -1.52, .49, .036, theme.MUTED, parent=self.root)
+        self.info = app.text("", -1.52, .49, .036, MUTED, parent=self.root)
         for x, title, note in ((-1.56, '游戏计算对照', '同一工况与直接命令\n游戏每拍1次机械求解'),
                                (.04, '保存试验车辆', '保留本次完整硬件\n进入滨海公路辅助驾驶')):
-            rounded_panel(self.root, 'link-action', (x, x+1.52, -.06, .32), theme.PAPER)
+            rounded_panel(self.root, 'link-action', (x, x+1.52, -.06, .32), LAB_SURFACE)
             app.text(title, x+.08, .23, .044, parent=self.root, font=app.heading_font)
-            app.text(note, x+.08, .14, .035, theme.MUTED, parent=self.root)
+            app.text(note, x+.08, .14, .035, MUTED, parent=self.root)
         self.compare_button = app.button("运行游戏对照", -.80, .005, 1.10, self.start_comparison, parent=self.root)
         self.drive_button = app.button("保存车辆并试驾", .80, .005, 1.24, self.drive, parent=self.root, accent=True)
         self.values, self.metric_titles = [], []
-        for x, color in ((-1.56, theme.SEA), (-.50, theme.ORANGE), (.56, theme.INK)):
-            rounded_panel(self.root, 'link-metric', (x, x+1., -.31, -.10), theme.PAPER)
+        for x, color in ((-1.56, LAB_ACCENT_A), (-.50, LAB_ACCENT_B), (.56, LAB_TEXT)):
+            rounded_panel(self.root, 'link-metric', (x, x+1., -.31, -.10), LAB_SURFACE)
             self.metric_titles.append(app.text('', x+.06, -.17, .035, color, parent=self.root))
             self.values.append(app.text('—', x+.06, -.27, .060, color, parent=self.root, font=app.heading_font))
-        self.caption = app.text('', -1.52, -.38, .035, theme.MUTED, parent=self.root)
-        self.progress = app.text('', -1.52, -.49, .035, theme.SEA, parent=self.root)
+        self.caption = app.text('', -1.52, -.38, .035, MUTED, parent=self.root)
+        self.progress = app.text('', -1.52, -.49, .035, LAB_ACCENT_A, parent=self.root)
         self.progress.textNode.setWordwrap(86)
-        DirectFrame(parent=self.root, frameColor=theme.PAPER, frameSize=(-1.52, 1.52, -.60, -.58))
-        self.progress_bar = DirectFrame(parent=self.root, frameColor=theme.SEA,
+        DirectFrame(parent=self.root, frameColor=LAB_TRACK, frameSize=(-1.52, 1.52, -.60, -.58))
+        self.progress_bar = DirectFrame(parent=self.root, frameColor=LAB_ACCENT_A,
             frameSize=(0., 0., -.60, -.58), pos=(-1.52, 0, 0))
         app.text('始终使用打开时的试验记录；编辑参数需重新试验后生效。', -1.52, -.66, .035,
-                 theme.MUTED, parent=self.root)
+                 MUTED, parent=self.root)
         self.report_button = app.button("打开报告", -.98, -.75, .90, self.open_report, parent=self.root)
         self.retry_button = app.button('重试导出', .08, -.75, .90, self.export_completed, parent=self.root)
         self.back_button = app.button('返回工作台', 1.15, -.75, .90, self.hide, parent=self.root)
@@ -86,7 +97,7 @@ class DesignLoopPanel:
             if record is not self.record:
                 self.completed_records = None
                 self.report_path = None
-                self.progress['fg'] = theme.SEA
+                self.progress['fg'] = LAB_ACCENT_A
                 self.progress.setText('选择计算对照，或保存这次试验的车去实际驾驶。')
             self.record = record
             summary = self.record.metadata["summary"]
@@ -125,7 +136,7 @@ class DesignLoopPanel:
         self.retry_button['state'] = DGG.DISABLED
         self.completed_records, self.report_path = None, None
         self.present_metrics()
-        self.progress['fg'] = theme.SEA
+        self.progress['fg'] = LAB_ACCENT_A
         self.progress.setText("正在计算游戏积分配置；关闭面板会停止本次对照。")
 
     def update(self):
@@ -158,7 +169,7 @@ class DesignLoopPanel:
             path = export_comparison(*self.completed_records, self.folder('-game-comparison'))
         except (OSError, ValueError, RuntimeError) as error:
             message = '导出失败，完成数据已保留；点“重试导出”。'
-            self.progress['fg'] = theme.FAILURE
+            self.progress['fg'] = LAB_ERROR
             self.progress.setText(message+'\n'+error_text(error))
             self.app.notice.setText(message)
             log_error('对照未导出，完成记录保留', error)
@@ -167,7 +178,7 @@ class DesignLoopPanel:
         self.app.last_report = self.report_path = path
         self.app.notice.dismiss()
         self.app.notice.setText('游戏对照已导出，完整记录保留；可在游戏联动页打开报告。')
-        self.progress['fg'] = theme.SEA
+        self.progress['fg'] = LAB_ACCENT_A
         self.progress.setText('对照已保存 · 打开报告查看完整条件、曲线与差异。')
         self.refresh_buttons()
 

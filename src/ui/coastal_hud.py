@@ -1,4 +1,4 @@
-"""滨海巡游/计时的靠边信息区；只显示传入的权威快照。"""
+"""滨海巡游与计时遥测 HUD（设计 40 轻透浮动布局 + 落日琥珀金点缀）；只消费权威快照，零逐帧分配。"""
 
 from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode
@@ -8,15 +8,16 @@ from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from race import GameMode
 from ui import theme
+from ui.lab_widgets import rounded_panel
 from ui.race_feedback import energy_segment, energy_segment_delta, sector_times
 
 UNIT = 2 / 941
-WHITE = (1, 1, 1, 1)
-SOFT = (.76, .81, .83, 1)
-DARK = (.035, .075, .10, .62)
-ORANGE = (1, .31, .12, 1)
-GREEN = (.42, .90, .60, 1)
-GOLD = (1, .77, .24, 1)
+WHITE = theme.WHITE
+SOFT = (0.78, 0.83, 0.88, 1)
+DARK = (0.045, 0.062, 0.088, 0.58)
+ORANGE = theme.AMBER
+GREEN = theme.PINE
+GOLD = theme.AMBER
 WARNING = (1, .48, .34, 1)
 
 
@@ -27,11 +28,13 @@ class CoastalDrivingHUD:
         self.body_font, self.number_font = body_font, number_font
         self.regular = regular_font
         self.widgets = []
+
+        # ── 左上角轻透黑曜石赛事卡（沿用设计 40 通透质感，无厚重框线）──
         self.status = self.panel(360, 276)
         self.bar(self.status, 6, 12, 4, 32, ORANGE)
         self.title = self.label(self.status, '', 22, 38, 26, bold=True)
         self.timer = self.label(self.status, '', 22, 100, 54, number=True)
-        self.checkpoints = self.label(self.status, '', 22, 134, 20)
+        self.checkpoints = self.label(self.status, '', 22, 134, 20, SOFT)
         self.progress = [self.bar(self.status, 22+i*82, 155, 70, 7, SOFT) for i in range(4)]
         self.progress_insets = [self.bar(segment, 2, 2, 66, 3, (*DARK[:3], 1)) for segment in self.progress]
         self.chase_bars = [self.bar(self.status, 22+i*65, 155, 57, 7, SOFT) for i in range(5)]
@@ -42,24 +45,34 @@ class CoastalDrivingHUD:
         self.goal = self.label(self.status, '', 22, 260, 21, GOLD)
         self.timed_widgets = (self.timer, self.checkpoints, self.sector, self.cumulative,
                               self.goal, *self.progress)
-        self.notice_frame = self.panel(450, 70)
-        self.notice = self.label(self.notice_frame, '', 16, 28, 19)
-        self.notice.textNode.setWordwrap(418/19)
-        self.help_frame = self.panel(510, 104, color=(.035, .075, .10, .42))
+
+        self.notice_frame = self.panel(450, 70, color=(0.045, 0.062, 0.088, 0.66))
+        self.bar(self.notice_frame, 6, 10, 4, 28, ORANGE)
+        self.notice = self.label(self.notice_frame, '', 20, 28, 19)
+        self.notice.textNode.setWordwrap(416/19)
+
+        # ── 左下角轻透键位与电台条 ──
+        self.help_frame = self.panel(510, 104, color=(0.045, 0.062, 0.088, 0.42))
         self.primary_keys = self.label(self.help_frame, '', 16, 28, 19)
-        self.secondary_keys = self.label(self.help_frame, '', 16, 56, 18)
-        self.radio = [self.label(self.help_frame, name, 16, 86, 17, SOFT, mutable=False)
+        self.secondary_keys = self.label(self.help_frame, '', 16, 56, 18, SOFT)
+        self.radio = [self.label(self.help_frame, name, 16, 86, 17, theme.STEEL_TEXT, mutable=False)
                       for name in STATIONS]
+
+        # ── 右下角无底盒悬浮数字遥测（回归设计 40 通透质感，绝不遮挡路面）──
         self.instruments = self.panel(315, 160, color=(0, 0, 0, 0))
         self.speed = self.label(self.instruments, '000', 10, 91, 78, number=True)
-        self.label(self.instruments, 'km/h', 183, 87, 21, mutable=False)
-        self.bar(self.instruments, 252, 38, 58, 43, ORANGE)
-        self.gear = self.label(self.instruments, '', 261, 70, 27, theme.INK, number=True)
+        self.label(self.instruments, 'km/h', 183, 87, 21, SOFT, mutable=False)
+        rounded_panel(self.instruments, 'gear-pill', (252, 310, -81, -38), ORANGE, 5)
+        self.gear = OnscreenText(parent=self.instruments, text='', font=self.number_font,
+                                 fg=theme.INK, pos=(281, -70), scale=27,
+                                 align=TextNode.ACenter, mayChange=True)
+        self.widgets.append(self.gear)
         self.rpm = self.label(self.instruments, '', 309, 111, 16, SOFT, number=True, right=True)
         self.segments = [self.bar(self.instruments, 12+i*13.5, 122, 11, 9, SOFT) for i in range(22)]
-        self.assists = [self.label(self.instruments, text, 14+i*72, 153, 17, SOFT)
+        self.assists = [self.label(self.instruments, text, 14+i*72, 153, 17, SOFT, bold=True)
                         for i, text in enumerate(('ABS', 'TCS', 'ESC'))]
-        self.assist_lights = [self.bar(self.instruments, 14+i*72, 158, 25, 2, SOFT) for i in range(3)]
+        self.assist_lights = [self.bar(self.instruments, 14+i*72, 158, 28, 2.5, SOFT) for i in range(3)]
+
         self._timed = self._notice_text = None
         self._station = -1
         self._rpm_active = self._assists = self._progress = None
@@ -78,7 +91,7 @@ class CoastalDrivingHUD:
             font=self.number_font if number else self.body_font if bold else self.regular,
             fg=color, pos=(x, -y), scale=size,
             align=TextNode.ARight if right else TextNode.ALeft, mayChange=mutable,
-            shadow=(0, 0, 0, .65), shadowOffset=(.025, .025))
+            shadow=(0, 0, 0, .72), shadowOffset=(.03, .03))
         self.widgets.append(item)
         return item
 
@@ -111,7 +124,7 @@ class CoastalDrivingHUD:
             self.cumulative.setScale(20)
             self.goal.setScale(21)
             self._feedback_colors = None
-            self.notice.textNode.setWordwrap(418/19)
+            self.notice.textNode.setWordwrap(416/19)
             self._notice_text = None
         timed = race.mode == GameMode.TIME_TRIAL
         if timed != self._timed:
@@ -129,7 +142,7 @@ class CoastalDrivingHUD:
             self.text(self.checkpoints, f'检查点 {race.checkpoints} / 4 · {target}')
             if race.checkpoints != self._progress:
                 for index, segment in enumerate(self.progress):
-                    segment['frameColor'] = ORANGE if index < race.checkpoints else SOFT if index == race.checkpoints else (.27, .33, .37, 1)
+                    segment['frameColor'] = ORANGE if index < race.checkpoints else WHITE if index == race.checkpoints else (0.45, 0.50, 0.58, 0.55)
                     self.progress_insets[index].show() if index == race.checkpoints else self.progress_insets[index].hide()
                 self._progress = race.checkpoints
             if not race.splits:
@@ -176,18 +189,18 @@ class CoastalDrivingHUD:
         if not self._challenge_active or chase != self._chase_active:
             self._challenge_active, self._timed = True, True
             self._chase_active = chase
-            self.status['frameSize'] = (0, 360, -237 if chase else -300, 0)
+            self.status['frameSize'] = (0, 360, -238 if chase else -300, 0)
             for widget in self.timed_widgets:
                 widget.show()
             for widget in (self.goal, *self.progress):
                 widget.hide() if chase else widget.show()
             for bar in self.chase_bars:
                 bar.hide()
-            self.sector.setScale(24)
+            self.sector.setScale(23)
             self.cumulative.setScale(17)
             self.goal.setScale(18)
             self.notice_frame.setZ(self.status.getZ()-(249 if chase else 312))
-            self.notice.textNode.setWordwrap(328/19)
+            self.notice.textNode.setWordwrap(326/19)
             self._progress = self._feedback_colors = None
             self._notice_text = None
         self.text(self.title, status.name)
@@ -216,7 +229,7 @@ class CoastalDrivingHUD:
         progress = int(len(status.splits)*len(self.progress)/status.gate_count)
         if progress != self._progress:
             for index, segment in enumerate(self.progress):
-                segment['frameColor'] = ORANGE if index < progress else (.27, .33, .37, 1)
+                segment['frameColor'] = ORANGE if index < progress else (0.45, 0.50, 0.58, 0.55)
                 self.progress_insets[index].hide()
             self._progress = progress
         average = '—' if status.consumption is None else f'{status.consumption:.1f}'
@@ -281,10 +294,10 @@ class CoastalDrivingHUD:
         if (passed, count) != self._progress:
             for index, bar in enumerate(self.chase_bars):
                 if index < count:
-                    spacing = 328/count
+                    spacing = 326/count
                     bar.setX(22+index*spacing)
                     bar['frameSize'] = (0, spacing-7, -7, 0)
-                    bar['frameColor'] = ORANGE if index < passed else (.27, .33, .37, 1)
+                    bar['frameColor'] = ORANGE if index < passed else (0.45, 0.50, 0.58, 0.55)
                     bar.show()
                 else:
                     bar.hide()
@@ -296,7 +309,7 @@ class CoastalDrivingHUD:
             delta = status.splits[-1].seconds-status.reference_splits[passed-1].seconds
             text = ('与参考持平' if abs(delta) < .005 else
                     f'累计落后 {delta:+.2f} s' if delta > 0 else f'累计领先 {abs(delta):.2f} s')
-            color = WHITE if abs(delta) < .005 else ORANGE if delta > 0 else GREEN
+            color = WHITE if abs(delta) < .005 else WARNING if delta > 0 else GREEN
         else:
             text = f'全程参考 {status.reference_splits[-1].seconds:.3f} s'
             color = WHITE
@@ -326,14 +339,18 @@ class CoastalDrivingHUD:
         active = round(max(0., min(1., player.rpm/7000))*len(self.segments))
         if active != self._rpm_active:
             for index, segment in enumerate(self.segments):
-                segment['frameColor'] = ((.94, .13, .10, 1) if index >= 19 else ORANGE) if index < active else (.25, .31, .34, 1)
+                if index < active:
+                    seg_col = (0.94, 0.36, 0.28, 1) if index >= 19 else ORANGE if index >= 12 else WHITE
+                else:
+                    seg_col = (0.12, 0.16, 0.22, 0.50)
+                segment['frameColor'] = seg_col
             self._rpm_active = active
         assists = ((player.abs_enabled, any(brake.abs_active for brake in player.brake_states)),
                    (player.tcs_enabled, player.traction_state.active),
                    (player.esc_enabled, player.stability_state.active))
         if assists != self._assists:
             for label, light, (enabled, intervening) in zip(self.assists, self.assist_lights, assists):
-                color = GREEN if intervening else SOFT if enabled else (.38, .44, .47, 1)
+                color = GREEN if intervening else SOFT if enabled else (0.36, 0.42, 0.50, 0.72)
                 label.setFg(color)
                 light['frameColor'] = color
             self._assists = assists

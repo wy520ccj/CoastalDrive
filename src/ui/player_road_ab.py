@@ -5,9 +5,9 @@ from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
 from panda3d.core import TextNode, TextureStage, TransparencyAttrib
 
 from player_road_ab import mismatches
-from ui import theme
+from ui import atelier, theme
 from ui.garage_layout import GRAY, INK, ORANGE, WHITE
-from ui.lab_widgets import rounded_panel
+from ui.lab_widgets import gradient_panel, rounded_panel
 from ui.player_road_diagram import RoadDiagram
 
 
@@ -36,7 +36,7 @@ class PlayerRoadPanel:
         node.setTransparency(TransparencyAttrib.MAlpha)
         return node
 
-    def text(self, value, x, y, size=22, color=INK, *, parent=None, bold=False, wrap=None):
+    def text(self, value, x, y, size=22, color=WHITE, *, parent=None, bold=False, wrap=None):
         item = OnscreenText(parent=self.content if parent is None else parent, text=value,
             font=self.font if bold else self.regular, fg=color, align=TextNode.ALeft,
             pos=self.point(x, y), scale=size*2/941, mayChange=True)
@@ -48,16 +48,16 @@ class PlayerRoadPanel:
 
     def button(self, value, x, y, width, height, command, *, args=(), dark=False, primary=False):
         unit = 2/941
-        if dark and not primary:
-            self.fill(x-1, y-1, width+2, height+2, (.72, .75, .79, 1), radius=3)
         px, pz = self.point(x+width/2, y+height/2)
-        node = DirectButton(parent=self.content, text=value, text_font=self.regular,
-            text_fg=WHITE if dark or primary else INK, text_scale=(24 if height > 50 else 21)*unit,
-            text_pos=(0, -8*unit), frameColor=ORANGE if primary else (.05, .075, .11, 1) if dark else WHITE,
-            relief=DGG.FLAT, frameSize=(-width*unit/2, width*unit/2, -height*unit/2, height*unit/2),
-            pos=(px, 0, pz),
-            pressEffect=False, command=command, extraArgs=list(args))
-        node.bind(DGG.ENTER, lambda event: node.setColorScale(.92, .94, .96, 1))
+        tex_name = 'atelier/btn-primary.png' if primary else 'atelier/btn-ghost.png'
+        node = DirectButton(parent=self.content, text=value, text_font=self.font if primary else self.regular,
+            text_fg=INK if primary else WHITE, text_scale=(22 if height > 50 else 19)*unit,
+            text_pos=(0, -7*unit), frameTexture=atelier.tex(self.base.loader, tex_name),
+            frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            frameSize=(-width*unit/2, width*unit/2, -height*unit/2, height*unit/2),
+            pos=(px, 0, pz), pressEffect=False, command=command, extraArgs=list(args))
+        node.setTransparency(TransparencyAttrib.MAlpha)
+        node.bind(DGG.ENTER, lambda event: node.setColorScale(1.06, 1.04, 1.0, 1))
         node.bind(DGG.EXIT, lambda event: node.clearColorScale())
         self.widgets.append(node)
         return node
@@ -74,57 +74,74 @@ class PlayerRoadPanel:
         self.aspect = self.base.getAspectRatio()
         self.width, self.left = 941*self.aspect, 941*self.aspect*.029
         self.wide = min(1326., self.width-2*self.left)
-        texture = self.base.loader.loadTexture(theme.asset_filename('backgrounds/garage-coastal-v2.png'))
+        texture = atelier.tex(self.base.loader, atelier.SUNSET_GARAGE_BG)
         background = DirectFrame(parent=self.content, frameSize=self.box(0, 0, self.width, 941),
-                                 frameTexture=texture, frameColor=WHITE)
+                                 frameTexture=texture, frameColor=(0.28, 0.26, 0.30, 1))
         self.widgets.append(background)
         ratio = self.aspect/(texture.getXSize()/texture.getYSize())
         background.setTexScale(TextureStage.getDefault(), ratio, 1)
         background.setTexOffset(TextureStage.getDefault(), (1-ratio)/2, 0)
+        gradient_panel(self.content, 'ab-scrim', self.box(0, 0, self.width, 941),
+                       (0.045, 0.055, 0.078, 0.88), (0.045, 0.055, 0.078, 0.68))
         # 展示车只是车库布景；道路成绩与参数始终从两份冻结记录读取。
         if self.aspect > 1.5:
+            self.widgets.append(atelier.picture(
+                self.content, self.base.loader, 'atelier/floor-warm-bounce.png',
+                self.box(self.width*.52, 495, self.width*.46, 220),
+                color=(1, 0.90, 0.74, 0.72), sort_order=-2))
             self.vehicle_view.show(self.content, self.box(self.width*.53, 250, self.width*.44, 445),
                                    self.base.workspace_vehicle, studio=True)
             self.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
-        self.fill(0, 0, self.width, 110, (.04, .055, .075, .9), radius=0)
-        self.fill(0, 846, self.width, 95, (.04, .055, .075, .94), radius=0)
-        self.text('道路 A/B 对照', self.left+12, 61, 36, WHITE, bold=True)
-        self.status = self.text('', self.left+12, 96, 20, WHITE, wrap=self.width*.60)
-        self.text('整次记录 · 不参与授奖', self.width-280, 86, 19, WHITE)
-        self.fill(self.left, 126, self.wide, 695, (.985, .982, .975, 1))
+        self.widgets.append(atelier.picture(self.content, self.base.loader, 'atelier/bar-top.png',
+                                            self.box(0, 0, self.width, 110)))
+        self.widgets.append(atelier.picture(self.content, self.base.loader, 'atelier/footer-surface.png',
+                                            self.box(0, 846, self.width, 95)))
+        self.fill(self.left, 26, 4.5, 56, theme.AMBER, radius=2)
+        self.text('道路 A/B 对照', self.left+18, 58, 34, WHITE, bold=True)
+        self.status = self.text('', self.left+18, 94, 18, GRAY, wrap=self.width*.60)
+        self.text('整次记录 · 不参与授奖', self.width-280, 82, 18, GRAY)
+        self.widgets.append(atelier.picture(self.content, self.base.loader, 'atelier/panel-obsidian.png',
+                                            self.box(self.left-12, 116, self.wide+24, 716)))
         x, span = self.left+36, self.wide-72
         self.tabs = []
         tab_w = min(270., span*.215)
         for index, title in enumerate(('过门图解', '数值表', '车辆参数')):
-            self.tabs.append(self.button(title, x+index*tab_w, 150, tab_w, 56, self.set_view, args=(index,)))
-        self.active_tab = self.fill(x, 202, tab_w, 4, ORANGE, radius=0)
-        self.text('A 固定 / B 最近一次', self.left+self.wide-278, 185, 20)
-        self.fill(self.left+self.wide*.515, 244, 1, 137, (.81, .82, .84, 1), radius=0)
+            self.tabs.append(self.button(title, x+index*(tab_w+8), 146, tab_w, 50, self.set_view, args=(index,)))
+        self.active_tab = self.fill(x, 196, tab_w, 3, ORANGE, radius=1.5)
+        self.text('A 固定 / B 最近一次', self.left+self.wide-278, 180, 18, GRAY)
+        self.fill(self.left+self.wide*.515, 238, 1.2, 144, (0.24, 0.29, 0.38, 0.85), radius=0)
         self.cards, self.badges, self.reasons = [], [], []
         for index, title in enumerate(('A · 调整前', 'B · 调整后')):
             xx = x+index*span*.54
-            self.text(title, xx+26, 280, 31, bold=True)
-            self.cards.append(self.text('', xx+26, 316, 22, wrap=span*.43))
-            self.reasons.append(self.text('', xx+26, 379, 18, GRAY, wrap=span*.43))
-            self.fill(xx+span*.37-18, 249, 120, 44, INK, radius=3)
-            self.fill(xx+span*.37-16, 251, 116, 40, (.985, .982, .975, 1), radius=2)
-            self.badges.append(self.text('', xx+span*.37, 278, 20))
-        self.fill(x, 402, span, 1, (.79, .81, .84, 1), radius=0)
-        self.columns = [self.text('', xx, 445, 22) for xx in (x+26, x+span*.47, x+span*.76)]
-        self.parameters = [self.text('', xx, 431, 17) for xx in (x+26, x+span*.47, x+span*.76)]
+            self.fill(xx+12, 254, 3.5, 30, theme.STEEL_TEXT if index == 0 else theme.AMBER, radius=2)
+            self.text(title, xx+26, 278, 28, WHITE, bold=True)
+            self.cards.append(self.text('', xx+26, 316, 21, WHITE, wrap=span*.43))
+            self.reasons.append(self.text('', xx+26, 378, 17, GRAY, wrap=span*.43))
+            self.fill(xx+span*.37-18, 249, 120, 40, theme.STEEL_BG if index == 0 else theme.AMBER_WASH, radius=5)
+            badge = self.text('', xx+span*.37+42, 276, 18, theme.STEEL_TEXT if index == 0 else theme.AMBER, bold=True)
+            badge.textNode.setAlign(TextNode.ACenter)
+            self.badges.append(badge)
+        self.fill(x, 402, span, 1.2, (0.24, 0.29, 0.38, 0.85), radius=0)
+        self.columns = [self.text('', xx, 445, 22, WHITE) for xx in (x+26, x+span*.47, x+span*.76)]
+        self.parameters = [self.text('', xx, 431, 17, WHITE) for xx in (x+26, x+span*.47, x+span*.76)]
         self.metadata = self.text('', x+26, 765, 15, GRAY, wrap=span-52)
         self.diagram = RoadDiagram(self)
         self.view_button = self.tabs[1]
-        self.delta = self.text('', x, 748, 20, wrap=span)
+        self.delta = self.text('', x, 748, 20, theme.AMBER, bold=True, wrap=span)
         self.notice = self.text('', x, 806, 15, GRAY, wrap=span)
         self.back = self.button('‹  返回课题', self.left, 862, 230, 58, self.close, dark=True)
-        self.text('Esc 返回', self.left+250, 898, 17, WHITE)
+        self.text('Esc 返回', self.left+250, 898, 17, GRAY)
         self.info_button = self.button('查看记录信息', self.width-self.left-655, 862, 260, 58,
                                        self.show_record_info, dark=True)
         self.retest_button = self.button('实验台复测 A/B', self.width-self.left-370, 862, 370, 58,
                                          self.run_retest, primary=True)
-        self.text('Enter 复测', self.width-self.left-115, 938, 14, WHITE)
-        self.tab_width = tab_w
+        unit = 2/941
+        self.retest_button['text_pos'] = (16*unit, -7*unit)
+        self.widgets.append(atelier.picture(
+            self.retest_button, self.base.loader, 'atelier/icon-flask.png',
+            (-112*unit, -86*unit, -13*unit, 13*unit), color=INK))
+        self.text('Enter 复测', self.width-self.left-115, 938, 14, GRAY)
+        self.tab_width = tab_w+8
 
     def run_retest(self):
         if self.retest_button['state'] != DGG.DISABLED:
@@ -148,8 +165,10 @@ class PlayerRoadPanel:
             reason.setText('' if item is None else item['result']['reason'][:26])
         self.tabs[0]['text'] = '制动图解' if store.brakes else '过门图解'
         self.prepare_parameters(store)
-        self.retest_button['state'] = DGG.NORMAL if store.a is not None and store.b is not None else DGG.DISABLED
-        self.retest_button['frameColor'] = ORANGE if self.retest_button['state'] == DGG.NORMAL else GRAY
+        enabled = store.a is not None and store.b is not None
+        self.retest_button['state'] = DGG.NORMAL if enabled else DGG.DISABLED
+        self.retest_button['frameColor'] = (1, 1, 1, 1) if enabled else (0.55, 0.58, 0.64, 0.72)
+        self.retest_button['text_fg'] = INK if enabled else theme.DARK_LOCKED
         self.diagram.show(store)
         self.set_view(0)
         self.back['text'] = '‹  返回制动课题' if store.brakes else '‹  返回过门课题'
@@ -288,8 +307,10 @@ class PlayerRoadPanel:
         self.metadata.show() if self.view == 2 else self.metadata.hide()
         self.delta.hide() if self.view == 2 else self.delta.show()
         for index, tab in enumerate(self.tabs):
-            tab['frameColor'] = (.055, .075, .13, 1) if index == self.view else (.97, .97, .98, 1)
-            tab['text_fg'] = WHITE if index == self.view else INK
+            active = index == self.view
+            tab['frameTexture'] = atelier.tex(self.base.loader, 'atelier/card-active.png' if active else 'atelier/btn-ghost.png')
+            tab['frameColor'] = (1, 1, 1, 1)
+            tab['text_fg'] = theme.AMBER if active else GRAY
         self.active_tab.setX(self.view*self.tab_width*2/941)
 
     def toggle_view(self):

@@ -458,8 +458,22 @@ class LocalVegetation:
         self.original_segment = expressway_route.segment_steps
 
     def install(self):
-        from scene import Scene
+        from panda3d.core import Filename
 
+        from scene import Scene
+        from ui import theme as ui_theme
+
+        self.original_asset_filename = ui_theme.asset_filename
+        local_previews = self.cache.parent / 'career-previews'
+
+        def local_asset_filename(relative):
+            if relative.startswith('career/'):
+                candidate = local_previews / Path(relative).name
+                if candidate.is_file():
+                    return Filename.fromOsSpecific(str(candidate))
+            return self.original_asset_filename(relative)
+
+        ui_theme.asset_filename = local_asset_filename
         self.original_setup = Scene.setup_endless
         self.original_init = Scene.__init__
         self.original_lighting = Scene.update_lighting
@@ -525,7 +539,9 @@ class LocalVegetation:
 
     def restore(self):
         from scene import Scene
+        from ui import theme as ui_theme
 
+        ui_theme.asset_filename = self.original_asset_filename
         expressway.load_kit = self.original_load
         expressway_route.landscape_steps = self.original_landscape
         expressway_route.vegetation_steps = self.original_vegetation

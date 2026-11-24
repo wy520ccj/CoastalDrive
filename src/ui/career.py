@@ -28,6 +28,7 @@ class CareerPanel:
         self.garage_values = {}
         self.garage_display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
         self.garage_textures = {}
+        self.atelier_btn_tex = {}
         self.garage_topic = 'tires'
         self.garage_aspect = None
         self.layout_aspect = None
@@ -67,6 +68,7 @@ class CareerPanel:
         self.garage_values.clear()
         self.buttons.clear()
         self.frames.clear()
+        self.atelier_btn_tex.clear()
         self.accents.clear()
         self.flat.clear()
         self.content.removeNode()
@@ -166,7 +168,7 @@ class CareerPanel:
         style(self)
         if self.page != 'garage':
             for i, edge in self.card_edges.items():
-                edge.setColor((1, .31, .12, 1) if i == self.selected else (1, 1, 1, 0))
+                edge.setColor(theme.AMBER if i == self.selected else (1, 1, 1, 0))
         if self.page == 'board' and self.board_preview is not None:
             action, event_id = self.buttons[self.selected]['extraArgs']
             if action == 'brief' and event_id != self.board_event.id:

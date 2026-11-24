@@ -31,18 +31,32 @@ from suspension_bench import validate_metadata as validate_suspension_metadata
 from tire_calibration import validate_fit_metadata
 from ui import theme
 from ui.lab_feedback import error_text, log_error
-from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
+from ui.lab_widgets import (
+    BORDER,
+    LAB_ACCENT_A,
+    LAB_BG,
+    LAB_CARD,
+    LAB_DISABLED_TEXT,
+    LAB_FIELD,
+    LAB_FIELD_DISABLED,
+    LAB_FIELD_FOCUS,
+    LAB_SURFACE,
+    LAB_TEXT,
+    MUTED,
+    LabOptionMenu,
+    button_textures,
+)
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
 from vehicle_parameters import config_from_document, load_vehicle_config, save_vehicle_config
 from vehicle_schemes import scheme_library_path
 from vehicle_state import VehicleCommand
 
-INK = theme.INK
-ACCENT = theme.SEA
-PANEL = theme.PAPER_LIGHT
-BUTTON = theme.PAPER
-DISABLED_FIELD = (.925, .895, .855, 1)
-DISABLED_INK = (.64, .57, .50, 1)
+INK = LAB_TEXT
+ACCENT = LAB_ACCENT_A
+PANEL = LAB_CARD
+BUTTON = LAB_SURFACE
+DISABLED_FIELD = LAB_FIELD_DISABLED
+DISABLED_INK = LAB_DISABLED_TEXT
 
 
 def control_mode_label(options):
@@ -76,7 +90,7 @@ class VehicleLab(DirectObject):
         if self.owns_window:
             self.engine.finalizeExit = self.engine.taskMgr.stop
         self.engine.disableMouse()
-        self.engine.setBackgroundColor(*theme.PAPER)
+        self.engine.setBackgroundColor(*LAB_BG)
         self.pipeline = (ScenePipeline(enable_shadows=True, max_lights=1, msaa_samples=4, shadow_bias=.0007)
                          if self.owns_window else engine.pipeline)
         self.engine.camLens.setNearFar(.1, 1500)
@@ -165,24 +179,24 @@ class VehicleLab(DirectObject):
             pos=(x, z), scale=scale, align=align, mayChange=True)
 
     def button(self, label, x, z, width, action, parent=None, accent=False, dark=False):
-        variant = "primary" if accent else "dark" if dark else False
-        fg = (1, 1, 1, 1) if accent else INK
+        variant = "lab_primary" if accent else "dark" if dark else False
+        fg = (1, 1, 1, 1) if (accent or dark) else LAB_TEXT
         button = DirectButton(parent=parent or self.root, text=label, text_font=self.font,
-            text_scale=.037, text_fg=fg, text_pos=(0, -.011),
+            text_scale=.036, text_fg=fg, text_pos=(0, -.011),
             frameColor=(1, 1, 1, 1), frameTexture=button_textures(variant),
-            frameSize=(-width/2, width/2, -.042, .042), borderWidth=(0, 0),
+            frameSize=(-width/2, width/2, -.040, .040), borderWidth=(0, 0),
             relief=DGG.FLAT, pos=(x, 0, z), command=action, pressEffect=False)
         button.setTransparency(TransparencyAttrib.MAlpha)
         return button
 
     def field(self, key, label, value, z, *, x=-1.61, width=.30, parent=None):
-        self.field_labels[key] = self.text(label, x, z, .034, MUTED, parent=parent)
+        self.field_labels[key] = self.text(label, x, z, .032, MUTED, parent=parent)
         target = DirectFrame(parent=parent or self.root, frameColor=(0, 0, 0, 0), relief=None,
                              frameSize=(0, .31, -.015, .045), pos=(x, 0, z), state=DGG.NORMAL)
         self.bind_parameter(target, key)
         entry = DirectEntry(parent=parent or self.root, initialText=str(value), text_font=self.font,
-            text_fg=INK, scale=.035, width=width/.035, numLines=1, focus=0,
-            frameColor=(.955, .922, .872, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
+            text_fg=LAB_TEXT, scale=.034, width=width/.034, numLines=1, focus=0,
+            frameColor=LAB_FIELD, pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
         self.entries[key] = entry
         self.bind_parameter(entry, key, focus=True)
         return entry
@@ -216,7 +230,7 @@ class VehicleLab(DirectObject):
         # 数值框不需要中文组词；IME开启时窗口会过滤普通字符消息。
         if isinstance(self.engine.win, GraphicsWindow):
             self.engine.win.closeIme()
-        entry["frameColor"] = (.86, .93, .94, 1)
+        entry["frameColor"] = LAB_FIELD_FOCUS
 
     def blur_parameter(self, entry, color):
         entry["frameColor"] = DISABLED_FIELD if entry["state"] == DGG.DISABLED else color
@@ -263,16 +277,16 @@ class VehicleLab(DirectObject):
 
     def option(self, labels, x, z, width, command=None, parent=None, parameter=None):
         menu = LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
-            item_text_font=self.font, item_text_scale=.034, item_text_fg=INK,
-            item_text_pos=(.026, -.011), item_frameSize=(0, width, -.036, .036),
-            item_frameColor=theme.PAPER_LIGHT, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
+            item_text_font=self.font, item_text_scale=.033, item_text_fg=LAB_TEXT,
+            item_text_pos=(.024, -.011), item_frameSize=(0, width, -.035, .035),
+            item_frameColor=LAB_SURFACE, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
             item_pad=(0, 0), item_pressEffect=False,
-            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=theme.HAIRLINE,
+            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=BORDER,
             popupMenu_borderWidth=(0, 0), popupMenu_sortOrder=120,
-            text_scale=.034, text_fg=INK, text_align=TextNode.ALeft, text_pos=(.026, -.011),
-            frameSize=(0, width, -.036, .036), frameColor=(.955, .922, .872, 1), relief=DGG.FLAT,
-            pos=(x, 0, z), command=command, highlightColor=theme.AMBER_TINT,
-            popupMarker_pos=(width-.026, 0, 0), popupMarker_scale=.028,
+            text_scale=.033, text_fg=LAB_TEXT, text_align=TextNode.ALeft, text_pos=(.024, -.011),
+            frameSize=(0, width, -.035, .035), frameColor=LAB_FIELD, relief=DGG.FLAT,
+            pos=(x, 0, z), command=command, highlightColor=LAB_FIELD_FOCUS,
+            popupMarker_pos=(width-.026, 0, 0), popupMarker_scale=.026,
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
             popupMarker_text_fg=MUTED, popupMarker_text_scale=.65,
@@ -325,9 +339,9 @@ class VehicleLab(DirectObject):
             if not enabled:
                 entry["focus"] = 0
             entry["state"] = DGG.NORMAL if enabled else DGG.DISABLED
-            entry["frameColor"] = (theme.AMBER_TINT if entry.guiItem.getFocus()
-                                    else (.955, .922, .872, 1)) if enabled else DISABLED_FIELD
-            entry["text_fg"] = INK if enabled else DISABLED_INK
+            entry["frameColor"] = (LAB_FIELD_FOCUS if entry.guiItem.getFocus()
+                                    else LAB_FIELD) if enabled else DISABLED_FIELD
+            entry["text_fg"] = LAB_TEXT if enabled else DISABLED_INK
             # PGEntry持有各状态TextNode的副本，组件颜色更改后需同步到这些副本。
             for state in range(entry["numStates"]):
                 entry.guiItem.setTextDef(state, entry.onscreenText.textNode)
@@ -1092,7 +1106,7 @@ class VehicleLab(DirectObject):
             if comparable:
                 delta = value-old_value
                 self.result.setText(f"Δ (B − A)   {delta:+.2f} m")
-                self.result.setFg(theme.SEA if distance is not None and delta < 0 else INK)
+                self.result.setFg(LAB_ACCENT_A if distance is not None and delta < 0 else INK)
             else:
                 self.result.setText("工况或距离定义不同，仅并列展示")
         self.timing.setText(f"仿真 {summary['simulation_seconds']:.2f} s · 计算 {summary['compute_seconds']:.2f} s")

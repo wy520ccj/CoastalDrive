@@ -28,6 +28,7 @@ from ui import theme
 from ui.garage_framing import mesh_vertices, project_vertices
 from ui.garage_paint import garage_paint_shader
 from ui.garage_reflection import reflect_vehicle
+from ui.garage_vehicle_style import apply_atelier_vehicle_style
 from vehicle_visual import load_vehicle, set_vehicle_reflection, vehicle_reflection
 
 
@@ -57,15 +58,15 @@ class WorkshopVehicle:
             self.camera.reparentTo(self.scene)
             self.camera.setPos(5.4, 7.5, 3.0)
             self.camera.lookAt(0, 0, .60)
-            ambient = AmbientLight('workshop-ambient')
-            ambient.setColor((.45, .50, .58, 1))
-            self.scene.setLight(self.scene.attachNewNode(ambient))
-            key = DirectionalLight('workshop-key')
-            key.setColor((3.0, 2.85, 2.65, 1))
-            light = self.scene.attachNewNode(key)
-            light.setPos(4, 8, 9)
-            light.lookAt(0, 0, .5)
-            self.scene.setLight(light)
+            self.ambient_light = AmbientLight('workshop-ambient')
+            self.ambient_light.setColor((.45, .50, .58, 1))
+            self.scene.setLight(self.scene.attachNewNode(self.ambient_light))
+            self.key_light = DirectionalLight('workshop-key')
+            self.key_light.setColor((3.0, 2.85, 2.65, 1))
+            self.key_light_np = self.scene.attachNewNode(self.key_light)
+            self.key_light_np.setPos(4, 8, 9)
+            self.key_light_np.lookAt(0, 0, .5)
+            self.scene.setLight(self.key_light_np)
             # 空车库底图只作展示布景；真实车模和零件仍在其前方独立渲染。
             card = CardMaker('workshop-backplate')
             card.setFrame(-1, 1, -1, 1)
@@ -108,15 +109,15 @@ class WorkshopVehicle:
             self.contact_shadow = None
             self.floor_reflection = None
             self.reflection_identity = None
-            self.studio_angle = 55.
+            self.studio_angle = -42.
             previous_tasks = self.base.taskMgr.getTasksNamed('simplepbr update')
             self.pipeline = simplepbr.init(render_node=self.scene, window=self.buffer,
                 camera_node=self.camera, taskmgr=self.base.taskMgr, max_lights=1,
-                enable_shadows=False, msaa_samples=4)
+                enable_shadows=False, msaa_samples=4, exposure=0.80)
             self.update_task = next(task for task in self.base.taskMgr.getTasksNamed('simplepbr update')
                                     if task not in previous_tasks)
             self.update_task.setName('workshop-pbr-update')
-        identity = (vehicle.design_id, vehicle.config, skin_index)
+        identity = (vehicle.design_id, vehicle.config, skin_index, studio)
         if identity != self.identity:
             self.framing_cache.clear()
             self.highlight_topic = None
@@ -126,6 +127,8 @@ class WorkshopVehicle:
             body, self.wheels = load_vehicle(self.car_root, definition, config=vehicle.config)
             self.car_root.setZ(vehicle.config.center_of_mass_height)
             apply_skin(body.getChild(0), skin_index)
+            if studio:
+                apply_atelier_vehicle_style(self.car_root, self.wheels, vehicle.design_id)
             self.identity = identity
             self.wheel_radius = vehicle.config.wheel_radius+.035
         if self.frame is not None:
@@ -134,19 +137,33 @@ class WorkshopVehicle:
         if studio and self.framing_identity != geometry:
             self.framing_vertices = mesh_vertices(self.car_root, self.scene)
             self.framing_identity = geometry
-        self.frame = DirectFrame(parent=parent, frameSize=box, frameColor=(1, 1, 1, 1),
+        self.frame = DirectFrame(parent=parent, frameSize=box,
+                                 frameColor=(1.0, 0.98, 0.95, 1) if studio else (1, 1, 1, 1),
                                  frameTexture=self.buffer.getTexture())
         self.camera.node().getLens().setAspectRatio((box[1]-box[0])/(box[3]-box[2]))
-        self.camera.node().getLens().setFov(46)
+        # 落日工坊采用 34° 中焦摄影镜头，消除广角车头畸变并与车库背景透视自然吻合。
+        self.camera.node().getLens().setFov(34 if studio else 46)
         self.camera.node().getLens().setFilmOffset(0, 0)
         self.backplate.hide() if studio else self.backplate.show()
         self.buffer.setClearColor((0, 0, 0, 0) if studio else (.84, .93, .98, 1))
         if studio and self.garage_environment is None:
             from panda3d.core import Filename
 
+            # 使用与落日工坊实景（左侧爱迪生灯、顶棚暗钢梁、右侧落日海门）方向一致的专属 HDRI。
             self.garage_environment = EnvMap.from_file_path(Filename.fromOsSpecific(
-                str(resource_root()/'assets/game/vehicles/garage-skylit.env')))
+                str(resource_root()/'assets/game/vehicles/garage-sunset-workshop.env')))
         self.pipeline.env_map = self.garage_environment if studio else None
+        if studio:
+            # 落日海岸工坊摄影光影：微弱暗冷环境底光 + 右侧落日海门低角度斜射暖金主光（掠射车身侧面，保留机盖深沉车漆对比）。
+            self.ambient_light.setColor((.042, .046, .060, 1))
+            self.key_light.setColor((1.95, 1.04, 0.46, 1))
+            self.key_light_np.setPos(11.5, -2.2, 2.6)
+            self.key_light_np.lookAt(0, 0, .52)
+        else:
+            self.ambient_light.setColor((.45, .50, .58, 1))
+            self.key_light.setColor((3.0, 2.85, 2.65, 1))
+            self.key_light_np.setPos(4, 8, 9)
+            self.key_light_np.lookAt(0, 0, .5)
         for part in self.car_root.findAllMatches('**/paint'):
             if studio:
                 part.setShader(garage_paint_shader(self.pipeline.use_330), 2)
@@ -168,7 +185,7 @@ class WorkshopVehicle:
             self.contact_shadow.setP(-90)
             self.contact_shadow.setZ(.001)
             self.contact_shadow.setTransparency(TransparencyAttrib.MAlpha)
-            self.contact_shadow.setColorScale(1, 1, 1, .62)
+            self.contact_shadow.setColorScale(1, 1, 1, .94)
             self.contact_shadow.setShaderOff()
             self.contact_shadow.setLightOff()
             self.contact_shadow.setDepthWrite(False)
@@ -216,7 +233,7 @@ class WorkshopVehicle:
         # 依据真实网格和视口留边；车顶、车轮完整放在展示区，不向物理配置反写。
         for _ in range(12):
             radius = (near+far)/2
-            self.camera.setPos(math.sin(angle)*radius, math.cos(angle)*radius, center.z+radius*.16)
+            self.camera.setPos(math.sin(angle)*radius, math.cos(angle)*radius, center.z+radius*.072)
             self.camera.lookAt(center)
             projected = project_vertices(self.framing_vertices, self.scene, self.camera)
             ratio = float('inf')
@@ -228,7 +245,7 @@ class WorkshopVehicle:
                 far = radius
             else:
                 near = radius
-        self.camera.setPos(math.sin(angle)*far, math.cos(angle)*far, center.z+far*.16)
+        self.camera.setPos(math.sin(angle)*far, math.cos(angle)*far, center.z+far*.072)
         self.camera.lookAt(center)
         projected = project_vertices(self.framing_vertices, self.scene, self.camera)
         low_x, low_y = np.min(projected, axis=0)

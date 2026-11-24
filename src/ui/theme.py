@@ -1,4 +1,4 @@
-"""VI v3 暖阳海岸赛车画廊主题：暖沙亚麻基底、浓焙浓缩棕排版、落日赤陶/金盏琥珀/海岸青复古赛车三色系。"""
+"""落日黑曜石与琥珀金（Sunset Obsidian & Amber Gold）统一视觉系统：克制、精密、汽车工坊级色彩与控件令牌。"""
 
 from panda3d.core import DynamicTextFont, Filename, SamplerState
 
@@ -11,57 +11,120 @@ DISPLAY_FONT_FILE = "fonts/ChakraPetch-BoldItalic.ttf"
 # 覆盖 1080p 大标题的实际像素高度，避免放大低分辨率字形。
 FONT_PIXELS_PER_UNIT = 160
 
-# 暖阳里维埃拉赛车配色：零惨白、零冷暗蓝，层次温暖丰富。
-INK = (0.175, 0.125, 0.095, 1)
-CHARCOAL = (0.20, 0.14, 0.105, 1)        # 浓焙浓缩棕（主选中胶囊 / 深暖对比）
-CHARCOAL_SOFT = (0.28, 0.20, 0.155, 1)   # 暖胡桃悬停
-CANVAS = (0.953, 0.924, 0.878, 1)        # 暖沙亚麻画布
-PAPER = (0.935, 0.898, 0.845, 1)         # 暖石灰华/羊皮纸基底
-PAPER_LIGHT = (0.992, 0.976, 0.946, 1)   # 象牙奶油浮卡（绝非惨白）
-GLASS_LIGHT = (0.985, 0.958, 0.914, 0.93)  # 暖阳磨砂奶油玻璃
-MIST = (0.930, 0.888, 0.828, 1)          # 暖杏仁柔雾表面
-HAIRLINE = (0.835, 0.775, 0.695, 1)      # 暖砂岩细描边
-SHADOW = (0.22, 0.135, 0.075, 0.16)      # 暖棕柔和阴影
+# ── 浅底对比度基准令牌（保留试验台浅色曲线/图表卡片高可读性，满足 WCAG >= 4.5）──
+INK = (0.068, 0.084, 0.114, 1)            # 深黑曜石正文（用于浅底 & 琥珀金主按钮文字）
+CANVAS = (0.945, 0.953, 0.965, 1)         # 冷静浅灰陶瓷画布
+PAPER = (0.958, 0.964, 0.974, 1)          # 明净冷白基准
+PAPER_LIGHT = (0.992, 0.994, 0.998, 1)    # 洁净白卡
+GLASS_LIGHT = (0.975, 0.980, 0.988, 0.94)
+MIST = (0.905, 0.918, 0.938, 1)
+HAIRLINE = (0.810, 0.832, 0.868, 1)
+MUTED = (0.310, 0.348, 0.415, 1)          # 冷石板灰辅助文字（在 PAPER 上 >= 6.4:1）
+LOCKED = (0.520, 0.560, 0.625, 1)
+SUCCESS = (0.060, 0.470, 0.310, 1)        # 达标翡翠绿（在 PAPER 上 >= 5.1:1）
+FAILURE = (0.720, 0.160, 0.140, 1)        # 警示珊瑚红（在 PAPER 上 >= 5.1:1）
 
-# 经典南欧复古 GT 赛车多色强调体系（丰富而不杂乱）。
-ORANGE = (0.88, 0.33, 0.16, 1)           # 落日赤陶橙红（主行动）
-ORANGE_BRIGHT = (0.95, 0.40, 0.21, 1)
-ORANGE_TINT = (0.985, 0.910, 0.855, 1)   # 暖杏桃高亮底
-AMBER = (0.87, 0.56, 0.13, 1)            # 黄金时刻琥珀金
-AMBER_TINT = (0.985, 0.938, 0.835, 1)    # 浅蜂蜜暖底
-SEA = (0.10, 0.50, 0.55, 1)              # 地中海海岸青
-SEA_TINT = (0.885, 0.942, 0.935, 1)      # 浅海沫暖青底
-PINE = (0.24, 0.51, 0.35, 1)             # 海岸松绿
-PINE_TINT = (0.895, 0.942, 0.902, 1)     # 浅松烟底
-BURGUNDY = (0.58, 0.22, 0.25, 1)         # 经典复古酒红
-BURGUNDY_TINT = (0.965, 0.905, 0.900, 1) # 浅玫瑰陶底
+# ── 核心午夜黑曜石深色表面体系（复刻参考图右侧面板与底栏质感）──
+CHARCOAL = (0.071, 0.086, 0.118, 1)       # #12161E 主哑光黑曜石底
+CHARCOAL_SOFT = (0.115, 0.138, 0.184, 1)  # #1D232F 次级控件/悬停底
+CARBON = (0.068, 0.084, 0.115, 0.94)      # 磨砂黑曜石面板
+CARBON_SOLID = (0.075, 0.092, 0.125, 1)   # 实心黑曜石主面板
+CARBON_CARD = (0.102, 0.124, 0.166, 0.96) # #1A202A 选项卡片静止底
+CARBON_EDGE = (0.192, 0.228, 0.296, 0.92) # #313A4B 1px 精密细描边
+CARBON_GLASS = (0.065, 0.080, 0.112, 0.82) # 展车上悬浮的通透黑玻璃
+SHADOW = (0.015, 0.022, 0.038, 0.45)
 
-MUTED = (0.46, 0.38, 0.31, 1)            # 暖古铜褐辅助文字
-LOCKED = (0.67, 0.59, 0.51, 1)
-SUCCESS = (0.19, 0.53, 0.34, 1)
-FAILURE = (0.78, 0.22, 0.17, 1)
-GOLD = (0.78, 0.50, 0.10, 1)
-SILVER = (0.52, 0.47, 0.42, 1)
-BRONZE = (0.70, 0.38, 0.17, 1)
+# ── 核心落日琥珀金（#F2B041）与冷静钢蓝（#8BB8E8）强调体系 ──
+AMBER = (0.949, 0.690, 0.255, 1)          # #F2B041 落日琥珀金（主 CTA / 选中边框 / 焦点）
+AMBER_BRIGHT = (1.000, 0.765, 0.355, 1)   # #FFC35A 琥珀金高亮悬停
+AMBER_WASH = (0.195, 0.160, 0.102, 0.95)  # 选中行内部的暖琥珀微光暗底
+AMBER_TINT = (0.988, 0.945, 0.855, 1)     # 浅底琥珀柔光（试验台 B 槽）
 
-# 兼容令牌别名（全站统一暖沙奶油 + 浓焙棕，彻底告别惨白与冷暗蓝）。
-SLATE_BG = CANVAS
-SLATE_BAR = (0.985, 0.962, 0.922, 0.97)
-SLATE_GLASS = GLASS_LIGHT
-SLATE_CARD = PAPER_LIGHT
-SLATE_CARD_HI = MIST
-SLATE_BORDER = HAIRLINE
-TEXT_LIGHT = INK
-TEXT_SUB = MUTED
-TEXT_LOCKED = LOCKED
+STEEL_BG = (0.137, 0.200, 0.290, 0.95)    # #23334A 「已安装 / 已解锁」钢蓝徽章底
+STEEL_TEXT = (0.545, 0.722, 0.910, 1)     # #8BB8E8 冷静冰钢蓝文字
+STEEL_LINE = (0.285, 0.435, 0.605, 0.92)
+
+# 兼容别名：全站统一归束到克制的落日琥珀金 + 冷静钢蓝，绝不刺眼杂乱。
+ORANGE = AMBER
+ORANGE_BRIGHT = AMBER_BRIGHT
+ORANGE_TINT = AMBER_TINT
+MAGENTA = AMBER
+MAGENTA_BRIGHT = AMBER_BRIGHT
+MAGENTA_TINT = AMBER_TINT
+MAGENTA_DARK = AMBER_WASH
+
+RUSH = (0.895, 0.525, 0.225, 1)           # 暖铜橙（柔和不刺眼）
+RUSH_TINT = AMBER_TINT
+SEA = (0.435, 0.690, 0.875, 1)            # 冷静海岸钢蓝（路线/A对照/状态）
+SEA_TINT = (0.895, 0.945, 0.985, 1)
+PINE = (0.265, 0.765, 0.565, 1)           # 柔和薄荷翡翠（领先/达标）
+PINE_TINT = (0.895, 0.968, 0.938, 1)
+VIOLET = (0.555, 0.605, 0.885, 1)         # 冷静暮光蓝紫（专家试验台）
+VIOLET_TINT = (0.920, 0.932, 0.985, 1)
+BURGUNDY = VIOLET
+BURGUNDY_TINT = VIOLET_TINT
+
+GOLD = AMBER
+GOLD_DEEP = (0.765, 0.520, 0.125, 1)
+SILVER = (0.680, 0.725, 0.790, 1)
+BRONZE = (0.805, 0.525, 0.305, 1)
+
+# 深色黑曜石界面文字令牌。
+WHITE = (0.955, 0.965, 0.982, 1)          # 柔和象牙白，久看不刺眼
+PURE_WHITE = (1.0, 1.0, 1.0, 1.0)
+DARK_TEXT = WHITE
+DARK_SUB = (0.560, 0.610, 0.690, 1)       # #8F9CB0 冷静银灰辅助字
+DARK_LOCKED = (0.375, 0.415, 0.485, 1)
+
+# 全站通用表面令牌（黑曜石哑光主母版）。
+SLATE_BG = (0.062, 0.076, 0.104, 1)       # #10131A 极深黑曜石背景
+SLATE_BAR = (0.065, 0.080, 0.110, 0.96)   # 顶底细线条黑曜石通栏
+SLATE_GLASS = CARBON
+SLATE_CARD = CARBON_CARD
+SLATE_CARD_HI = AMBER_WASH
+SLATE_BORDER = CARBON_EDGE
+TEXT_LIGHT = DARK_TEXT
+TEXT_SUB = DARK_SUB
+TEXT_LOCKED = DARK_LOCKED
 
 PANEL_TINT = (1, 1, 1, 0.98)
 HUD_TINT = (1, 1, 1, 0.94)
 BUTTON_TINT = (1, 1, 1, 1)
-SECONDARY_BUTTON_TINT = (0.95, 0.93, 0.89, 1)
+SECONDARY_BUTTON_TINT = (0.92, 0.94, 0.97, 1)
 TEXT_SHADOW = (0, 0, 0, 0)
-DIAGNOSTIC_TEXT = (0.98, 0.96, 0.92, 1)
-DIAGNOSTIC_SHADOW = (0.15, 0.10, 0.06, 0.65)
+DIAGNOSTIC_TEXT = (0.96, 0.97, 0.99, 1)
+DIAGNOSTIC_SHADOW = (0.04, 0.06, 0.10, 0.75)
+
+# 克制高级的实车性能分级徽章色系（纯界面显示，绝不影响物理）。
+PI_CLASSES = (
+    ("S2", 901, (0.340, 0.560, 0.860, 1)),
+    ("S1", 801, (0.545, 0.495, 0.845, 1)),
+    ("A", 701, (0.885, 0.440, 0.310, 1)),
+    ("B", 601, (0.925, 0.635, 0.245, 1)),
+    ("C", 501, (0.875, 0.720, 0.285, 1)),
+    ("D", 100, (0.365, 0.640, 0.805, 1)),
+)
+
+
+def vehicle_pi(config):
+    """由实车物理参数换算性能分级与四维显示条，纯视觉呈现不改动物理。"""
+    power_kw = max(rpm * torque / 9549.3 for rpm, torque in config.torque_curve)
+    pw_ratio = power_kw / max(500.0, config.mass) * 1000.0
+    grip = (config.lateral_stiffness + config.rear_lateral_stiffness) / 2000.0
+    brake = config.brake_torque / max(500.0, config.mass)
+    score = round(max(280.0, min(998.0, 320.0 + pw_ratio * 2.15 + grip * 0.85 + brake * 18.0)))
+    letter, color = "D", PI_CLASSES[-1][2]
+    for code, threshold, badge_color in PI_CLASSES:
+        if score >= threshold:
+            letter, color = code, badge_color
+            break
+    stats = (
+        ("动力", min(1.0, max(0.18, power_kw / 280.0)), f"{power_kw:.0f} kW"),
+        ("推重", min(1.0, max(0.18, pw_ratio / 220.0)), f"{pw_ratio:.0f}"),
+        ("轻量", min(1.0, max(0.18, 1.0 - (config.mass - 750.0) / 1100.0)), f"{config.mass:.0f} kg"),
+        ("制动", min(1.0, max(0.18, brake / 3.8)), f"{config.brake_torque:.0f}"),
+    )
+    return letter, score, color, power_kw, stats
 
 
 def asset_filename(name):

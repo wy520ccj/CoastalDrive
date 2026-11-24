@@ -8,9 +8,9 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode
 
-from ui.lab_widgets import MUTED
+from ui.lab_widgets import LAB_ERROR, MUTED
 
-ERROR = (.65, .13, .10, 1)
+ERROR = LAB_ERROR
 
 
 class LabFeedback:
@@ -18,7 +18,7 @@ class LabFeedback:
         self.footer = OnscreenText(parent=app.root, font=app.font, fg=MUTED,
             text="选择工况后点击开始试验，拖动时间轴可逐帧分析", pos=(-.92, -.948), scale=.030,
             wordwrap=80, align=TextNode.ALeft, mayChange=True)
-        self.root = DirectFrame(parent=app.root, frameColor=(.995, .945, .935, 1),
+        self.root = DirectFrame(parent=app.root, frameColor=(.995, .942, .935, 1),
             frameSize=(-.94, 1.72, -.98, -.74), sortOrder=130, state=DGG.NORMAL)
         DirectFrame(parent=self.root, frameColor=ERROR,
                     frameSize=(-.94, -.924, -.98, -.74))

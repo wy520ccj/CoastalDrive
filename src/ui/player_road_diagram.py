@@ -5,7 +5,8 @@ import math
 from panda3d.core import LineSegs
 
 from slalom_lesson import GATES
-from ui.garage_layout import GRAY, INK, ORANGE, WHITE
+from ui import theme
+from ui.garage_layout import GRAY, ORANGE, WHITE
 
 
 def gate_focus(a, b):
@@ -54,7 +55,7 @@ class RoadDiagram:
             button.reparentTo(self.root)
         self.root.hide()
 
-    def text(self, value, x, y, size=18, color=INK):
+    def text(self, value, x, y, size=18, color=WHITE):
         item = self.panel.text(value, x, y, size, color, parent=self.plot)
         self.labels.append(item)
         return item
@@ -104,23 +105,23 @@ class RoadDiagram:
         self.detail.textNode.setWordwrap(wide*.32/18)
         self.legend.setText('')
         for side, item, y in zip('AB', (self.a, self.b), (501, 600), strict=True):
-            self.text(side, left+48, y+10, 28)
-            self.fill(left+98, y-15, wide-142, 30, (.68, .70, .73, 1))
+            self.text(side, left+48, y+10, 28, theme.STEEL_TEXT if side == 'A' else theme.AMBER)
+            self.fill(left+98, y-15, wide-142, 30, (0.12, 0.15, 0.21, 0.96), 4)
             for index in range(24):
                 x = left+105+index*(wide-163)/24
-                self.fill(x, y-1, (wide-163)/48, 2, WHITE)
+                self.fill(x, y-1, (wide-163)/48, 2, (0.48, 0.55, 0.66, 0.85))
             margins = item['result']['clearances'] if item else ()
             for index in range(6):
                 x = left+wide*.14+index*wide*.147
                 if side == 'A':
-                    self.text(f'第{index+1}门', x-27, y-63, 18)
+                    self.text(f'第{index+1}门', x-27, y-63, 18, WHITE)
                 reached = index < len(margins)
-                color = (.1, .64, .24, 1) if reached and margins[index] >= 0 else ORANGE if reached else GRAY
-                self.fill(x-3, y-27, 6, 43, INK)
+                color = theme.PINE if reached and margins[index] >= 0 else ORANGE if reached else GRAY
+                self.fill(x-3, y-27, 6, 43, (0.72, 0.78, 0.88, 0.92), 2)
                 self.fill(x-9, y-45, 18, 18, color, 9)
                 value = f'{margins[index]:+.3f}m' if reached else '未到达'
                 self.text(value, x-35, y+43, 16, color)
-        self.line([(left+36, 651), (left+wide-36, 651)], (.79, .81, .84, 1))
+        self.line([(left+36, 651), (left+wide-36, 651)], (0.24, 0.29, 0.38, 0.85))
 
     def change(self, direction):
         self.select(self.selected+direction)
@@ -128,7 +129,7 @@ class RoadDiagram:
     def select(self, index):
         self.selected = index % 6
         for i, button in enumerate(self.buttons):
-            button['text_fg'] = ORANGE if i == self.selected else INK
+            button['text_fg'] = ORANGE if i == self.selected else WHITE
             self.edges[i].show() if i == self.selected else self.edges[i].hide()
         parts = []
         for name, item in zip('AB', (self.a, self.b), strict=True):
@@ -149,12 +150,12 @@ class RoadDiagram:
         ticks = (0., 33., 36., 42.) if short else (160., 165., 168., 170., 172., 175., 180.)
         for value in ticks:
             x = x_at(value)
-            self.line([(x, 469), (x, 635)], (.73, .76, .79, 1))
+            self.line([(x, 469), (x, 635)], (0.25, 0.30, 0.40, 0.85))
             if short or value in (160., 170., 180.):
                 self.text(('门0' if value == 0 else f'{value:g}'), x-16, 461, 17, GRAY)
-        for name, item, color, y in zip('AB', (self.a, self.b), (INK, ORANGE), (506, 605), strict=True):
+        for name, item, color, y in zip('AB', (self.a, self.b), (theme.STEEL_TEXT, ORANGE), (506, 605), strict=True):
             self.text(name, left+48, y+10, 28, color)
-            self.line([(left+140, y), (left+wide-80, y)], (.66, .69, .73, 1), 3)
+            self.line([(left+140, y), (left+wide-80, y)], (0.34, 0.40, 0.50, 0.85), 3)
             point = brake_position(item, short)
             if point is None:
                 self.text('未建立', left+wide*.46, y-16, 20, GRAY)

@@ -401,10 +401,9 @@ def test_new_car_reward_opens_its_preview_and_returns_to_the_earned_event(app, m
         for label in panel.labels:
             if label.getText() in ('Porsche 911 Turbo', 'BMW 1M Coupé', 'Subaru WRX STI', '远航 GT'):
                 low, high = label.getTightBounds(panel.content)
-                # 只检查列表内车名；右侧展示标题有独立对齐区域。
-                if low.x < 0:
-                    wide = min(462., 941.*aspect*.295)
-                    assert high.x <= -aspect+(941.*aspect*.031+wide-24)*2/941
+                # 车名标签须严格落在可视画幅与横向车卡范围内，不超出边界。
+                margin_x = 941. * aspect * .028 * 2 / 941
+                assert low.x >= -aspect + margin_x - 0.01 and high.x <= aspect - margin_x + 0.01
     app.career_action('garage-select')
     assert app.workspace_vehicle.design_id == car_id
     app.career_action('garage-back')

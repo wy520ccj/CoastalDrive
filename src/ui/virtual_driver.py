@@ -14,8 +14,20 @@ from road_comparison import (
     export_comparison,
 )
 from slalom_lesson import GATES
-from ui import theme
-from ui.lab_widgets import button_textures, rounded_panel
+from ui.lab_widgets import (
+    LAB_ACCENT_A,
+    LAB_ACCENT_B,
+    LAB_CARD,
+    LAB_ERROR,
+    LAB_GRID,
+    LAB_SUCCESS,
+    LAB_SURFACE,
+    LAB_TEXT,
+    LAB_TRACK,
+    MUTED,
+    button_textures,
+    rounded_panel,
+)
 from ui.road_review import RoadReviewPanel
 from vehicle_parameters import config_from_document
 from vehicle_schemes import load_scheme
@@ -36,7 +48,7 @@ class VirtualDriverPanel:
         self.report = None
         self.shown_records = -1
         self.lateral_limit = 4.
-        self.root = DirectFrame(parent=schemes.root, frameColor=theme.PAPER_LIGHT,
+        self.root = DirectFrame(parent=schemes.root, frameColor=LAB_CARD,
             frameSize=(-1.78, 1.78, -1.5, 1.5), sortOrder=101, state=DGG.NORMAL)
         glyphs = TextNode('virtual-road-button-glyphs')
         glyphs.setFont(app.font)
@@ -46,41 +58,41 @@ class VirtualDriverPanel:
         self.title = app.text("方案试车对比", -1.52, .63, .058, parent=self.root, font=app.heading_font)
         self.close_button = app.button("关闭", 1.42, .66, .28, self.hide, parent=self.root)
         app.text("按相同方式驾驶两套方案，比较过门结果。",
-                 -1.52, .51, .040, theme.SEA, parent=self.root)
+                 -1.52, .51, .040, LAB_ACCENT_A, parent=self.root)
         self.scheme_names, self.result_labels, self.progress_fills, self.distance_labels = [], [], [], []
-        for side, left, color in ((0, -1.50, theme.SEA), (1, .07, theme.ORANGE)):
-            rounded_panel(self.root, 'road-status', (left, left+1.43, .18, .43), theme.PAPER)
+        for side, left, color in ((0, -1.50, LAB_ACCENT_A), (1, .07, LAB_ACCENT_B)):
+            rounded_panel(self.root, 'road-status', (left, left+1.43, .18, .43), LAB_SURFACE)
             name = app.text('', left+.08, .35, .042, color, parent=self.root)
             self.scheme_names.append(name)
             self.result_labels.append(app.text('', left+.08, .255, .045, parent=self.root))
-            distance = app.text('', left+1.35, .255, .040, theme.MUTED, parent=self.root)
+            distance = app.text('', left+1.35, .255, .040, MUTED, parent=self.root)
             distance['align'] = TextNode.ARight
             self.distance_labels.append(distance)
-            rounded_panel(self.root, 'road-progress-track', (left+.08, left+1.35, .205, .22), (.80, .85, .83, 1.), .007)
+            rounded_panel(self.root, 'road-progress-track', (left+.08, left+1.35, .205, .22), LAB_TRACK, .007)
             fill = rounded_panel(self.root, 'road-progress', (0., 1., 0., .015), color, .007)
             fill.setPos(left+.08, 0., .205)
             self.progress_fills.append(fill)
-        rounded_panel(self.root, 'road-overview', (-1.50, .65, -.34, .15), theme.PAPER)
+        rounded_panel(self.root, 'road-overview', (-1.50, .65, -.34, .15), LAB_SURFACE)
         app.text('实际行驶路线', -1.39, .06, .040, parent=self.root)
-        app.text('一', -.48, .06, .040, theme.SEA, parent=self.root)
-        app.text('二', -.22, .06, .040, theme.ORANGE, parent=self.root)
-        app.text('0', -1.39, -.30, .040, theme.MUTED, parent=self.root)
-        self.path_legend = app.text('灰线为目标', -1.10, -.30, .040, theme.MUTED, parent=self.root)
-        app.text('320m →', .25, -.30, .040, theme.MUTED, parent=self.root)
-        self.lateral_axis = app.text('', -1.40, -.01, .040, theme.MUTED, parent=self.root)
+        app.text('一', -.48, .06, .040, LAB_ACCENT_A, parent=self.root)
+        app.text('二', -.22, .06, .040, LAB_ACCENT_B, parent=self.root)
+        app.text('0', -1.39, -.30, .040, MUTED, parent=self.root)
+        self.path_legend = app.text('灰线为目标', -1.10, -.30, .040, MUTED, parent=self.root)
+        app.text('320m →', .25, -.30, .040, MUTED, parent=self.root)
+        self.lateral_axis = app.text('', -1.40, -.01, .040, MUTED, parent=self.root)
         self.lines = self.root.attachNewNode('road-overview-lines')
         self.paths = []
         self.gate_labels = []
-        self.summary = app.text('等待试车', .80, .03, .078, theme.SEA, parent=self.root)
+        self.summary = app.text('等待试车', .80, .03, .078, LAB_ACCENT_A, parent=self.root)
         self.summary_note = app.text('选择两套方案后开始试车', .80, -.09, .040, parent=self.root)
         self.summary_note.textNode.setWordwrap(19)
         self.summary_time = app.text('', .80, -.26, .045, parent=self.root)
-        self.details = DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT,
+        self.details = DirectFrame(parent=self.root, frameColor=LAB_CARD,
             frameSize=(-1.78, 1.78, -1, .43), sortOrder=104, state=DGG.NORMAL)
         app.text('完整道路指标', -1.45, .30, .047, parent=self.details)
         self.metric_headers = []
         for label, x in (('指标', -1.42), ('方案一', -.13), ('方案二', .65), ('变化', 1.43)):
-            node = app.text(label, x, .17, .040, theme.MUTED, parent=self.details)
+            node = app.text(label, x, .17, .040, MUTED, parent=self.details)
             if x != -1.42:
                 node['align'] = TextNode.ARight
             self.metric_headers.append(node)
@@ -89,7 +101,7 @@ class VirtualDriverPanel:
             row = []
             for x in (-1.42, -.13, .65, 1.43):
                 node = app.text('', x, .06-index*.080, .040,
-                                theme.SEA if x == 1.43 else theme.INK, parent=self.details)
+                                LAB_ACCENT_A if x == 1.43 else LAB_TEXT, parent=self.details)
                 if x != -1.42:
                     node['align'] = TextNode.ARight
                 row.append(node)
@@ -97,12 +109,12 @@ class VirtualDriverPanel:
         app.button('收起', 1.17, -.83, .45, self.details.hide, parent=self.details)
         app.button('完整指标 ›', -1.15, -.66, .72, self.toggle_details, parent=self.root)
         self.details.hide()
-        self.progress = app.text("", -1.52, -.45, .042, theme.SEA, parent=self.root)
-        self.note = app.text(RESULT_NOTE, -1.45, -.45, .040, theme.SEA, parent=self.details)
+        self.progress = app.text("", -1.52, -.45, .042, LAB_ACCENT_A, parent=self.root)
+        self.note = app.text(RESULT_NOTE, -1.45, -.45, .040, LAB_ACCENT_A, parent=self.details)
         self.note.textNode.setWordwrap(66)
-        self.failure = app.text("", -1.52, -.55, .040, theme.FAILURE, parent=self.root)
+        self.failure = app.text("", -1.52, -.55, .040, LAB_ERROR, parent=self.root)
         self.failure.textNode.setWordwrap(85)
-        self.drive_note = app.text("", -1.45, -.53, .040, theme.SEA, parent=self.details)
+        self.drive_note = app.text("", -1.45, -.53, .040, LAB_ACCENT_A, parent=self.details)
         self.drive_note.textNode.setWordwrap(52)
         self.drive_button = app.button("试驾方案二", 1.15, -.86, .72, self.drive_slalom,
                                        parent=self.root, accent=True)
@@ -134,23 +146,23 @@ class VirtualDriverPanel:
         self.lateral_limit = max(4., max((abs(row['x']) for record in records for row in record.rows), default=0.))
         self.lateral_axis.setText(f'±{self.lateral_limit:g}m')
         grid = LineSegs()
-        grid.setColor(.74, .79, .77, 1.)
+        grid.setColor(*LAB_GRID)
         for lateral in (-self.lateral_limit, 0., self.lateral_limit):
             grid.moveTo(*self.point(0., lateral))
             grid.drawTo(*self.point(320., lateral))
         for index, (distance, lateral) in enumerate(GATES):
             x, _, _ = self.point(distance, lateral)
-            self.gate_labels.append(self.app.text(str(index+1), x-.016, -.25, .035, theme.MUTED, parent=self.root))
+            self.gate_labels.append(self.app.text(str(index+1), x-.016, -.25, .035, MUTED, parent=self.root))
             grid.moveTo(*self.point(distance, lateral-2.))
             grid.drawTo(*self.point(distance, lateral+2.))
         self.lines.attachNewNode(grid.create())
         target = LineSegs()
-        target.setColor(*theme.MUTED)
+        target.setColor(*MUTED)
         target.moveTo(*self.point(0., target_x(0.)))
         for distance in range(2, 321, 2):
             target.drawTo(*self.point(distance, target_x(distance)))
         self.lines.attachNewNode(target.create())
-        for record, color in zip(records, (theme.SEA, theme.ORANGE)):
+        for record, color in zip(records, (LAB_ACCENT_A, LAB_ACCENT_B)):
             path = LineSegs()
             path.setColor(*color)
             path.setThickness(2.5)
@@ -186,13 +198,13 @@ class VirtualDriverPanel:
         if len(records) > 1:
             measured = records[1].metadata['metrics']
             self.summary.setText(f"{measured['gates']} / 6")
-            self.summary['fg'] = theme.SUCCESS if measured['completed'] else theme.FAILURE
+            self.summary['fg'] = LAB_SUCCESS if measured['completed'] else LAB_ERROR
             self.summary_note.setText('方案二全部通过' if measured['completed'] else '方案二未完成')
             seconds = measured['valid_seconds']
             self.summary_time.setText(f'{seconds:.2f} 秒' if seconds is not None else '用时 —')
         else:
             self.summary.setText('等待方案二' if records else '等待试车')
-            self.summary['fg'] = theme.SEA
+            self.summary['fg'] = LAB_ACCENT_A
             self.summary_note.setText('方案一已结束' if records else '点击“开始试车”运行对比')
             self.summary_time.setText('')
 
@@ -315,8 +327,8 @@ class VirtualDriverPanel:
         available = self.comparison is not None and self.comparison.done and len(self.comparison.records) == 2
         self.drive_button["state"] = DGG.NORMAL if available else DGG.DISABLED
         self.drive_button.show() if available else self.drive_button.hide()
-        self.run_button["frameTexture"] = button_textures(not available)
-        self.run_button["text_fg"] = theme.INK if available else (1, 1, 1, 1)
+        self.run_button["frameTexture"] = button_textures(False if available else "lab_primary")
+        self.run_button["text_fg"] = LAB_TEXT if available else (1, 1, 1, 1)
         if available:
             friction = self.comparison.records[1].metadata["original_vehicle"]["config"]["road_friction"]
             self.drive_note.setText(f"试驾沿用方案路面 μ={friction:g} / 当前输入模式\n虚拟复测基准 μ=1.1，玩家成绩独立记录。")

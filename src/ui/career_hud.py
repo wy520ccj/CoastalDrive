@@ -1,4 +1,4 @@
-"""生涯驾驶的四角信息区；只显示权威快照，不持有比赛或车辆状态。"""
+"""生涯驾驶轻透四角遥测 HUD（原生顶点渐隐 + 悬浮无盒仪表）；只显示权威快照，不持有比赛或车辆状态。"""
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
@@ -17,11 +17,12 @@ from driving_modes import DrivingMode
 from ui import theme
 from ui.lab_widgets import rounded_panel
 
-WHITE = (1, 1, 1, 1)
-SOFT = (.76, .81, .83, 1)
-DARK = (.035, .075, .10, .38)
-ORANGE = (1, .31, .12, 1)
-GOLD = (1, .77, .24, 1)
+WHITE = theme.WHITE
+SOFT = (0.78, 0.83, 0.88, 1)
+DARK = (0.045, 0.062, 0.088, 0.44)
+ORANGE = theme.AMBER
+GOLD = theme.AMBER
+GREEN = theme.PINE
 UNIT = 2/941
 
 
@@ -32,47 +33,61 @@ class CareerDrivingHUD:
         self.body_font, self.number_font = body_font, number_font
         self.regular = theme.load_font('fonts/SourceHanSansSC-Regular.otf')
         self.widgets = []
-        self.status = self.card('race-status', 330, 162, fade=True)
+
+        # ── 左上角轻透渐隐赛事进度（保留原版通透渐隐与悬浮三星目标）──
+        self.status = self.card('race-status', 336, 164, fade=True)
+        self.bar(self.status, 0, 10, 4, 42, ORANGE)
         self.chapter = self.label(self.status, '', 16, 20, 15, SOFT)
         self.chapter.hide()
-        self.title = self.label(self.status, '', 16, 40, 32, bold=True)
+        self.title = self.label(self.status, '', 16, 40, 31, bold=True)
         self.primary = self.label(self.status, '', 16, 107, 62, number=True)
-        self.timer = self.label(self.status, '', 166, 98, 30, number=True)
-        self.bar(self.status, 0, 10, 4, 42, ORANGE)
-        self.bar(self.status, 16, 123, 302, 2, (.75, .81, .83, .6))
-        self.progress = self.bar(self.status, 16, 123, 302, 2, ORANGE)
+        self.timer = self.label(self.status, '', 168, 98, 30, number=True)
+        self.bar(self.status, 16, 123, 304, 3, (0.75, 0.81, 0.86, 0.45))
+        self.progress = self.bar(self.status, 16, 123, 304, 3, ORANGE)
         self.detail = self.label(self.status, '', 16, 152, 20)
-        self.goal = self.card('race-goal', 330, 40, color=(0, 0, 0, 0))
-        self.label(self.goal, '★', 14, 29, 30, GOLD)
+
+        self.goal = self.card('race-goal', 336, 40, color=(0, 0, 0, 0))
+        self.label(self.goal, '★', 14, 29, 29, GOLD)
         self.goal_text = self.label(self.goal, '', 52, 27, 21)
+
+        # ── 左下角轻透渐隐驾驶提示与键帽 ──
         self.hints = self.card('driving-hints', 510, 122, fade=True)
         self.bar(self.hints, 10, 12, 4, 24, ORANGE)
-        self.tip = self.label(self.hints, '', 28, 31, 21)
-        self.tip.textNode.setWordwrap(468/21)
+        self.tip = self.label(self.hints, '', 26, 31, 20)
+        self.tip.textNode.setWordwrap(468/20)
         for x, text in ((16, 'W'), (148, 'S'), (310, 'A'), (346, 'D')):
-            key = self.card('key-'+text, 28, 28, parent=self.hints, color=SOFT)
+            key = self.card('key-'+text, 28, 28, parent=self.hints, color=(0.56, 0.64, 0.74, 0.72))
             key.setPos(x, 0, -61)
-            rounded_panel(key, 'key-center', (1, 27, -27, -1), (.04, .08, .10, .7), 4)
-            self.label(key, text, 6, 21, 19)
+            rounded_panel(key, 'key-center', (1, 27, -27, -1), (0.048, 0.064, 0.092, 0.76), 4)
+            self.label(key, text, 6, 21, 18)
         self.label(self.hints, '加速', 54, 83, 18, SOFT)
         self.brake_key = self.label(self.hints, '', 186, 83, 18, SOFT)
         self.label(self.hints, '转向', 385, 83, 18, SOFT)
         self.secondary_keys = self.label(self.hints, '', 16, 114, 16, SOFT)
+
+        # ── 右下角无底盒悬浮数字遥测（与滨海设计 40 完全一致，不挡路面）──
         self.speed_card = self.card('driving-instruments', 315, 160, color=(0, 0, 0, 0))
         self.speed = self.label(self.speed_card, '000', 10, 91, 78, number=True)
-        self.label(self.speed_card, 'km/h', 183, 87, 21)
-        self.bar(self.speed_card, 252, 38, 58, 43, ORANGE)
-        self.gear = self.label(self.speed_card, '', 261, 70, 27, (.04, .07, .10, 1), number=True)
-        self.rpm = self.label(self.speed_card, '', 309, 111, 16, SOFT, right=True)
+        self.label(self.speed_card, 'km/h', 183, 87, 21, SOFT)
+        rounded_panel(self.speed_card, 'car-gear-pill', (252, 310, -81, -38), ORANGE, 5)
+        self.gear = OnscreenText(parent=self.speed_card, text='', font=self.number_font,
+                                 fg=theme.INK, pos=(281, -70), scale=27,
+                                 align=TextNode.ACenter, mayChange=True)
+        self.widgets.append(self.gear)
+        self.rpm = self.label(self.speed_card, '', 309, 111, 16, SOFT, number=True, right=True)
         self.segments = [self.bar(self.speed_card, 12+i*13.5, 122, 11, 9, SOFT) for i in range(22)]
-        self.assists = [self.label(self.speed_card, text, 14+i*72, 153, 17, SOFT)
+        self.assists = [self.label(self.speed_card, text, 14+i*72, 153, 17, SOFT, bold=True)
                         for i, text in enumerate(('ABS', 'TCS', 'ESC'))]
-        self.assist_lights = [self.bar(self.speed_card, 14+i*72, 158, 25, 2, SOFT) for i in range(3)]
-        shape = rounded_panel(self.root, 'pause-fill', (0, 126, -43, 0), DARK, 5)
-        shape.detachNode()
+        self.assist_lights = [self.bar(self.speed_card, 14+i*72, 158, 28, 2.5, SOFT) for i in range(3)]
+
+        # ── 右上角轻透黑曜石暂停按钮 ──
+        edge = rounded_panel(self.root, 'pause-edge', (-1, 133, -45, 1), (0.34, 0.40, 0.50, 0.55), 7)
+        rounded_panel(edge, 'pause-fill', (0, 132, -44, 0), (0.048, 0.064, 0.092, 0.64), 6)
+        rounded_panel(edge, 'pause-accent', (6, 9, -34, -10), ORANGE, 1.5)
+        edge.detachNode()
         self.pause = DirectButton(parent=self.root, text='Esc   暂停', text_font=self.regular,
-            text_fg=WHITE, text_scale=21, text_pos=(63, -29), geom=shape,
-            frameColor=(0, 0, 0, 0), frameSize=(0, 126, -43, 0), relief=DGG.FLAT,
+            text_fg=WHITE, text_scale=20, text_pos=(69, -29), geom=edge,
+            frameColor=(0, 0, 0, 0), frameSize=(0, 132, -44, 0), relief=DGG.FLAT,
             pressEffect=False, command=action, extraArgs=['pause'])
         self.widgets.append(self.pause)
         self._rpm_active = None
@@ -82,7 +97,7 @@ class CareerDrivingHUD:
     def card(self, name, width, height, *, parent=None, color=DARK, fade=False):
         target = self.root if parent is None else parent
         if fade:
-            # 原生顶点渐隐只衬托文字，不再用整块深色面板遮挡环境。
+            # 原生顶点渐隐只衬托文字，不用整块实心面板遮挡环境。
             card = CardMaker(name+'-fill')
             card.setFrame(0, width, -height, 0)
             shape = target.attachNewNode(card.generate())
@@ -106,8 +121,8 @@ class CareerDrivingHUD:
         item = OnscreenText(parent=parent, text=text,
             font=self.number_font if number else self.body_font if bold else self.regular, fg=color, pos=(x, -y),
             scale=size, align=TextNode.ARight if right else TextNode.ALeft, mayChange=True)
-        item.textNode.setShadow(.025, .025)
-        item.textNode.setShadowColor(0, 0, 0, .65)
+        item.textNode.setShadow(.03, .03)
+        item.textNode.setShadowColor(0, 0, 0, .72)
         self.widgets.append(item)
         return item
 
@@ -123,11 +138,11 @@ class CareerDrivingHUD:
 
     def resize(self, aspect):
         left, right = -aspect/UNIT+36, aspect/UNIT-36
-        self.status.setPos(left, 0, 941/2-40)
-        self.goal.setPos(left, 0, 941/2-206)
+        self.status.setPos(left, 0, 941/2-36)
+        self.goal.setPos(left, 0, 941/2-208)
         self.hints.setPos(left, 0, -941/2+36+122)
         self.speed_card.setPos(right-315, 0, -941/2+36+160)
-        self.pause.setPos(right-126, 0, 941/2-40)
+        self.pause.setPos(right-132, 0, 941/2-36)
 
     def update(self, player, result, *, notice, driving_mode, station, road_gold=None, automatic=False):
         event = EVENT_BY_ID[result.event_id]
@@ -161,7 +176,7 @@ class CareerDrivingHUD:
             goal = '三星目标 '+target
         if self.goal_text.getText() != goal:
             self.goal_text.setText(goal)
-            self.goal_text.setScale(min(21., 270/self.goal_text.textNode.getWidth()))
+            self.goal_text.setScale(min(21., 280/self.goal_text.textNode.getWidth()))
         self.text(self.tip, notice or event.tip)
         brake = '刹车' if driving_mode == DrivingMode.SIMULATION else '刹车·倒车'
         self.text(self.brake_key, brake)
@@ -175,13 +190,17 @@ class CareerDrivingHUD:
         active = round(max(0., min(1., player.rpm/7000))*len(self.segments))
         if active != self._rpm_active:
             for index, segment in enumerate(self.segments):
-                segment['frameColor'] = ((.94, .13, .10, 1) if index >= 19 else ORANGE) if index < active else (.25, .31, .34, 1)
+                if index < active:
+                    seg_col = (0.94, 0.36, 0.28, 1) if index >= 19 else ORANGE if index >= 12 else WHITE
+                else:
+                    seg_col = (0.12, 0.16, 0.22, 0.50)
+                segment['frameColor'] = seg_col
             self._rpm_active = active
         assists = ((player.abs_enabled, any(brake.abs_active for brake in player.brake_states)),
             (player.tcs_enabled, player.traction_state.active), (player.esc_enabled, player.stability_state.active))
         if assists != self._assists:
             for label, light, (enabled, intervening) in zip(self.assists, self.assist_lights, assists):
-                color = (.37, .88, .64, 1) if intervening else SOFT if enabled else (.38, .44, .47, 1)
+                color = GREEN if intervening else SOFT if enabled else (0.36, 0.42, 0.50, 0.72)
                 label.setFg(color)
                 light['frameColor'] = color
             self._assists = assists

@@ -57,85 +57,87 @@ class DrivingHUD:
         self._overtaking = False
         self.root = parent.attachNewNode("driving-hud")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
-        panel = loader.loadTexture(theme.asset_filename("components/panel.png"))
+        dark_card = (0.045, 0.062, 0.088, 0.62)
+        soft_fg = (0.78, 0.83, 0.88, 1)
+        shadow_cfg = {"shadow": (0, 0, 0, .70), "shadowOffset": (.03, .03)}
         self.status_frame = DirectFrame(
-            parent=self.root, frameColor=(1, 1, 1, 1), frameTexture=panel,
+            parent=self.root, frameColor=dark_card,
             frameSize=(0, 0.88, -0.40, 0), pos=(-1.70, 0, 0.91),
         )
         self.mode = OnscreenText(parent=self.status_frame, text="", font=body_font,
-                                fg=theme.INK, pos=(0.11, -0.071), scale=0.052,
-                                align=TextNode.ALeft, mayChange=True)
-        DirectFrame(parent=self.status_frame, frameColor=theme.ORANGE,
-                    frameSize=(0.045, 0.055, -0.092, -0.035))
-        DirectFrame(parent=self.status_frame, frameColor=(0.5, 0.55, 0.56, 0.4),
-                    frameSize=(0.04, 0.84, -0.122, -0.119))
+                                fg=theme.WHITE, pos=(0.08, -0.071), scale=0.050,
+                                align=TextNode.ALeft, mayChange=True, **shadow_cfg)
+        DirectFrame(parent=self.status_frame, frameColor=theme.AMBER,
+                    frameSize=(0.025, 0.036, -0.092, -0.032))
+        DirectFrame(parent=self.status_frame, frameColor=(0.35, 0.42, 0.52, 0.35),
+                    frameSize=(0.03, 0.85, -0.122, -0.119))
         self.status = OnscreenText(parent=self.status_frame, text="", font=number_font,
-                                  fg=theme.INK, pos=(0.055, -0.212), scale=0.071,
-                                  align=TextNode.ALeft, mayChange=True)
+                                  fg=theme.WHITE, pos=(0.055, -0.212), scale=0.071,
+                                  align=TextNode.ALeft, mayChange=True, **shadow_cfg)
         self.detail = OnscreenText(parent=self.status_frame, text="", font=body_font,
-                                  fg=theme.INK, pos=(0.055, -0.302), scale=0.041,
-                                  align=TextNode.ALeft, mayChange=True)
+                                  fg=soft_fg, pos=(0.055, -0.302), scale=0.040,
+                                  align=TextNode.ALeft, mayChange=True, **shadow_cfg)
         self.split = OnscreenText(parent=self.status_frame, text="", font=body_font,
-                                  fg=theme.SEA, pos=(0.055, -0.422), scale=0.034,
-                                  align=TextNode.ALeft, mayChange=True)
+                                  fg=theme.STEEL_TEXT, pos=(0.055, -0.422), scale=0.034,
+                                  align=TextNode.ALeft, mayChange=True, **shadow_cfg)
         self.split.hide()
         self.goal = OnscreenText(parent=self.status_frame, text="", font=body_font,
-            fg=theme.SEA, pos=(.055, -.535), scale=.031, align=TextNode.ALeft, mayChange=True)
+            fg=theme.AMBER, pos=(.055, -.535), scale=.031, align=TextNode.ALeft, mayChange=True, **shadow_cfg)
         self.goal.hide()
-        self.notice_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 1),
+        self.notice_frame = DirectFrame(parent=self.root, frameColor=(0.045, 0.062, 0.088, 0.72),
                                         frameSize=(0, 0.88, -0.18, 0), pos=(-1.70, 0, 0.50))
-        # 底板固定实色，避免移动的树影/天空透进来形成明暗跳动。
-        self.notice_frame.setTransparency(TransparencyAttrib.MNone)
+        DirectFrame(parent=self.notice_frame, frameColor=theme.AMBER,
+                    frameSize=(0.012, 0.020, -0.075, -0.018))
         self.status_notice = OnscreenText(
-            parent=self.notice_frame, text="", font=body_font, fg=theme.PAPER_LIGHT,
-            pos=(0.035, -0.050), scale=0.034, align=TextNode.ALeft, mayChange=True,
+            parent=self.notice_frame, text="", font=body_font, fg=theme.WHITE,
+            pos=(0.038, -0.050), scale=0.033, align=TextNode.ALeft, mayChange=True, **shadow_cfg
         )
         # 提示一次排版即可；逐字测量每个增长前缀会让切台后的驾驶帧卡顿。
-        self.status_notice.textNode.setWordwrap(0.80 / 0.034)
+        self.status_notice.textNode.setWordwrap(0.80 / 0.033)
         # 三个固定电台标签在加载HUD时生成几何；切台只切换可见性。
         self.radio_labels = tuple(OnscreenText(
             parent=self.notice_frame, text=f"电台：{name}", font=body_font,
-            fg=theme.PAPER_LIGHT, pos=(0.035, -0.050), scale=0.034,
-            align=TextNode.ALeft, mayChange=False,
+            fg=theme.STEEL_TEXT, pos=(0.038, -0.050), scale=0.033,
+            align=TextNode.ALeft, mayChange=False, **shadow_cfg
         ) for name in STATIONS)
         for label in self.radio_labels:
             label.hide()
+        # 右下角速度仪表与设计 40 一致采用无盒悬浮排版，不再用旧绿框贴图。
         self.speed_frame = DirectFrame(
-            parent=self.root, frameColor=(1, 1, 1, 1),
-            frameTexture=loader.loadTexture(theme.asset_filename("components/speed-panel.png")),
+            parent=self.root, frameColor=(0, 0, 0, 0),
             frameSize=(-0.98, 0, 0, 0.33), pos=(1.70, 0, -0.90),
         )
         self.speed = OnscreenText(parent=self.speed_frame, text="000", font=number_font,
-                                 fg=theme.PAPER_LIGHT, pos=(-0.89, 0.117), scale=0.165,
-                                 align=TextNode.ALeft, mayChange=True)
-        self.course_speed_frame = DirectFrame(parent=self.speed_frame, frameColor=(.04, .07, .09, 1),
+                                 fg=theme.WHITE, pos=(-0.89, 0.117), scale=0.165,
+                                 align=TextNode.ALeft, mayChange=True, **shadow_cfg)
+        self.course_speed_frame = DirectFrame(parent=self.speed_frame, frameColor=(0.045, 0.062, 0.088, 0.72),
             frameSize=(-.98, 0, .36, .54))
         self.course_speed_label = OnscreenText(parent=self.course_speed_frame, text='', font=body_font,
-            fg=theme.PAPER_LIGHT, pos=(-.92, .475), scale=.031, align=TextNode.ALeft, mayChange=True)
-        DirectFrame(parent=self.course_speed_frame, frameColor=(.23, .30, .33, 1),
+            fg=theme.WHITE, pos=(-.92, .475), scale=.031, align=TextNode.ALeft, mayChange=True, **shadow_cfg)
+        DirectFrame(parent=self.course_speed_frame, frameColor=(.20, .26, .34, 1),
                     frameSize=(-.90, -.08, .405, .425))
-        DirectFrame(parent=self.course_speed_frame, frameColor=(.24, .65, .45, 1),
+        DirectFrame(parent=self.course_speed_frame, frameColor=theme.PINE,
                     frameSize=(-.90+.82*.70, -.90+.82*.80, .395, .435))
-        self.course_speed_needle = DirectFrame(parent=self.course_speed_frame, frameColor=(1, .67, .20, 1),
+        self.course_speed_needle = DirectFrame(parent=self.course_speed_frame, frameColor=theme.AMBER,
                                               frameSize=(-.004, .004, .39, .44))
         self.course_speed_frame.hide()
         OnscreenText(parent=self.speed_frame, text="km/h", font=body_font,
-                     fg=theme.PAPER_LIGHT, pos=(-0.36, 0.125), scale=0.042)
-        self.gear_box = DirectFrame(parent=self.speed_frame, frameColor=(1, 0.73, 0.15, 1),
-                                   frameSize=(-0.23, -0.06, 0.125, 0.265))
+                     fg=soft_fg, pos=(-0.36, 0.125), scale=0.042, **shadow_cfg)
+        self.gear_box = DirectFrame(parent=self.speed_frame, frameColor=theme.AMBER,
+                                   frameSize=(-0.23, -0.06, 0.140, 0.258))
         self.gear = OnscreenText(parent=self.gear_box, text="D1", font=number_font, fg=theme.INK,
-                                pos=(-0.15, 0.16), scale=0.068, mayChange=True)
+                                pos=(-0.145, 0.175), scale=0.066, align=TextNode.ACenter, mayChange=True)
         self.gear_rpm = OnscreenText(parent=self.speed_frame, text="", font=number_font,
-                                    fg=theme.PAPER_LIGHT, pos=(-0.065, 0.077), scale=0.030,
-                                    align=TextNode.ARight, mayChange=True)
-        self.rpm_segments = [DirectFrame(parent=self.speed_frame, frameColor=theme.MUTED,
+                                    fg=soft_fg, pos=(-0.065, 0.077), scale=0.030,
+                                    align=TextNode.ARight, mayChange=True, **shadow_cfg)
+        self.rpm_segments = [DirectFrame(parent=self.speed_frame, frameColor=(0.12, 0.16, 0.22, 0.50),
                                         frameSize=(-0.89 + i * 0.039, -0.86 + i * 0.039, 0.033, 0.064))
                              for i in range(21)]
-        self.help_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 0.70),
+        self.help_frame = DirectFrame(parent=self.root, frameColor=(0.045, 0.062, 0.088, 0.46),
                                       frameSize=(-0.75, 0.75, -0.045, 0.045), pos=(0, 0, -0.94))
         self.help = OnscreenText(parent=self.help_frame,
                                 text="W / ↑ 油门    S / ↓ 刹车·倒车    A D 转向    R 复位    C 视角    N 切台    M 音乐    Esc 暂停",
-                                font=body_font, fg=theme.PAPER_LIGHT, pos=(0, 0.009), scale=0.027, mayChange=True)
+                                font=body_font, fg=soft_fg, pos=(0, 0.009), scale=0.027, mayChange=True, **shadow_cfg)
         self.career = CareerDrivingHUD(self.root, body_font, number_font, career_action)
         self.coastal = CoastalDrivingHUD(self.root, body_font, number_font, self.career.regular)
         self._career_active = False
@@ -222,8 +224,11 @@ class DrivingHUD:
         active = round(min(1, max(0, state.player.rpm / 7000)) * len(self.rpm_segments))
         if active != self._active_rpm:
             for i, segment in enumerate(self.rpm_segments):
-                color = (1, 0.73, 0.15, 1) if i < 18 else (0.91, 0.16, 0.16, 1)
-                segment["frameColor"] = color if i < active else (0.34, 0.41, 0.46, 1)
+                if i < active:
+                    color = (0.94, 0.36, 0.28, 1) if i >= 18 else theme.AMBER if i >= 11 else theme.WHITE
+                else:
+                    color = (0.12, 0.16, 0.22, 0.50)
+                segment["frameColor"] = color
             self._active_rpm = active
         if track == "endless":
             braking = race.mode in BRAKING_MODES
@@ -249,10 +254,10 @@ class DrivingHUD:
                 detail, feedback = overtake_driving_feedback(highway.overtake)
                 set_text(self.detail, detail)
                 set_text(self.split, feedback)
-                self.split.setFg(theme.SEA)
+                self.split.setFg(theme.STEEL_TEXT)
                 reading, warning = traffic_feedback(highway.overtake)
                 set_text(self.goal, reading)
-                self.goal.setFg(theme.ORANGE if warning else theme.SEA)
+                self.goal.setFg((1, .48, .34, 1) if warning else theme.AMBER)
                 message = ("弯前看清车流，留距择道；超车达标后仍需安全到终点" if route.finish_at_end else
                            "留出空间再择道；超出整车10米才计数 · 金85 / 银110 / 铜150秒")
             elif braking:
@@ -262,14 +267,14 @@ class DrivingHUD:
                 detail, message = slalom_driving_feedback(highway.slalom, fast=race.mode == GameMode.FAST_SLALOM)
                 set_text(self.detail, detail)
                 set_text(self.split, gate_feedback(highway.slalom))
-                self.split.setFg(theme.SEA)
+                self.split.setFg(theme.STEEL_TEXT)
                 self._split_invalidated = None
             elif highway.sprint is not None:
                 set_text(self.mode, SPRINT_ROUTES[race.mode].name)
                 detail, feedback = sprint_driving_feedback(highway.sprint)
                 set_text(self.detail, detail)
                 set_text(self.split, feedback)
-                self.split.setFg(theme.SEA)
+                self.split.setFg(theme.STEEL_TEXT)
                 message = ("提前刹车，限速带全段保持速度；出带再加速"
                            if SPRINT_ROUTES[race.mode].speed_zone is not None else "看远处弯势；坡顶确认方向，弯前松油或刹车")
         elif race.mode == GameMode.TIME_TRIAL:
@@ -280,7 +285,7 @@ class DrivingHUD:
             set_text(self.split, split_feedback(race))
             if race.invalidated != self._split_invalidated:
                 self._split_invalidated = race.invalidated
-                self.split.setFg(theme.FAILURE if race.invalidated else theme.SEA)
+                self.split.setFg((1, .48, .34, 1) if race.invalidated else theme.STEEL_TEXT)
             message = f"圈速无效：{race.invalid_reason}" if race.invalidated else "本圈有效"
             if race.score_notice:
                 message += " · "+race.score_notice

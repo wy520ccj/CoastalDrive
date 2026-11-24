@@ -19,8 +19,15 @@ from parameter_help import (
 )
 from paths import resource_root
 from suspension_bench import source_note as suspension_source_note
-from ui import theme
-from ui.lab_widgets import MUTED, rounded_panel
+from ui.lab_widgets import (
+    BORDER,
+    LAB_ACCENT_B,
+    LAB_CARD,
+    LAB_SURFACE,
+    LAB_TEXT,
+    MUTED,
+    rounded_panel,
+)
 from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
 
 GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "悬架",
@@ -50,12 +57,13 @@ class ParameterHelp:
     def __init__(self, app):
         self.app = app
         self.group, self.page, self.key = "chassis", 0, "speed"
-        self.root = DirectFrame(parent=app.root, frameColor=(.04, .10, .14, .55),
+        self.root = DirectFrame(parent=app.root, frameColor=(.06, .08, .11, .45),
                                frameSize=(-1.78, 1.78, -1, 1), sortOrder=110, state=DGG.NORMAL)
         self.root.setTransparency(TransparencyAttrib.MAlpha)
-        rounded_panel(self.root, "parameter-help-card", (-1.48, 1.55, -.76, .74), theme.PAPER_LIGHT)
-        rounded_panel(self.root, "parameter-browser", (-1.40, -.53, -.56, .565), theme.PAPER)
-        DirectFrame(parent=self.root, frameColor=theme.ORANGE,
+        rounded_panel(self.root, "parameter-help-edge", (-1.484, 1.554, -.764, .744), BORDER, .028)
+        rounded_panel(self.root, "parameter-help-card", (-1.48, 1.55, -.76, .74), LAB_CARD, .026)
+        rounded_panel(self.root, "parameter-browser", (-1.40, -.53, -.56, .565), LAB_SURFACE, .018)
+        DirectFrame(parent=self.root, frameColor=LAB_ACCENT_B,
                     frameSize=(-1.41, -1.40, .624, .683))
         app.text("参数计算说明", -1.37, .646, .048, parent=self.root, font=app.heading_font)
         app.button("关闭 · Esc", 1.27, .661, .40, self.hide, parent=self.root)
@@ -73,10 +81,10 @@ class ParameterHelp:
             frameColor=(0, 0, 0, 0), relief=None, scrollBarWidth=.035,
             horizontalScroll_scrollSize=.05, verticalScroll_scrollSize=.08)
         self.content = self.content_scroll.getCanvas()
-        self.details = OnscreenText(parent=self.content, font=app.font, text="", fg=theme.INK,
+        self.details = OnscreenText(parent=self.content, font=app.font, text="", fg=LAB_TEXT,
                                    pos=(-.45, .408), scale=.035, align=TextNode.ALeft,
                                    wordwrap=53, mayChange=True)
-        self.notes = OnscreenText(parent=self.content, font=app.font, text="", fg=theme.INK,
+        self.notes = OnscreenText(parent=self.content, font=app.font, text="", fg=LAB_TEXT,
                                  pos=(-.45, 0), scale=.033, align=TextNode.ALeft,
                                  wordwrap=57, mayChange=True)
         self.equations = self.content.attachNewNode("typeset-equations")
