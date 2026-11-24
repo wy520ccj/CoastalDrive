@@ -41,8 +41,8 @@ INK = theme.INK
 ACCENT = theme.SEA
 PANEL = theme.PAPER_LIGHT
 BUTTON = theme.PAPER
-DISABLED_FIELD = (.91, .925, .945, 1)
-DISABLED_INK = (.56, .62, .69, 1)
+DISABLED_FIELD = (.925, .895, .855, 1)
+DISABLED_INK = (.64, .57, .50, 1)
 
 
 def control_mode_label(options):
@@ -182,7 +182,7 @@ class VehicleLab(DirectObject):
         self.bind_parameter(target, key)
         entry = DirectEntry(parent=parent or self.root, initialText=str(value), text_font=self.font,
             text_fg=INK, scale=.035, width=width/.035, numLines=1, focus=0,
-            frameColor=(.935, .950, .965, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
+            frameColor=(.955, .922, .872, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
         self.entries[key] = entry
         self.bind_parameter(entry, key, focus=True)
         return entry
@@ -267,11 +267,11 @@ class VehicleLab(DirectObject):
             item_text_pos=(.026, -.011), item_frameSize=(0, width, -.036, .036),
             item_frameColor=theme.PAPER_LIGHT, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
             item_pad=(0, 0), item_pressEffect=False,
-            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=(.74, .80, .86, 1),
+            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=theme.HAIRLINE,
             popupMenu_borderWidth=(0, 0), popupMenu_sortOrder=120,
             text_scale=.034, text_fg=INK, text_align=TextNode.ALeft, text_pos=(.026, -.011),
-            frameSize=(0, width, -.036, .036), frameColor=(.935, .950, .965, 1), relief=DGG.FLAT,
-            pos=(x, 0, z), command=command, highlightColor=(.86, .93, .96, 1),
+            frameSize=(0, width, -.036, .036), frameColor=(.955, .922, .872, 1), relief=DGG.FLAT,
+            pos=(x, 0, z), command=command, highlightColor=theme.AMBER_TINT,
             popupMarker_pos=(width-.026, 0, 0), popupMarker_scale=.028,
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
@@ -325,8 +325,8 @@ class VehicleLab(DirectObject):
             if not enabled:
                 entry["focus"] = 0
             entry["state"] = DGG.NORMAL if enabled else DGG.DISABLED
-            entry["frameColor"] = ((.86, .93, .96, 1) if entry.guiItem.getFocus()
-                                    else (.935, .950, .965, 1)) if enabled else DISABLED_FIELD
+            entry["frameColor"] = (theme.AMBER_TINT if entry.guiItem.getFocus()
+                                    else (.955, .922, .872, 1)) if enabled else DISABLED_FIELD
             entry["text_fg"] = INK if enabled else DISABLED_INK
             # PGEntry持有各状态TextNode的副本，组件颜色更改后需同步到这些副本。
             for state in range(entry["numStates"]):

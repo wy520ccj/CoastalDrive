@@ -16,9 +16,11 @@ from panda3d.core import (
     Texture,
 )
 
-# 辅助文字：精密冷灰，在纯白与冷瓷灰底上保持高可读性。
-MUTED = (0.36, 0.43, 0.51, 1)
-BORDER = (0.82, 0.86, 0.90, 1)
+from ui import theme
+
+# 辅助文字与描边直接引用全局暖阳画廊令牌。
+MUTED = theme.MUTED
+BORDER = theme.HAIRLINE
 
 
 class LabOptionMenu(DirectOptionMenu):
@@ -85,16 +87,16 @@ def rounded_panel(parent, name, box, color, radius=.025):
 
 @lru_cache(maxsize=4)
 def button_textures(variant):
-    """程序绘制日光画廊圆角按钮材质：primary(赛车红) / dark(顶栏柔雾胶囊) / secondary(纯白描边)。"""
+    """程序绘制暖阳画廊圆角按钮材质：primary(赤陶橙红) / dark(顶栏暖杏仁胶囊) / secondary(象牙奶油描边)。"""
     if variant is True or variant == "primary":
-        fills = ((.90, .25, .15), (.97, .32, .20), (.80, .20, .12), (.82, .83, .85))
-        border_rgb = (.90, .25, .15)
+        fills = ((.88, .33, .16), (.95, .40, .21), (.78, .27, .12), (.82, .78, .73))
+        border_rgb = (.88, .33, .16)
     elif variant == "dark":
-        fills = ((.945, .948, .955), (.88, .89, .91), (.83, .845, .87), (.93, .935, .94))
-        border_rgb = (.83, .84, .86)
+        fills = ((.94, .90, .845), (.88, .82, .745), (.82, .76, .68), (.92, .89, .85))
+        border_rgb = (.82, .755, .675)
     else:
-        fills = ((1.0, 1.0, 1.0), (.94, .95, .96), (.89, .91, .93), (.94, .945, .95))
-        border_rgb = (.83, .845, .865)
+        fills = ((.992, .976, .946), (.955, .915, .860), (.91, .86, .795), (.94, .915, .88))
+        border_rgb = (.835, .775, .695)
     textures = []
     width, height, radius = 256, 64, 12
     for index, fill in enumerate(fills):

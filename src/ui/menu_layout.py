@@ -86,9 +86,11 @@ def canvas(cards, app, page, title, subtitle, back, *, panel_limit=620, footer=T
     app.workshop_vehicle.highlight(None)
 
     fill(0, 0, width, 74, theme.SLATE_BAR, 0)
-    fill(0, 74, width, 1.5, theme.SLATE_BORDER, 0)
+    fill(0, 72, width*.34, 3, ORANGE, 0)
+    fill(width*.34, 72, width*.33, 3, theme.AMBER, 0)
+    fill(width*.67, 72, width*.33, 3, theme.SEA, 0)
     fill(0, 860, width, 81, theme.SLATE_BAR, 0)
-    fill(0, 859, width, 1.5, theme.SLATE_BORDER, 0)
+    fill(0, 859, width, 1.5, theme.HAIRLINE, 0)
 
     # 左侧 Dark Atelier 磨砂主卡。
     fill(margin-1, 113, panel_width+2, 718, theme.SLATE_BORDER, 13)

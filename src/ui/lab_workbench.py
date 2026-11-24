@@ -43,9 +43,11 @@ def build_workbench(app):
                 (-1.78, -.90, .06, .66), (.90, 1.78, .06, .66)):
         DirectFrame(parent=root, frameColor=theme.PAPER, frameSize=box, sortOrder=-100)
 
-    # 顶栏深海一体通栏（与游戏主界面统一品牌语言）。
+    # 顶栏暖阳象牙通栏 + 复古 GT 三色饰带。
     DirectFrame(parent=root, frameColor=theme.SLATE_BAR, frameSize=(-1.78, 1.78, .82, 1.02), sortOrder=-50)
-    DirectFrame(parent=root, frameColor=theme.SLATE_BORDER, frameSize=(-1.78, 1.78, .816, .82), sortOrder=-49)
+    DirectFrame(parent=root, frameColor=theme.ORANGE, frameSize=(-1.78, -.60, .814, .821), sortOrder=-49)
+    DirectFrame(parent=root, frameColor=theme.AMBER, frameSize=(-.60, .58, .814, .821), sortOrder=-49)
+    DirectFrame(parent=root, frameColor=theme.SEA, frameSize=(.58, 1.78, .814, .821), sortOrder=-49)
     app.text("COASTAL DRIVE", -1.70, .892, .052, theme.TEXT_LIGHT, font=display_font)
     DirectFrame(parent=root, frameColor=theme.ORANGE, frameSize=(-1.125, -1.117, .868, .952))
     app.text("专家试验台", -1.08, .894, .050, theme.TEXT_LIGHT, font=app.heading_font)
@@ -135,8 +137,8 @@ def build_workbench(app):
     app.metric = app.text("—", 1.05, .498, .100, theme.ORANGE, font=app.heading_font)
 
     # 双色 A/B 对比胶囊子卡，一眼分清 A 基线与 B 当前。
-    rounded_panel(root, "slot-a", (1.04, 1.34, .275, .445), (.925, .968, .982, 1), .016)
-    rounded_panel(root, "slot-b", (1.36, 1.66, .275, .445), (.995, .945, .922, 1), .016)
+    rounded_panel(root, "slot-a", (1.04, 1.34, .275, .445), theme.SEA_TINT, .016)
+    rounded_panel(root, "slot-b", (1.36, 1.66, .275, .445), theme.ORANGE_TINT, .016)
     app.baseline_label = app.text("对照 A", 1.06, .392, .028, theme.SEA)
     app.candidate_label = app.text("本次 B", 1.38, .392, .028, theme.ORANGE)
     app.baseline_value = app.text("—", 1.06, .314, .044, theme.SEA, font=app.heading_font)

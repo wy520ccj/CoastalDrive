@@ -53,7 +53,7 @@ class LabPlot:
             label.destroy()
         self.axis_labels.clear()
         grid = LineSegs()
-        grid.setColor(.86, .89, .92, 1)
+        grid.setColor(.89, .845, .785, 1)
         for index in range(round((high-low)/step)+1):
             value = low+index*step
             z = z0+(value-low)/(high-low)*(z1-z0)

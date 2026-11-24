@@ -90,16 +90,21 @@ def canvas(panel, progress, title, *, car=False, budget=None, chrome=True, seaso
         return item
 
     if season:
-        fill(0, 0, width, 941, theme.SLATE_BG, 0)
+        fill(0, 0, width, 941, theme.CANVAS, 0)
         fill(0, 0, width, 68, theme.SLATE_BAR, 0)
-        fill(0, 68, width, 1.5, theme.SLATE_BORDER, 0)
+        # 复古南欧 GT 三色装饰细带，点亮温暖视觉层次。
+        fill(0, 66, width*.34, 3, ORANGE, 0)
+        fill(width*.34, 66, width*.33, 3, theme.AMBER, 0)
+        fill(width*.67, 66, width*.33, 3, theme.SEA, 0)
         fill(0, 848, width, 93, theme.SLATE_BAR, 0)
-        fill(0, 847, width, 1.5, theme.SLATE_BORDER, 0)
-        brand = label('COASTAL DRIVE', margin, 44, 26, theme.TEXT_LIGHT, bold=True)
+        fill(0, 847, width, 1.5, theme.HAIRLINE, 0)
+        brand = label('COASTAL DRIVE', margin, 44, 26, theme.INK, bold=True)
         brand['font'] = panel.garage_display_font
-        fill(margin+252, 20, 2, 28, ORANGE, 1)
-        label(title, margin+272, 43, 26, theme.TEXT_LIGHT, bold=True)
-        label(f'★  {progress.stars} / 18 星', width-margin, 43, 24, theme.GOLD, bold=True, right=True)
+        fill(margin+252, 20, 3, 28, ORANGE, 1.5)
+        label(title, margin+272, 43, 26, theme.INK, bold=True)
+        star_w = 148
+        fill(width-margin-star_w, 16, star_w, 36, theme.AMBER_TINT, 18)
+        label(f'★  {progress.stars} / 18 星', width-margin-16, 42, 20, theme.GOLD, bold=True, right=True)
         return width, margin, fill, label, image, button
 
     image('backgrounds/garage-coastal-v2.png', 0, 0, width, 941, crop=True)
@@ -344,10 +349,11 @@ def brief(panel, progress, event):
     else:
         targets = event.targets
     medal_colors = (theme.BRONZE, theme.SILVER, theme.GOLD)
+    medal_tints = (theme.ORANGE_TINT, theme.MIST, theme.AMBER_TINT)
     for index, (medal, target) in enumerate(zip(('铜牌', '银牌', '金牌'), targets, strict=True)):
         y = 326+index*74
-        fill(rx, y, rw, 60, theme.MIST, 8)
-        fill(rx, y+12, 4, 36, medal_colors[index], 2)
+        fill(rx, y, rw, 60, medal_tints[index], 10)
+        fill(rx, y+12, 5, 36, medal_colors[index], 2.5)
         label(medal, rx+18, y+38, 22, medal_colors[index], bold=True)
         label(target, rx+rw-16, y+38, 21 if width > 1400 else 19, theme.INK, right=True)
 

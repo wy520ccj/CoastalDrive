@@ -22,19 +22,22 @@ class WorkspaceLoading:
         self.content = self.root.attachNewNode("loading-content")
         self.content.setTransparency(TransparencyAttrib.MAlpha)
 
-        # 左上角轻盈瓷白悬浮品牌卡（彻底摒弃厚重深蓝底板）。
+        # 左上角暖阳奶油悬浮品牌卡 + 复古三色条，与手绘海岸画卷自然融为一体。
         rounded_panel(self.content, "brand-shadow", (-1.615, -.615, .678, .908), theme.SHADOW, .028)
         rounded_panel(self.content, "brand-edge", (-1.624, -.616, .686, .924), theme.HAIRLINE, .030)
         rounded_panel(self.content, "brand-badge", (-1.62, -.62, .69, .92), theme.GLASS_LIGHT, .028)
-        rounded_panel(self.content, "brand-accent", (-1.592, -1.576, .725, .885), theme.ORANGE, .006)
+        rounded_panel(self.content, "brand-stripe-1", (-1.592, -1.580, .832, .885), theme.ORANGE, .004)
+        rounded_panel(self.content, "brand-stripe-2", (-1.592, -1.580, .778, .826), theme.AMBER, .004)
+        rounded_panel(self.content, "brand-stripe-3", (-1.592, -1.580, .725, .772), theme.SEA, .004)
         self.text("COASTAL DRIVE", -1.545, .805, .072, self.display_font, color=theme.INK)
         self.text("车辆工程  ·  动力学试验  ·  海岸试驾", -1.545, .725, .029, self.regular, color=theme.MUTED)
 
-        # 底部居中瓷白悬浮进度卡片（通透轻盈，不再压暗整幅海岸画卷）。
+        # 底部居中暖阳奶油悬浮进度卡片。
         rounded_panel(self.content, "load-shadow", (-1.615, 1.625, -.948, -.462), theme.SHADOW, .032)
         rounded_panel(self.content, "load-edge", (-1.624, 1.624, -.944, -.456), theme.HAIRLINE, .034)
         rounded_panel(self.content, "load-card", (-1.62, 1.62, -.94, -.46), theme.GLASS_LIGHT, .032)
-        rounded_panel(self.content, "load-accent", (-1.56, -1.546, -.618, -.516), theme.ORANGE, .005)
+        rounded_panel(self.content, "load-accent-1", (-1.56, -1.546, -.572, -.516), theme.ORANGE, .005)
+        rounded_panel(self.content, "load-accent-2", (-1.56, -1.546, -.618, -.578), theme.AMBER, .005)
         self.title = self.text("正在准备海岸驾驶", -1.515, -.582, .062, color=theme.INK)
         self.stage = self.text("准备窗口与车辆", -1.515, -.682, .033, self.regular, color=theme.MUTED)
         self.counter = self.text("", 1.54, -.682, .036, color=theme.ORANGE, align=TextNode.ARight)

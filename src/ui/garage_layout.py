@@ -84,12 +84,14 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     panel.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
     panel.vehicle_view.highlight(None)
 
-    # ── 顶部悬浮轻盈导航栏（零暗黑通栏）──
-    brand_w = 270 if aspect > 1.5 else 210
+    # ── 顶部悬浮暖阳导航栏（复古三色标 + 分段胶囊 + 暖金星标）──
+    brand_w = 278 if aspect > 1.5 else 214
     fill(margin+1, 25, brand_w, 50, theme.SHADOW, 14)
     fill(margin-1, 21, brand_w+2, 52, LINE, 15)
     fill(margin, 22, brand_w, 50, theme.GLASS_LIGHT, 14)
-    fill(margin+12, 34, 4, 26, ORANGE, 2)
+    fill(margin+12, 32, 4, 10, ORANGE, 2)
+    fill(margin+12, 44, 4, 9, theme.AMBER, 2)
+    fill(margin+12, 55, 4, 7, theme.SEA, 2)
     brand = label('COASTAL DRIVE', margin+26, 55, 22 if aspect > 1.5 else 19, INK, True)
     brand['font'] = panel.garage_display_font
 
@@ -107,15 +109,15 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         button(title, tx, 27, nav_w, 40, 'garage-tab', key,
                role='tab-active' if key == tab else 'tab', radius=20)
 
-    # 右上角星级 + 车型参数瓷白浮卡。
+    # 右上角暖金星级 + 车型参数奶油浮卡。
     car = next(item for item in cars if item.design_id == preview.design_id)
     config = preview.config
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
     star_w = 126
     sx = width-margin-star_w
     fill(sx+1, 25, star_w, 50, theme.SHADOW, 25)
-    fill(sx-1, 21, star_w+2, 52, LINE, 26)
-    fill(sx, 22, star_w, 50, theme.GLASS_LIGHT, 25)
+    fill(sx-1, 21, star_w+2, 52, (0.87, 0.72, 0.45, .9), 26)
+    fill(sx, 22, star_w, 50, theme.AMBER_TINT, 25)
     label(f'★ {progress.stars}/18', sx+star_w/2, 54, 18, theme.GOLD, True, center=True)
 
     if tab in ('cars', 'paint'):
@@ -228,27 +230,27 @@ def style(panel):
         disabled, focused = button['state'] == DGG.DISABLED, index == panel.selected
         transparent = role in ('event-card', 'quiet')
         if role == 'primary':
-            color = (.84, .85, .87, 1) if disabled else (theme.ORANGE_BRIGHT if focused else ORANGE)
+            color = (.84, .80, .74, 1) if disabled else (theme.ORANGE_BRIGHT if focused else ORANGE)
         elif role == 'tab-active':
             color = theme.CHARCOAL_SOFT if focused else theme.CHARCOAL
         elif role == 'tab':
             color = theme.MIST if focused else (0, 0, 0, 0)
         elif role == 'category-active':
-            color = theme.ORANGE_TINT if focused else (1, .96, .95, 1)
+            color = theme.ORANGE_TINT if focused else (.99, .935, .895, 1)
         elif role == 'category':
-            color = theme.MIST if focused else WHITE
+            color = theme.AMBER_TINT if focused else theme.PAPER_LIGHT
         elif role in ('season-tab-active', 'setup-active'):
             color = theme.CHARCOAL_SOFT if focused else theme.CHARCOAL
         elif role in ('season-tab', 'setup-tab'):
-            color = theme.MIST if focused else WHITE
+            color = theme.MIST if focused else theme.PAPER_LIGHT
         elif role in ('setup-preset', 'setup-step', 'footer'):
             color = theme.CHARCOAL if focused else theme.MIST
         elif role == 'secondary':
-            color = theme.CHARCOAL if focused else WHITE
+            color = theme.CHARCOAL if focused else theme.PAPER_LIGHT
         elif transparent:
-            color = (.90, .25, .15, .08) if focused else (0, 0, 0, 0)
+            color = (.88, .33, .16, .10) if focused else (0, 0, 0, 0)
         else:
-            color = theme.MIST if focused else WHITE
+            color = theme.MIST if focused else theme.PAPER_LIGHT
         button['geom_color'] = color
         if disabled:
             button['text_fg'] = theme.LOCKED
