@@ -28,7 +28,7 @@ def _card(parent, name, box, radius=.022, fill=theme.PAPER_LIGHT):
 
 
 def _modal_backdrop(parent, sort_order):
-    frame = DirectFrame(parent=parent, frameColor=(.04, .06, .09, .58),
+    frame = DirectFrame(parent=parent, frameColor=(.06, .065, .075, .42),
                         frameSize=(-1.78, 1.78, -1.0, 1.0), sortOrder=sort_order, state=DGG.NORMAL)
     frame.setTransparency(TransparencyAttrib.MAlpha)
     return frame
@@ -174,8 +174,8 @@ def build_workbench(app):
     app.schemes = SchemesPanel(app)
     app.road_retest = RoadRetestPanel(app)
 
-    # ── 互斥浮层弹窗：均带独立遮罩或清晰高层次边框，彻底消除互相遮挡 ──
-    app.record_menu = DirectFrame(parent=root, frameColor=(.04, .06, .09, .34),
+    # ── 互斥浮层弹窗：均带独立中性柔和遮罩或清晰高层次边框，彻底消除互相遮挡 ──
+    app.record_menu = DirectFrame(parent=root, frameColor=(.06, .065, .075, .28),
                                   frameSize=(-1.78, 1.78, -1.0, 1.0), sortOrder=95, state=DGG.NORMAL)
     app.record_menu.setTransparency(TransparencyAttrib.MAlpha)
     app.record_menu.bind(DGG.B1PRESS, lambda _event: app.record_menu.hide())

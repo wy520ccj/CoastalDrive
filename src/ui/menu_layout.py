@@ -129,12 +129,12 @@ def style(cards, selected):
         primary = index == cards.garage_primary
         if index in cards.garage_toggles:
             enabled = cards.garage_toggles[index]
-            button['geom_color'] = ORANGE if enabled else (.24, .29, .36, 1)
+            button['geom_color'] = ORANGE if enabled else (.76, .78, .82, 1)
             button['text_fg'] = WHITE
         elif index in cards.garage_quiet:
-            button['geom_color'] = theme.SLATE_CARD_HI if index == selected else theme.SLATE_CARD
-            button['text_fg'] = theme.TEXT_LIGHT
+            button['geom_color'] = theme.CHARCOAL if index == selected else theme.MIST
+            button['text_fg'] = WHITE if index == selected else theme.INK
         else:
             button['geom_color'] = (theme.ORANGE_BRIGHT if index == selected else ORANGE) if primary else (
-                theme.SLATE_CARD_HI if index == selected else theme.SLATE_CARD)
-            button['text_fg'] = WHITE if primary else theme.TEXT_LIGHT
+                theme.CHARCOAL if index == selected else theme.MIST)
+            button['text_fg'] = WHITE if (primary or index == selected) else theme.INK

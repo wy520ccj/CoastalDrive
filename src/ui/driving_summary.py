@@ -56,7 +56,7 @@ def result(cards, app, note):
     outcome = ('滨海'+medal+'牌' if medal else '有效完成 · 尚未达到铜牌' if track == 'coastal'
                else '有效完成') if valid else '本次不记录圈速' if timed else '自由驾驶' if mode == GameMode.FREE_DRIVE else (
                    '完成 5 公里无碰撞挑战' if highway.succeeded else '下次再试')
-    fill(x, 254, inner, 48, (.20, .14, .12, .95), 8)
+    fill(x, 254, inner, 48, theme.ORANGE_TINT, 8)
     fill(x, 254, 4, 48, ORANGE, 2)
     values['outcome'] = text(outcome, x+18, 288, 25, ORANGE, bold=True)
     values['title'] = title
@@ -125,7 +125,7 @@ def result(cards, app, note):
             cx = right+22+index*step
             text(sector, cx, 757, 16, theme.TEXT_SUB)
             text(split, cx, 787, 23, theme.TEXT_LIGHT, bold=True)
-            color = (.32, .86, .54, 1) if delta.startswith('-') else ORANGE if delta.startswith('+') else theme.TEXT_SUB
+            color = theme.SUCCESS if delta.startswith('-') else ORANGE if delta.startswith('+') else theme.TEXT_SUB
             text(delta, cx, 813, 16, color)
     else:
         text('驾驶概要', right+22, 696, 22, theme.TEXT_LIGHT, bold=True)

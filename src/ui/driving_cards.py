@@ -88,9 +88,8 @@ class DrivingCards:
             self.panel.setScale(min(1., aspect/(16/9)))
 
     def text(self, value, x, z, scale=.035, color=theme.INK):
-        if self.dark:
-            color = {theme.INK: theme.TEXT_LIGHT, theme.MUTED: theme.TEXT_SUB,
-                     theme.SEA: (.25, .76, .95, 1), theme.ORANGE: theme.ORANGE}.get(color, color)
+        color = {theme.INK: theme.INK, theme.MUTED: theme.MUTED,
+                 theme.SEA: theme.SEA, theme.ORANGE: theme.ORANGE}.get(color, color)
         label = OnscreenText(parent=self.content, text=value, font=self.font, fg=color,
             align=TextNode.ALeft, pos=(x, z), scale=scale, mayChange=True)
         self.labels.append(label)
@@ -149,11 +148,11 @@ class DrivingCards:
                 button['frameColor'] = theme.ORANGE_BRIGHT if i == index else theme.ORANGE
                 button['text_fg'] = (1, 1, 1, 1)
             elif i == index:
-                button['frameColor'] = theme.SLATE_CARD_HI
-                button['text_fg'] = theme.TEXT_LIGHT
+                button['frameColor'] = theme.ORANGE_TINT
+                button['text_fg'] = theme.INK
             else:
-                button['frameColor'] = theme.SLATE_CARD
-                button['text_fg'] = theme.TEXT_LIGHT
+                button['frameColor'] = theme.PAPER_LIGHT
+                button['text_fg'] = theme.INK
 
     def audio(self, app, station):
         from ui.menu_settings import audio

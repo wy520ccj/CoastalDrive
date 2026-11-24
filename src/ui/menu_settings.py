@@ -17,7 +17,7 @@ def audio(cards, app, station):
         text(f'{value}%', right, y, 27, theme.GOLD if value else theme.TEXT_SUB, bold=True, right=True)
         text(description, left, y+32, 18, theme.TEXT_SUB)
         track_width = width-215
-        fill(left, y+56, track_width, 12, (.18, .23, .30, 1), 6)
+        fill(left, y+56, track_width, 12, theme.MIST, 6)
         if value:
             fill(left, y+56, track_width*value/100, 12, ORANGE, 6)
         for offset, label in enumerate(('−', '+')):

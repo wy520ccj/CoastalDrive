@@ -85,16 +85,16 @@ def rounded_panel(parent, name, box, color, radius=.025):
 
 @lru_cache(maxsize=4)
 def button_textures(variant):
-    """程序绘制现代圆角按钮材质：primary(橙) / dark(顶栏深海) / secondary(冷白描边)。"""
+    """程序绘制日光画廊圆角按钮材质：primary(赛车红) / dark(顶栏柔雾胶囊) / secondary(纯白描边)。"""
     if variant is True or variant == "primary":
-        fills = ((.95, .36, .14), (1.0, .44, .22), (.84, .30, .10), (.78, .81, .85))
-        border_rgb = (.95, .36, .14)
+        fills = ((.90, .25, .15), (.97, .32, .20), (.80, .20, .12), (.82, .83, .85))
+        border_rgb = (.90, .25, .15)
     elif variant == "dark":
-        fills = ((.11, .15, .21), (.17, .23, .31), (.08, .11, .16), (.09, .12, .16))
-        border_rgb = (.24, .31, .40)
+        fills = ((.945, .948, .955), (.88, .89, .91), (.83, .845, .87), (.93, .935, .94))
+        border_rgb = (.83, .84, .86)
     else:
-        fills = ((.985, .99, .996), (.91, .95, .97), (.86, .91, .94), (.93, .94, .95))
-        border_rgb = (.78, .83, .88)
+        fills = ((1.0, 1.0, 1.0), (.94, .95, .96), (.89, .91, .93), (.94, .945, .95))
+        border_rgb = (.83, .845, .865)
     textures = []
     width, height, radius = 256, 64, 12
     for index, fill in enumerate(fills):

@@ -166,7 +166,7 @@ class VehicleLab(DirectObject):
 
     def button(self, label, x, z, width, action, parent=None, accent=False, dark=False):
         variant = "primary" if accent else "dark" if dark else False
-        fg = theme.TEXT_LIGHT if (accent or dark) else INK
+        fg = (1, 1, 1, 1) if accent else INK
         button = DirectButton(parent=parent or self.root, text=label, text_font=self.font,
             text_scale=.037, text_fg=fg, text_pos=(0, -.011),
             frameColor=(1, 1, 1, 1), frameTexture=button_textures(variant),

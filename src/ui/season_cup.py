@@ -45,7 +45,7 @@ def draw(panel, progress, store, *, picking, recap, preview):
             y = 186+index*68
             fill(left, y, span, 1, theme.SLATE_BORDER, 0)
             if item == car:
-                fill(left, y+2, span, 64, (.22, .15, .14, .95), 6)
+                fill(left, y+2, span, 64, theme.ORANGE_TINT, 8)
                 fill(left, y+2, 5, 64, ORANGE, 2)
             button('', left, y+2, span, 64, 'cup-preview', item.design_id, role='event-card')
             panel.card_edges[len(panel.buttons)-1] = fill(left, y+2, 5, 64, (0, 0, 0, 0), 0)
@@ -92,10 +92,10 @@ def series_rows(panel, progress, store, car, recap, width, left, span, fill, lab
         y = 318+index*110
         fill(left, y, span, 1, theme.SLATE_BORDER, 0)
         if index == count:
-            fill(left, y+4, span, 102, (.22, .15, .14, .95), 8)
+            fill(left, y+4, span, 102, theme.ORANGE_TINT, 10)
             fill(left, y+4, 5, 102, ORANGE, 2)
         else:
-            fill(left, y+4, span, 102, theme.SLATE_CARD, 8)
+            fill(left, y+4, span, 102, theme.PAPER_LIGHT, 10)
         label(f'{index+1:02d}   {name}', left+20, y+64, 27, theme.TEXT_LIGHT, bold=True)
         row = rows[index] if index < count else None
         label('—' if row is None else f'{row.seconds:.3f} s', left+span*.66, y+64, 25,
@@ -113,7 +113,7 @@ def series_rows(panel, progress, store, car, recap, width, left, span, fill, lab
         index = min(range(count), key=lambda i: (POINTS[rows[i].medal], -rows[i].seconds/store.specs[
             store.legs[i]].targets[-1].seconds))
         tip = f'可提升赛段 · {STAGE_NAMES[index]}' if points < 9 else '三站金牌 · 可继续刷新总用时'
-        fill(left, 738, span, 56, (.20, .14, .12, .95), 8)
+        fill(left, 738, span, 56, theme.ORANGE_TINT, 8)
         fill(left, 738, 4, 56, ORANGE, 2)
         label(tip, left+18, 774, 22, theme.TEXT_LIGHT, bold=True)
 

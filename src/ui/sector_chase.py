@@ -96,14 +96,14 @@ def result(panel, progress, mode, status):
         y = 440+offset*58
         fill(left, y, data_width, 1, theme.SLATE_BORDER, 0)
         if index == recommendation and practice is None:
-            fill(left, y+2, data_width, 54, (.22, .15, .14, .95), 6)
+            fill(left, y+2, data_width, 54, theme.ORANGE_TINT, 8)
             fill(left, y+2, 5, 54, ORANGE, 2)
         button('', left, y+2, data_width, 54, 'chase-practice', index, role='event-card')
         panel.card_edges[len(panel.buttons)-1] = fill(left, y+2, 5, 54, (0, 0, 0, 0), 0)
         elapsed, delta = segment_times(status, index)
         label(course.labels[index], left+18, y+38, 24, theme.TEXT_LIGHT)
         label('—' if elapsed is None else f'{elapsed:.3f} s', left+data_width*.67, y+38, 22, theme.TEXT_LIGHT, right=True)
-        delta_color = (.32, .86, .54, 1) if delta is not None and delta < 0 else (
+        delta_color = theme.SUCCESS if delta is not None and delta < 0 else (
             ORANGE if delta is not None and delta > 0 else theme.TEXT_SUB)
         label('—' if delta is None else f'{delta:+.3f} s', left+data_width-18, y+38, 22, delta_color, right=True)
     button('返回赛事', left, 864, 160, 60, 'challenge-back', role='footer')

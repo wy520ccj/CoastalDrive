@@ -17,7 +17,7 @@ from ui import theme
 from ui.career_layout import ORANGE, WHITE
 from ui.career_layout import canvas as career_canvas
 
-SUCCESS = (.32, .86, .54, 1)
+SUCCESS = theme.SUCCESS
 from ui.lab_widgets import rounded_panel
 from ui.race_feedback import energy_segment, energy_segment_delta
 from ui.sprint_feedback import valley_braking_feedback
@@ -240,16 +240,16 @@ def canvas(panel, progress, title, *, budget):
         label(name, xx, 35, 16, theme.TEXT_SUB)
         panel.challenge_readouts[key] = label(str(budget) if key in ('limit', 'remaining') else '0',
                                               xx, 71, 27, theme.TEXT_LIGHT, bold=True)
-    fill(x, 85, 374, 7, (.20, .25, .32, 1), 3.5)
+    fill(x, 85, 374, 7, theme.MIST, 3.5)
     panel.challenge_readouts['budget-bar'] = fill(x, 85, 374, 7, ORANGE, 3.5)
     panel.challenge_readouts['budget-left'] = (x-width/2)*2/941
     return width, left, fill, label, image, button
 
 
 def _focus_row(panel, key, focused):
-    panel.challenge_readouts['row:'+key].setColor((.22, .16, .14, .88) if focused else (0, 0, 0, 0))
+    panel.challenge_readouts['row:'+key].setColor(theme.ORANGE_TINT if focused else (0, 0, 0, 0))
     panel.challenge_readouts['row-edge:'+key].setColor(ORANGE if focused else (0, 0, 0, 0))
-    panel.challenge_readouts['entry-edge:'+key].setColor(ORANGE if focused else theme.SLATE_BORDER)
+    panel.challenge_readouts['entry-edge:'+key].setColor(ORANGE if focused else theme.HAIRLINE)
 
 
 def _blur_entry(panel, key):
@@ -313,13 +313,13 @@ def build_page(panel, spec, draft, tab, notice):
         _reset_icon(reset, unit)
         label(formatted(key, stock), stock_x, y+33, 20, theme.TEXT_SUB, right=True)
         number_x, number_w = control+52, control_width-104
-        panel.challenge_readouts['entry-edge:'+key] = fill(number_x-1, y+6, number_w+2, 36, theme.SLATE_BORDER, 5)
-        fill(number_x, y+7, number_w, 34, (.05, .075, .11, 1), 4)
+        panel.challenge_readouts['entry-edge:'+key] = fill(number_x-1, y+6, number_w+2, 36, theme.HAIRLINE, 5)
+        fill(number_x, y+7, number_w, 34, WHITE, 4)
         button('−', control, y+7, 40, 34, 'challenge-step', (key, -1), role='setup-step')
         button('+', control+control_width-40, y+7, 40, 34, 'challenge-step', (key, 1), role='setup-step')
         entry = DirectEntry(parent=panel.content, initialText=formatted(key, value),
             pos=((number_x+number_w/2-width/2)*unit, 0, 1-(y+32)*unit), scale=21*unit,
-            text_font=panel.garage_font, text_fg=theme.TEXT_LIGHT, text_align=2,
+            text_font=panel.garage_font, text_fg=theme.INK, text_align=2,
             frameColor=(0, 0, 0, 0), frameSize=(-number_w/44, number_w/44, -.35, 1.1),
             relief=DGG.FLAT, width=number_w/22, numLines=1,
             focusInCommand=lambda k=key: _focus_row(panel, k, True),
@@ -329,7 +329,7 @@ def build_page(panel, spec, draft, tab, notice):
         slider = DirectSlider(parent=panel.content, range=(low, high), value=value,
             pos=((control+control_width/2-width/2)*unit, 0, 1-track_y*unit),
             frameSize=(-control_width*unit/2, control_width*unit/2, -2*unit, 2*unit),
-            frameColor=(.22, .28, .36, 1), relief=DGG.FLAT,
+            frameColor=(.84, .85, .87, 1), relief=DGG.FLAT,
             thumb_frameSize=(-6*unit, 6*unit, -8*unit, 8*unit), thumb_frameColor=ORANGE,
             thumb_relief=DGG.FLAT, pageSize=UNITS[key][2], scrollSize=UNITS[key][2],
             command=lambda k=key: _slide(panel, k))
@@ -748,10 +748,9 @@ def _budget(panel, spec, cost):
     over = cost > spec.budget
     panel.challenge_readouts['used'].setText(str(cost))
     panel.challenge_readouts['remaining'].setText(str(spec.budget-cost))
-    panel.challenge_readouts['remaining'].setFg(ORANGE if over else WHITE)
+    panel.challenge_readouts['remaining'].setFg(ORANGE if over else theme.INK)
     panel.challenge_readouts['budget-bar'].setSx(min(1., cost/spec.budget))
     panel.challenge_readouts['budget-bar'].setX(panel.challenge_readouts['budget-left']*(1-min(1., cost/spec.budget)))
-
 
 
 def update_build(panel, spec, draft, notice=''):
@@ -763,7 +762,7 @@ def update_build(panel, spec, draft, notice=''):
     header.setText(f'本场预算 {spec.budget}    已用 {cost}    {allowance}'
                    if panel.layout_aspect > 1.5 else
                    f'预算 {spec.budget} · 已用 {cost}\n'+allowance)
-    header.setFg(ORANGE if over else WHITE)
+    header.setFg(ORANGE if over else theme.INK)
     _budget(panel, spec, cost)
     setups = panel.vehicle_view.base.challenge_presets(spec)
     measured = None

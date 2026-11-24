@@ -155,7 +155,7 @@ class DrivingTourPanel:
             top = (348+index*128) if self.page else (294+index*146)
             current = self.page == 0 and index == len(self.store.current)
             if current:
-                self.fill(self.left+14, top, self.wide-28, 138, (.22, .15, .14, .92), 8)
+                self.fill(self.left+14, top, self.wide-28, 138, theme.ORANGE_TINT, 10)
                 self.fill(self.left+14, top, 5, 138, ORANGE, 2)
             self.text(f'{index+1:02d}', self.left+37, top+53, 33, ORANGE if current else theme.TEXT_SUB, bold=True)
             self.text(TITLES[index], self.left+115, top+47, 25 if self.wide > 850 else 22, theme.TEXT_LIGHT, bold=True)
@@ -215,16 +215,19 @@ class DrivingTourPanel:
             role, disabled = self.roles[i], button['state'] == DGG.DISABLED
             focused = i == index
             if role == 'primary':
-                color = (.22, .27, .34, 1) if disabled else (theme.ORANGE_BRIGHT if focused else ORANGE)
-            elif role in ('secondary', 'active', 'practice', 'filter-active'):
-                color = theme.SLATE_CARD_HI if focused else theme.SLATE_CARD
-            elif role == 'footer':
-                color = (1, 1, 1, .12) if focused else (0, 0, 0, 0)
+                color = (.84, .85, .87, 1) if disabled else (theme.ORANGE_BRIGHT if focused else ORANGE)
+            elif role == 'active':
+                color = theme.CHARCOAL_SOFT if focused else theme.CHARCOAL
+            elif role in ('secondary', 'practice', 'footer'):
+                color = theme.CHARCOAL if focused else theme.MIST
+            elif role == 'filter-active':
+                color = theme.ORANGE_TINT if focused else WHITE
             else:
-                color = theme.SLATE_CARD if focused else (.07, .10, .14, .78)
-            button['frameColor'] = (.18, .22, .28, .8) if disabled else color
-            button['text_fg'] = (theme.TEXT_LOCKED if disabled else ORANGE if role == 'filter-active'
-                                 else theme.TEXT_SUB if role == 'plain' and not focused else theme.TEXT_LIGHT)
+                color = theme.MIST if focused else WHITE
+            button['frameColor'] = (.91, .92, .93, 1) if disabled else color
+            white_fg = role in ('primary', 'active') or (focused and role in ('secondary', 'practice', 'footer'))
+            button['text_fg'] = (theme.LOCKED if disabled else WHITE if white_fg else ORANGE if role == 'filter-active'
+                                 else theme.MUTED if role == 'plain' and not focused else theme.INK)
             button.clearColorScale()
 
     def activate(self, index):

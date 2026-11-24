@@ -13,10 +13,10 @@ from ui.career_events import BOARD_EVENTS, ClubEvent
 from ui.garage_layout import INK, ORANGE, WHITE
 from ui.lab_widgets import rounded_panel
 
-GOLD = (1, .73, .25, 1)
-DARK = (.04, .055, .075, .88)
-PAPER = (.98, .98, .99, .96)
-LINE = (.80, .82, .85, 1)
+GOLD = theme.GOLD
+DARK = theme.CHARCOAL
+PAPER = theme.GLASS_LIGHT
+LINE = theme.HAIRLINE
 HISTORICAL_PART_IMAGES = {'tires': 'tire', 'brakes': 'brake', 'power': 'power-part', 'suspension': 'suspension-part'}
 
 
@@ -231,7 +231,7 @@ def board(panel, progress, *, chapter=None, event=None):
         panel.board_event = item
         for event_id, (background, edge, _) in rows.items():
             if event_id == item.id:
-                background.setColor(*theme.SLATE_CARD_HI)
+                background.setColor(*theme.ORANGE_TINT)
                 background.show()
                 edge.show()
             else:
@@ -287,7 +287,7 @@ def board_route(root, event, width, left, span, *, center=676):
     unit = 2/941
     line = LineSegs('career-board-outline')
     line.setThickness(3.5)
-    line.setColor(.24, .74, .84, 1)
+    line.setColor(*theme.SEA)
     for index, (x, y) in enumerate(positions):
         point = ((x-width/2)*unit, 0, 1-y*unit)
         line.moveTo(*point) if index == 0 else line.drawTo(*point)
@@ -346,10 +346,10 @@ def brief(panel, progress, event):
     medal_colors = (theme.BRONZE, theme.SILVER, theme.GOLD)
     for index, (medal, target) in enumerate(zip(('铜牌', '银牌', '金牌'), targets, strict=True)):
         y = 326+index*74
-        fill(rx, y, rw, 60, (.07, .10, .14, .90), 8)
+        fill(rx, y, rw, 60, theme.MIST, 8)
         fill(rx, y+12, 4, 36, medal_colors[index], 2)
         label(medal, rx+18, y+38, 22, medal_colors[index], bold=True)
-        label(target, rx+rw-16, y+38, 21 if width > 1400 else 19, theme.TEXT_LIGHT, right=True)
+        label(target, rx+rw-16, y+38, 21 if width > 1400 else 19, theme.INK, right=True)
 
     label(event.rules if club else '碰撞、复位或驶离赛道会结束本场。', rx, 594, 19, theme.TEXT_SUB, wrap=rw)
     fill(rx, 646, rw, 1.5, theme.SLATE_BORDER, 0)
@@ -389,7 +389,7 @@ def result(panel, progress, race_result, award):
     label('本场奖励' if award['saved'] else '奖励尚未保存', x, 496, 20, theme.TEXT_SUB)
     label(f'+{award["credits"]} 积分', x, 554, 44, ORANGE, bold=True)
     label(f'{progress.stars} / 18 星', x, 602, 24, theme.GOLD, bold=True)
-    fill(x, 620, inner, 10, (.18, .23, .30, 1), 5)
+    fill(x, 620, inner, 10, theme.MIST, 5)
     if progress.stars:
         fill(x, 620, inner*progress.stars/18, 10, ORANGE, 5)
     fill(x, 654, inner, 1, theme.SLATE_BORDER, 0)

@@ -1,4 +1,4 @@
-"""车库首页：通透沉浸式车库画廊、左侧深海毛玻璃导航与实时 3D 展车。"""
+"""日光展厅首页：全屏通透海岸车库 + 顶部轻盈悬浮胶囊 + 底部 Forza/GT 风格横向 Bento 卡片坞。"""
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
@@ -8,14 +8,17 @@ from career_garage import garage_cars
 from ui import theme
 from ui.lab_widgets import rounded_panel
 
-WHITE = theme.TEXT_LIGHT
-SUB = theme.TEXT_SUB
+WHITE = (1, 1, 1, 1)
+INK = theme.INK
+CHARCOAL = theme.CHARCOAL
+MUTED = theme.MUTED
 ORANGE = theme.ORANGE
-DARK_BAR = theme.SLATE_BAR
-GLASS = theme.SLATE_GLASS
-CARD = theme.SLATE_CARD
-CARD_HI = theme.SLATE_CARD_HI
-BORDER = theme.SLATE_BORDER
+GLASS = theme.GLASS_LIGHT
+BORDER = theme.HAIRLINE
+SHADOW = theme.SHADOW
+# 保留旧导入名兼容 menu_layout/driving_summary 等模块。
+DARK = CHARCOAL
+GRAY = MUTED
 
 
 class MainMenu:
@@ -23,7 +26,6 @@ class MainMenu:
                  continue_action, driving_mode_action=None, lab_action=None, highway_action=None):
         self.root = parent.attachNewNode('main-menu')
         self.root.setTransparency(TransparencyAttrib.MAlpha)
-        # 旧工具页仍使用原父节点；首页不随这些工具页整体缩小。
         self.content = self.root.attachNewNode('menu-content')
         self.home = self.root.attachNewNode('menu-home')
         self.loader, self.font, self.display_font = loader, body_font, display_font
@@ -31,10 +33,10 @@ class MainMenu:
         self.vehicle_view = vehicle_view
         self.confirm_action = confirm_action
         self.actions = (*actions, lab_action, driving_mode_action)
-        self.order = (2, 3, 1, 0, 6, 7, 4, 5)
+        self.order = (2, 3, 0, 1, 6, 7, 4, 5)
         if highway_action is not None:
             self.actions = (*self.actions, highway_action)
-            self.order = (2, 3, 1, 8, 0, 6, 7, 4, 5)
+            self.order = (2, 3, 0, 1, 8, 6, 7, 4, 5)
         self.continue_index = len(self.actions)
         self.actions = (*self.actions, continue_action)
         self.order = (self.continue_index, *self.order)
@@ -46,16 +48,16 @@ class MainMenu:
         self.background = DirectFrame(parent=self.root, frameColor=(1, 1, 1, 1),
             frameTexture=loader.loadTexture(theme.asset_filename('backgrounds/garage-coastal-v2.png')),
             frameSize=(-16/9, 16/9, -1, 1), sortOrder=-10, state=DGG.DISABLED)
-        self.notice = self.label('', 0, 0, 17, (1, .84, .64, 1))
-        self.stars = self.label('', 0, 0, 24, theme.GOLD, bold=True)
-        self.credits = self.label('', 0, 0, 20, SUB)
-        self.car_name = self.label('', 0, 0, 28, WHITE, bold=True)
-        self.vehicle_note = self.label('', 0, 0, 18, SUB)
+        self.notice = self.label('', 0, 0, 16, ORANGE, bold=True)
+        self.stars = self.label('', 0, 0, 20, theme.GOLD, bold=True)
+        self.credits = self.label('', 0, 0, 16, MUTED)
+        self.car_name = self.label('', 0, 0, 26, INK, bold=True)
+        self.vehicle_note = self.label('', 0, 0, 16, MUTED)
         self.time_goal = None
         self.resize(vehicle_view.base.getAspectRatio())
         self.root.hide()
 
-    def label(self, text, x, y, size, color=WHITE, *, bold=False, parent=None):
+    def label(self, text, x, y, size, color=INK, *, bold=False, parent=None):
         node = OnscreenText(parent=self.home if parent is None else parent, text=text,
             font=self.font if bold else self.regular, fg=color, align=TextNode.ALeft,
             pos=(x*2/941, -y*2/941), scale=size*2/941, mayChange=True)
@@ -69,35 +71,45 @@ class MainMenu:
         a, b = self.point(x, y+height), self.point(x+width, y)
         return a[0], b[0], a[1], b[1]
 
-    def fill(self, x, y, width, height, color, radius=6):
+    def fill(self, x, y, width, height, color, radius=10):
         node = rounded_panel(self.layout, 'menu-fill', self.box(x, y, width, height), color, radius*2/941)
         node.setTransparency(TransparencyAttrib.MAlpha)
         return node
 
-    def place_label(self, text, x, y, size, color=WHITE, *, bold=False):
+    def place_label(self, text, x, y, size, color=INK, *, bold=False):
         node = self.label(text, 0, 0, size, color, bold=bold, parent=self.layout)
         node.setPos(*self.point(x, y))
         return node
 
-    def button(self, index, title, subtitle, x, y, width, height, *, footer=False):
+    def button(self, index, title, subtitle, x, y, width, height, *, pill=False, hero=False):
         unit = 2/941
-        # 左侧聚焦指示光条或底栏高亮描边，清晰无遮挡。
-        if footer:
-            self.edges[index] = self.fill(x-1.5, y-1.5, width+3, height+3, ORANGE, 8)
-        elif index == self.continue_index:
-            self.edges[index] = self.fill(x-2, y-2, width+4, height+4, WHITE, 10)
+        radius = 20 if pill else 14 if hero else 12
+        # 柔和悬浮投影 + 精致高光描边，复刻 Forza / GT 卡片立体感。
+        self.fill(x+1, y+4, width, height, SHADOW, radius)
+        if not hero:
+            self.fill(x-1, y-1, width+2, height+2, BORDER, radius+1)
+        if hero:
+            self.edges[index] = self.fill(x-2.5, y-2.5, width+5, height+5, WHITE, radius+2)
+        elif pill:
+            self.edges[index] = self.fill(x-2, y-2, width+4, height+4, ORANGE, radius+2)
         else:
-            self.edges[index] = self.fill(x, y+10, 4.5, height-20, ORANGE, 2)
+            self.edges[index] = self.fill(x+16, y, width-32, 4.5, ORANGE, 2)
         geom = rounded_panel(self.layout, 'menu-control',
-            (-width*unit/2, width*unit/2, -height*unit/2, height*unit/2), (1, 1, 1, 1),
-            (8 if index == self.continue_index else 6)*unit)
+            (-width*unit/2, width*unit/2, -height*unit/2, height*unit/2), WHITE, radius*unit)
         geom.detachNode()
-        tx = 0 if footer else (-width/2+24)*unit
         px, pz = self.point(x+width/2, y+height/2)
-        node = DirectButton(parent=self.layout, text=title, text_font=self.font if not footer else self.regular,
-            text_fg=WHITE, text_scale=(19 if footer else 34 if index == self.continue_index else 24)*unit,
-            text_align=TextNode.ACenter if footer else TextNode.ALeft,
-            text_pos=(tx, (9 if subtitle is not None else -7)*unit), pos=(px, 0, pz),
+        if hero:
+            tx, ty = (-width/2+26)*unit, (16 if subtitle else -8)*unit
+            t_scale = 36*unit
+        elif pill:
+            tx, ty = 0, -6*unit
+            t_scale = 17*unit
+        else:
+            tx, ty = (-width/2+22)*unit, (10 if subtitle else -7)*unit
+            t_scale = 23*unit
+        node = DirectButton(parent=self.layout, text=title, text_font=self.font if not pill else self.regular,
+            text_fg=WHITE if hero else INK, text_scale=t_scale,
+            text_align=TextNode.ACenter if pill else TextNode.ALeft, text_pos=(tx, ty), pos=(px, 0, pz),
             frameSize=(-width*unit/2, width*unit/2, -height*unit/2, height*unit/2),
             frameColor=(0, 0, 0, 0), geom=geom, relief=DGG.FLAT, pressEffect=False,
             command=lambda: self.activate(index))
@@ -105,10 +117,14 @@ class MainMenu:
         node.bind(DGG.ENTER, lambda event, i=index: self.select(i))
         node.bind(DGG.B1PRESS, lambda event: self.confirm_action())
         self.buttons[index] = node
+        if hero:
+            self.label('SEASON 01  ·  CONTINUE', tx/unit, -52, 13, (1, .90, .86, .92), bold=True, parent=node)
+            self.label('出发  →', (width/2-88), 64, 18, WHITE, bold=True, parent=node)
         if subtitle is not None:
-            sub = self.label(subtitle, tx/unit, 26 if index == self.continue_index else 23,
-                             19 if index == self.continue_index else 16,
-                             WHITE if index == self.continue_index else SUB, parent=node)
+            sub_y = 20 if hero else 24
+            sub_size = 19 if hero else 15
+            sub = self.label(subtitle, tx/unit, sub_y, sub_size,
+                             (1, .95, .93, .95) if hero else MUTED, parent=node)
             self.subtitles[index] = sub
             if index == 0:
                 self.time_goal = sub
@@ -142,63 +158,82 @@ class MainMenu:
         self.buttons, self.edges = [None]*len(self.actions), [None]*len(self.actions)
         self.subtitles = {}
 
-        margin = self.width*.030
-        panel_w = min(460., max(360., self.width*.295))
-        pad = 24
-        inner = panel_w-2*pad
+        margin = self.width*.032
+        usable = self.width-2*margin
 
-        # 顶栏与底栏：深海毛玻璃通栏 + 精致底边细线。
-        self.fill(0, 0, self.width, 64, DARK_BAR, 0)
-        self.fill(0, 64, self.width, 1.5, BORDER, 0)
-        self.fill(0, 868, self.width, 73, DARK_BAR, 0)
-        self.fill(0, 867, self.width, 1.5, BORDER, 0)
-
-        brand = self.place_label('COASTAL DRIVE', margin, 42, 26, WHITE, bold=True)
+        # ── 顶部轻盈悬浮元素（无厚重通栏，让阳光与天空完整呼吸）──
+        brand_w = 340
+        self.fill(margin+1, 31, brand_w, 56, SHADOW, 14)
+        self.fill(margin-1, 27, brand_w+2, 58, BORDER, 15)
+        self.fill(margin, 28, brand_w, 56, GLASS, 14)
+        self.fill(margin+14, 41, 5, 30, ORANGE, 2.5)
+        brand = self.place_label('COASTAL DRIVE', margin+30, 65, 27, INK, bold=True)
         brand['font'] = self.display_font
-        self.fill(margin+248, 20, 2, 24, ORANGE, 1)
-        self.place_label('第一季 · 海岸驾驶', margin+266, 40, 19, SUB)
+        self.place_label('S1', margin+294, 63, 16, ORANGE, bold=True)
 
-        # 左侧悬浮深海毛玻璃导航卡（不再用惨白大色块切碎车库背景）。
-        card_top, card_h = 94, 744
-        self.fill(margin-1.5, card_top-1.5, panel_w+3, card_h+3, BORDER, 13)
-        self.fill(margin, card_top, panel_w, card_h, GLASS, 12)
-        self.place_label('驾驶中心', margin+pad, card_top+52, 34, WHITE, bold=True)
-        self.place_label('选择赛事模式或进入专家试验台', margin+pad, card_top+82, 16, SUB)
+        # 左上第二层：轻盈悬浮当前座驾名牌（不压车身）。
+        car_badge_w = 248
+        self.fill(margin+1, 102, car_badge_w, 66, SHADOW, 12)
+        self.fill(margin-1, 98, car_badge_w+2, 68, BORDER, 13)
+        self.fill(margin, 99, car_badge_w, 66, GLASS, 12)
 
-        self.button(self.continue_index, '继续赛季', next_name, margin+pad, card_top+106, inner, 108)
-        entries = {2: '生涯赛事', 3: '我的车库', 1: '滨海自由驾驶', 8: '无限高速',
-                   0: '计时挑战', 6: '专家试验台'}
-        for row, index in enumerate(i for i in self.order[1:] if i in entries):
-            y = card_top+234+row*80
-            self.button(index, entries[index], old_goal if index == 0 else None,
-                        margin+pad, y, inner, 68)
-
-        # 底部操作指引与快捷入口。
-        self.place_label('↑↓ 选择   ·   Enter 确认   ·   F2 驾驶辅助', margin, 912, 16, SUB)
-        self.button(7, '驾驶辅助 F2', None, self.width-margin-454, 884, 152, 42, footer=True)
-        self.button(4, '声音设置', None, self.width-margin-288, 884, 136, 42, footer=True)
-        self.button(5, '退出游戏', None, self.width-margin-138, 884, 138, 42, footer=True)
+        # 右上悬浮胶囊群：星级徽章 + 快捷工具（驾驶辅助 / 声音 / 退出）。
+        star_w = 136
+        star_x = self.width-margin-460-star_w-12
+        self.fill(star_x+1, 35, star_w, 42, SHADOW, 21)
+        self.fill(star_x-1, 31, star_w+2, 44, BORDER, 22)
+        self.fill(star_x, 32, star_w, 42, GLASS, 21)
+        self.button(7, '驾驶辅助 F2', None, self.width-margin-456, 32, 148, 42, pill=True)
+        self.button(4, '声音设置', None, self.width-margin-294, 32, 136, 42, pill=True)
+        self.button(5, '退出游戏', None, self.width-margin-144, 32, 144, 42, pill=True)
         self.driving_mode_button = self.buttons[7]
 
-        # 右上角车辆铭牌悬浮卡。
-        badge_w = 328
-        badge_x = self.width-margin-badge_w
-        self.fill(badge_x-1.5, 94-1.5, badge_w+3, 94+3, BORDER, 11)
-        self.fill(badge_x, 94, badge_w, 94, GLASS, 10)
-        self.fill(badge_x+badge_w-5, 110, 5, 62, ORANGE, 2)
+        # ── 底部 Forza / GT 风格横向 Bento 卡片坞（上方 70% 空间完整留给 3D 展车与阳光海岸）──
+        dock_top, dock_h, gap = 668, 228, 16
+        hero_w = min(420., usable*.275)
+        grid_x = margin+hero_w+gap
+        grid_w = usable-hero_w-gap
+        cols = 3
+        tile_w = (grid_w-(cols-1)*gap)/cols
+        tile_h = (dock_h-gap)/2
+
+        self.button(self.continue_index, '继续赛季', next_name or '海岸杯决赛',
+                    margin, dock_top, hero_w, dock_h, hero=True)
+
+        # 2×3 精致瓷白 Bento 磁贴：核心驾驶入口清晰分明，无遮挡。
+        has_highway = 8 in self.order
+        top_row = ((2, '生涯赛事', '第一季 · 章节与奖牌'),
+                   (3, '海岸车库', '车辆 · 车漆 · 改装'),
+                   (0, '计时挑战', old_goal or '独立预算 · 圈速与油耗'))
+        bot_row = (((1, '滨海自由驾驶', '阳光海岸环路巡游'),
+                    (8, '无限高速', '自由 · 五公里 · 课题'),
+                    (6, '专家试验台', '动力学仿真 · A/B 对比')) if has_highway else
+                   ((1, '滨海自由驾驶', '阳光海岸环路巡游'),
+                    (6, '专家试验台', '动力学仿真 · A/B 对比')))
+
+        for col, (idx, title, sub) in enumerate(top_row):
+            self.button(idx, title, sub, grid_x+col*(tile_w+gap), dock_top, tile_w, tile_h)
+        bot_w = tile_w if has_highway else (grid_w-gap)/2
+        for col, (idx, title, sub) in enumerate(bot_row):
+            self.button(idx, title, sub, grid_x+col*(bot_w+gap), dock_top+tile_h+gap, bot_w, tile_h)
+
+        # 底部细微按键指引（无重底栏）。
+        self.place_label('↑ ↓ ← → 浏览   ·   Enter 确认   ·   F2 驾驶辅助', margin+4, 926, 15, (1, 1, 1, .92), bold=True)
+
         for node, x, y, right in (
-            (self.stars, self.width-margin, 41, True),
-            (self.credits, self.width-margin-160, 41, True),
-            (self.car_name, self.width-margin-22, 134, True),
-            (self.vehicle_note, self.width-margin-22, 168, True),
-            (self.notice, margin+panel_w+26, 822, False),
+            (self.stars, star_x+star_w/2, 60, False),
+            (self.credits, self.width-margin, 95, True),
+            (self.car_name, margin+20, 132, False),
+            (self.vehicle_note, margin+20, 154, False),
+            (self.notice, margin+hero_w+gap, 650, False),
         ):
             node.reparentTo(self.layout)
             node.setPos(*self.point(x, y))
-            node.textNode.setAlign(TextNode.ARight if right else TextNode.ALeft)
+            node.textNode.setAlign(TextNode.ACenter if node is self.stars else
+                                   TextNode.ARight if right else TextNode.ALeft)
 
-        car_left = margin+panel_w+12
-        self.car_box = self.box(car_left, 198, self.width-margin-car_left, 650)
+        # 全幅居中 3D 展车视口：充分享受日光车库主舞台！
+        self.car_box = self.box(self.width*.14, 118, self.width*.72, 540)
         if owns_car:
             self.vehicle_view.show(self.home, self.car_box, self.vehicle_view.base.workspace_vehicle, studio=True)
             self.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
@@ -206,7 +241,7 @@ class MainMenu:
 
     def show_home(self, progress, vehicle, continuation):
         self.home.show()
-        self.stars.setText(f'★  {progress.stars} / 18 星')
+        self.stars.setText(f'★  {progress.stars} / 18')
         self.subtitles[self.continue_index].setText(continuation)
         self.credits.setText('')
         car = next(car for car in garage_cars(vehicle) if car.design_id == vehicle.design_id)
@@ -227,28 +262,36 @@ class MainMenu:
     def select(self, index):
         self.selected = index % len(self.buttons)
         for i, button in enumerate(self.buttons):
-            focused, primary, footer = i == self.selected, i == self.continue_index, i in (7, 4, 5)
+            focused, primary, pill = i == self.selected, i == self.continue_index, i in (7, 4, 5)
             self.edges[i].show() if focused else self.edges[i].hide()
             if primary:
                 button['geom_color'] = theme.ORANGE_BRIGHT if focused else ORANGE
-            elif footer:
-                button['geom_color'] = CARD_HI if focused else CARD
+                button['text_fg'] = WHITE
+            elif focused:
+                button['geom_color'] = CHARCOAL
+                button['text_fg'] = WHITE
+            elif pill:
+                button['geom_color'] = GLASS
+                button['text_fg'] = INK
             else:
-                button['geom_color'] = CARD_HI if focused else (.10, .14, .19, .58)
-            button['text_fg'] = WHITE if (primary or focused) else (.86, .90, .94, 1)
+                button['geom_color'] = GLASS
+                button['text_fg'] = INK
             if i in self.subtitles:
-                self.subtitles[i].setFg((1, .95, .90, .95) if primary else SUB)
+                self.subtitles[i].setFg((1, .95, .93, .95) if primary else
+                                        (.80, .82, .85, 1) if focused else MUTED)
 
     def move(self, direction):
         if self.selected in (7, 4, 5):
-            self.select(6 if direction < 0 else self.continue_index)
+            self.select(self.continue_index if direction > 0 else 6)
         else:
             self.select(self.order[(self.order.index(self.selected)+direction) % len(self.order)])
 
     def horizontal(self, direction):
-        footer = (7, 4, 5)
-        if self.selected in footer:
-            self.select(footer[(footer.index(self.selected)+direction) % len(footer)])
+        pills = (7, 4, 5)
+        if self.selected in pills:
+            self.select(pills[(pills.index(self.selected)+direction) % len(pills)])
+        else:
+            self.move(direction)
 
     def activate(self, index=None):
         if index is not None:

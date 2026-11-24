@@ -1,4 +1,4 @@
-"""VI v1 主题：字体、语义颜色与品牌资源；不持有页面或游戏状态。"""
+"""VI v2 日光赛车画廊主题：温润瓷白基底、纯粹中性炭黑排版与赛道朱红/海岸青点缀。"""
 
 from panda3d.core import DynamicTextFont, Filename, SamplerState
 
@@ -11,38 +11,49 @@ DISPLAY_FONT_FILE = "fonts/ChakraPetch-BoldItalic.ttf"
 # 覆盖 1080p 大标题的实际像素高度，避免放大低分辨率字形。
 FONT_PIXELS_PER_UNIT = 160
 
-# 现代汽车工程画廊配色：精密冷瓷基底 × 深海岩灰浮层 × 赛道炽橙强调。
-INK = (0.065, 0.095, 0.135, 1)
-PAPER = (0.935, 0.947, 0.962, 1)
-PAPER_LIGHT = (0.992, 0.995, 0.998, 1)
-ORANGE = (0.95, 0.36, 0.14, 1)
-ORANGE_BRIGHT = (1.0, 0.44, 0.22, 1)
-SEA = (0.10, 0.56, 0.68, 1)
-MUTED = (0.36, 0.43, 0.51, 1)
-SUCCESS = (0.13, 0.56, 0.40, 1)
-FAILURE = (0.76, 0.22, 0.18, 1)
+# 日光赛车画廊主色（参考 GT7 / Forza Horizon / Porsche Configurator，零暗蓝黑脏灰）。
+INK = (0.10, 0.105, 0.115, 1)
+CHARCOAL = (0.105, 0.11, 0.12, 1)
+CHARCOAL_SOFT = (0.18, 0.19, 0.21, 1)
+CANVAS = (0.952, 0.952, 0.944, 1)
+PAPER = (0.945, 0.948, 0.952, 1)
+PAPER_LIGHT = (1.0, 1.0, 1.0, 1)
+GLASS_LIGHT = (0.992, 0.992, 0.988, 0.91)
+MIST = (0.935, 0.938, 0.944, 1)
+HAIRLINE = (0.835, 0.845, 0.862, 1)
+SHADOW = (0.06, 0.065, 0.075, 0.13)
 
-# 深海暗色画廊令牌（供首页、生涯、加载、调校等主流程共享）。
-SLATE_BG = (0.055, 0.078, 0.108, 1)
-SLATE_BAR = (0.042, 0.060, 0.086, 0.94)
-SLATE_GLASS = (0.068, 0.096, 0.134, 0.88)
-SLATE_CARD = (0.098, 0.134, 0.182, 0.94)
-SLATE_CARD_HI = (0.148, 0.198, 0.262, 0.98)
-SLATE_BORDER = (0.21, 0.27, 0.35, 0.72)
-TEXT_LIGHT = (0.965, 0.975, 0.985, 1)
-TEXT_SUB = (0.67, 0.73, 0.80, 1)
-TEXT_LOCKED = (0.48, 0.54, 0.62, 1)
-GOLD = (0.95, 0.72, 0.24, 1)
-SILVER = (0.78, 0.83, 0.89, 1)
-BRONZE = (0.82, 0.53, 0.30, 1)
+# 经典赛车强调色：保时捷卫红/朱红、地中海海岸青、香槟金。
+ORANGE = (0.90, 0.25, 0.15, 1)
+ORANGE_BRIGHT = (0.97, 0.32, 0.20, 1)
+ORANGE_TINT = (0.995, 0.935, 0.92, 1)
+SEA = (0.05, 0.52, 0.65, 1)
+MUTED = (0.41, 0.43, 0.47, 1)
+LOCKED = (0.62, 0.64, 0.68, 1)
+SUCCESS = (0.10, 0.58, 0.36, 1)
+FAILURE = (0.82, 0.20, 0.16, 1)
+GOLD = (0.78, 0.54, 0.11, 1)
+SILVER = (0.46, 0.50, 0.56, 1)
+BRONZE = (0.68, 0.41, 0.20, 1)
+
+# 兼容别名（映射到新日光画廊令牌，彻底清除暗蓝石板旧色）。
+SLATE_BG = CANVAS
+SLATE_BAR = (1.0, 1.0, 1.0, 0.96)
+SLATE_GLASS = GLASS_LIGHT
+SLATE_CARD = PAPER_LIGHT
+SLATE_CARD_HI = MIST
+SLATE_BORDER = HAIRLINE
+TEXT_LIGHT = INK
+TEXT_SUB = MUTED
+TEXT_LOCKED = LOCKED
 
 PANEL_TINT = (1, 1, 1, 0.98)
 HUD_TINT = (1, 1, 1, 0.94)
 BUTTON_TINT = (1, 1, 1, 1)
 SECONDARY_BUTTON_TINT = (0.95, 0.96, 0.96, 1)
 TEXT_SHADOW = (0, 0, 0, 0)
-DIAGNOSTIC_TEXT = (0.94, 0.97, 1, 1)
-DIAGNOSTIC_SHADOW = (0, 0, 0, 0.6)
+DIAGNOSTIC_TEXT = (0.96, 0.97, 0.98, 1)
+DIAGNOSTIC_SHADOW = (0, 0, 0, 0.65)
 
 
 def asset_filename(name):
