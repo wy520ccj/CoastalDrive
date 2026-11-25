@@ -26,11 +26,9 @@ def shaders(source):
     """近远分档共享原木本着色，140m内只交接轮廓，不移动或缩放植株。"""
     result = []
     for far in (False, True):
-        # 两级轮廓使用互补屏幕样本；把同一alpha交给两次A2C会重叠覆盖并留下孔洞。
+        # 两级轮廓使用互补交错梯度噪声交接，消除 4×4 规则网格点阵颗粒感，同时避免双层 A2C 孔洞。
         coverage = '''
-ivec2 tree_cell = ivec2(gl_FragCoord.xy) & ivec2(3);
-int tree_bayer[16] = int[16](0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5);
-float tree_threshold = (float(tree_bayer[tree_cell.x + tree_cell.y * 4])+.5)/16.;
+float tree_threshold = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));
 '''
         coverage += ('if (tree_threshold <= 1.-tree_range_alpha) discard;' if far else
                      'if (tree_threshold > tree_range_alpha) discard;')
@@ -42,7 +40,7 @@ uniform vec3 camera_world_position;
 flat out float tree_range_alpha;
 void main() {
 float tree_distance = length((p3d_ModelMatrix*vec4(tree_center,1.)).xyz-camera_world_position);
-float far_alpha = smoothstep(120.,140.,tree_distance);
+float far_alpha = smoothstep(150.,170.,tree_distance);
 tree_range_alpha = ''' + ('far_alpha*(1.-smoothstep(680.,700.,tree_distance));' if far else '1.-far_alpha;') + '''
 if (tree_range_alpha <= .0001) {
     gl_Position=vec4(2.,2.,2.,1.);
@@ -167,10 +165,11 @@ def batch_steps(root, kit):
             near.setName('local-near-'+tree.getName())
             near.setState(tree.getState(root))
             near.wrtReparentTo(near_group)
-            # 近组已有距离剔除；中模在shader归零前不再向空级做第二次时间渐变。
+            # 近组已有距离剔除；按实例缩放补偿世界距，避免小比例树提前切档或失踪。
+            near_scale = max(float(near.getSx(root)), .1)
             near.node().clearSwitches()
-            near.node().addSwitch(45, 0)
-            near.node().addSwitch(701, 45)
+            near.node().addSwitch(45. / near_scale, 0)
+            near.node().addSwitch(701. / near_scale, 45. / near_scale)
             near.getChild(2).removeNode()
             for part in near.getChildren():
                 if isinstance(part.node(), GeomNode):
@@ -181,7 +180,7 @@ def batch_steps(root, kit):
             yield 'local-far-tree-bake'
         center = np.mean(centers, axis=0)
         lod.setCenter(Vec3(*center))
-        lod.addSwitch(141+max(np.linalg.norm(p-center) for p in centers), 0)
+        lod.addSwitch(175+max(np.linalg.norm(p-center) for p in centers), 0)
         batch = make_batch(root, 'local-far-tree-batch-'+str(cell), meshes, state, far_shader)
         report.append({'trees': len(trees), 'vertices': batch.node().getGeom(0).getVertexData().getNumRows(),
                        'bytes': sum(row[0].nbytes+row[1].nbytes+row[2].nbytes for row in meshes)})

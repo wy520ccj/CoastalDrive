@@ -244,13 +244,13 @@ grass_present = step(plant_seed,family_weight*distance_weight*woodland_density);
 vec4 model_position = vec4(floor_position + vec3(0.0, 0.0, p3d_Vertex.z*mix(.8,1.2,dry)*grass_vertical_scale), 1.0);''')
     present = 'grass_present = step(plant_seed,family_weight*distance_weight*woodland_density);'
     if smooth_distance:
-        # 世界中的株位/高度不随相机增生；距离只调原4x MSAA覆盖率，最终在草格卸载前归零。
+        # 远草改为随距离平滑沉入同色地表再剔除，避免 4x MSAA A2C 在中景铺出 2×2 点阵颗粒感。
         vertex = vertex.replace('float distance_weight = 1.-smoothstep(140.,190.,length(plant_world-camera_world_position));',
-                                'float distance_weight = 1.-smoothstep(140.,215.,length(plant_world-camera_world_position));')
-        replacement = 'grass_present = step(plant_seed,family_weight*woodland_density)*step(.0001,distance_weight);'
+                                'float distance_weight = 1.-smoothstep(105.,185.,length(plant_world-camera_world_position));')
+        replacement = 'grass_present = step(plant_seed,family_weight*woodland_density)*step(.01,distance_weight);'
         vertex = vertex.replace(present, replacement)
         present = replacement
-        vertex = vertex.replace(present, 'grass_fade = distance_weight;\n'+present)
+        vertex = vertex.replace(present, 'grass_fade = 1.;\n'+present)
     else:
         vertex = vertex.replace(present, 'grass_fade = 1.;\n'+present)
     if cull_absent:
@@ -265,6 +265,15 @@ if (grass_present < .5) {
     return;
 }
 ''' + growth + '\n' + height)
+    if smooth_distance:
+        vertex = vertex.replace(
+            'grass_height *= mix(.8,1.2,dry)*grass_vertical_scale;',
+            'grass_height *= mix(.8,1.2,dry)*grass_vertical_scale*distance_weight;',
+        )
+        vertex = vertex.replace(
+            'p3d_Vertex.z*mix(.8,1.2,dry)*grass_vertical_scale',
+            'p3d_Vertex.z*mix(.8,1.2,dry)*grass_vertical_scale*distance_weight',
+        )
     # 高度变化后同步校正几何法线；同株的生长值只取根部，不能让叶片各顶点各自缩放。
     vertex = vertex.replace('vec3 model_normal = p3d_Normal;',
         'vec3 model_normal = normalize(vec3(p3d_Normal.xy,p3d_Normal.z/(mix(.8,1.2,dry)*grass_vertical_scale)));')
@@ -410,6 +419,13 @@ def soft_cutout(node):
     """先把源遮罩转为覆盖率，再用已有4x MSAA；叶面内部保持完整，不把整树当半透明层。"""
     node.setTransparency(TransparencyAttrib.MMultisample, 3)
     node.setAttrib(AlphaTestAttrib.make(AlphaTestAttrib.MNone, 0.), 3)
+
+
+def set_world_lod_range(node, world_distance):
+    """按实例缩放换算 LOD 切换距离，避免缩小的灌木和幼树在 45-100m 眼前突兀闪现。"""
+    scale = max(float(node.getSx()), float(node.getSy()), float(node.getSz()), .05)
+    node.node().clearSwitches()
+    node.node().addSwitch(world_distance / scale, 0.)
 
 
 def valid_verge(curve, p, s, minimum):
@@ -812,11 +828,12 @@ class LocalVegetation:
             yield phase
         yield from city_static_batch_steps(root, kit['lamp'].getName())
         for group in root.findAllMatches('**/mainland-city'):
-            # 城市低灌木不投 4K 太阳阴影，中庭与绿带灌木补齐与庭院一致的 190m 距离裁剪。
+            # 城市低灌木不投 4K 太阳阴影，中庭与绿带灌木补齐与庭院一致的 190m 距离裁剪，并按缩放补偿自身 LOD。
             loose_shrubs = []
             for child in tuple(group.getChildren()):
                 if child.hasTag('city-courtyard-shrub') or child.hasTag('city-greenbelt-shrub'):
                     child.hide(SHADOW_MASK)
+                    set_world_lod_range(child, 210.)
                     loose_shrubs.append(child)
                 elif child.hasTag('city-tree') or child.hasTag('city-courtyard-tree'):
                     child.hide(SHADOW_MASK)
@@ -824,6 +841,10 @@ class LocalVegetation:
                     for sub in child.getChildren():
                         if sub.hasTag('city-garden-tree') or sub.getName() == 'garden-plants-distance':
                             sub.hide(SHADOW_MASK)
+                            if sub.getName() == 'garden-plants-distance':
+                                for shrub in sub.findAllMatches('**/kcd-hawthorn-*'):
+                                    if isinstance(shrub.node(), LODNode):
+                                        set_world_lod_range(shrub, 210.)
             if loose_shrubs:
                 buckets = {}
                 for shrub in loose_shrubs:
@@ -860,8 +881,13 @@ class LocalVegetation:
             # 城镇路侧由街区绿化接管；原物理树仍在segment()的固定位置显示。
             return d > 0 and not isinstance(curve, CareerCourse) and expressway_route.city_weight(s, seed) >= .95
 
-        foreground = ((-13, 44, 0, 14.), (-14, 88, 0, 13.5), (-13, 120, 1, 15.),
-                      (-15, 178, 0, 12.5), (25, 155, 0, 13.5), (33, 164, 1, 14.))
+        is_endless = not isinstance(curve, CareerCourse)
+        # 无限高速左侧前排树按树冠半径加偏心枝余量外退至护栏外净空区，防止不对称长枝伸入行车道。
+        foreground = (((-19.5, 44, 0, 14.), (-20.0, 88, 0, 13.5), (-20.0, 120, 1, 15.),
+                       (-19.2, 178, 0, 12.5), (25, 155, 0, 13.5), (33, 164, 1, 14.))
+                      if is_endless else
+                      ((-13, 44, 0, 14.), (-14, 88, 0, 13.5), (-13, 120, 1, 15.),
+                       (-15, 178, 0, 12.5), (25, 155, 0, 13.5), (33, 164, 1, 14.)))
         for d, local, variant, height in foreground:
             s = start + local
             if urban_roadside(d, s):
@@ -874,7 +900,8 @@ class LocalVegetation:
             tree.setScale(height / float(tree.getTag('source-height')))
             if variant == 1:
                 # 岩坡前采用有净空树干的原树，略展宽树冠，让岩体能从枝下读出来。
-                horizontal = 8 / float(tree.getTag('source-crown-radius'))
+                crown_cap = 7.4 if is_endless else 8.0
+                horizontal = crown_cap / float(tree.getTag('source-crown-radius'))
                 tree.setScale(horizontal, horizontal, height / float(tree.getTag('source-height')))
             tree.setH(rng.uniform(0, 360))
             root_slope(tree, curve, d, s, seed)
@@ -906,6 +933,7 @@ class LocalVegetation:
                 young.setPos(under - origin - Vec3(0, 0, .15))
                 young.setH(rng.uniform(0, 360))
                 young.setScale(rng.uniform(3, 4.8) / float(young.getTag('source-height')))
+                set_world_lod_range(young, 240.)
                 root_slope(young, curve, young_d, s + offset, seed)
                 yield 'local-driving-understory'
         # 林缘与岩脚的真实低灌丛承担中层，右侧只在局部形成簇群，保留看海开口。
@@ -921,6 +949,7 @@ class LocalVegetation:
                 node.setPos(p - origin - Vec3(0, 0, .12))
                 node.setH(rng.uniform(0, 360))
                 node.setScale(rng.uniform(1.2, 2.2) / float(node.getTag('source-height')))
+                set_world_lod_range(node, 210.)
                 root_slope(node, curve, d, s, seed)
                 yield 'local-kcd-understory'
         # 主岩群以矮木接到林缘，保留可读石面；不把两块大石孤立摆在草坪上。
@@ -946,6 +975,7 @@ class LocalVegetation:
                 node.setPos(p - origin - Vec3(0, 0, .12))
                 node.setH((index * 47 + number * 83) % 360)
                 node.setScale(height / float(node.getTag('source-height')))
+                set_world_lod_range(node, 240. if young else 210.)
                 root_slope(node, curve, d, s, seed)
                 yield 'local-outcrop-understory'
         # 后排按完整地块组织；保留前排辨识树与主石面向道路的开口。
@@ -955,10 +985,15 @@ class LocalVegetation:
                 yield 'local-grove-site-checks'
             if urban_roadside(d, s):
                 continue
-            if d > 0 and not isinstance(curve, CareerCourse) and s % 320 < 240:
+            if d > 0 and is_endless and s % 320 < 240:
                 continue
             if -42 < d < 0 and any(start+local-35 < s < start+local+5 for local in (50, 172)):
                 continue
+            template = kit['local-kcd-trees'][variant]
+            if is_endless:
+                crown_r = height / float(template.getTag('source-height')) * float(template.getTag('source-crown-radius'))
+                if abs(d) - crown_r < 10.5:
+                    continue
             p = floor_point(curve, d, s, seed)
             if p is None or p.z < -2 or not valid_verge(curve, p, s, 18) or not root_clear(p, 1.5):
                 continue
@@ -968,7 +1003,7 @@ class LocalVegetation:
                 # 海侧补充林群留成片开口，原碰撞树继续由原segment显示。
                 if p.x > _shoreline(p.y)-30 and (s+seed*11) % 192 > 64:
                     continue
-            tree = kit['local-kcd-trees'][variant].copyTo(detail_parent(s))
+            tree = template.copyTo(detail_parent(s))
             tree.setPos(p-origin)
             tree.setScale(height/float(tree.getTag('source-height')))
             tree.setH(heading)
@@ -989,6 +1024,7 @@ class LocalVegetation:
                     shrub.setH(plants_rng.uniform(0, 360))
                     shrub.setScale(plants_rng.uniform(3, 4.8) / float(shrub.getTag('source-height'))
                                    if young else plants_rng.uniform(1.1, 1.9) / float(shrub.getTag('source-height')))
+                    set_world_lod_range(shrub, 240. if young else 210.)
                     root_slope(shrub, curve, under_d, under_s, seed)
                     yield 'local-grove-understory'
             if abs(d) > 78 or detail_seed % 3:
@@ -1011,6 +1047,8 @@ class LocalVegetation:
                     d = edge_d+edge_rng.uniform(-1.7, 1.7)
                     if not start <= s < start+200:
                         continue
+                    if is_endless and abs(d) < 11.5:
+                        continue
                     p = floor_point(curve, d, s, seed)
                     if (p is None or p.z < -2 or not valid_verge(curve, p, s, 15)
                             or not root_clear(p, .7)):
@@ -1020,6 +1058,7 @@ class LocalVegetation:
                     scale = height/float(shrub.getTag('source-height'))
                     width = scale*edge_rng.uniform(1.2, 1.6)
                     shrub.setScale(width, width, scale)
+                    set_world_lod_range(shrub, 210.)
                     shrub.setPos(p-origin-Vec3(0, 0, .10))
                     shrub.setH(edge_rng.uniform(0, 360))
                     root_slope(shrub, curve, d, s, seed)

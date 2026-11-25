@@ -45,7 +45,7 @@ def add_rail_shapes(body, vertices):
     _attach_rail_entries(body, _rail_hull_entries(vertices))
 
 
-def build_rail_bodies(name, vertices, *, chunk_size=8):
+def build_rail_bodies(name, vertices, *, chunk_size=16):
     """按沿线小段拆分护栏刚体，保留完全相同的凸体几何与命名，避免全岛大包围盒拖慢 Bullet 粗检。"""
     entries = _rail_hull_entries(vertices)
     bodies = []
