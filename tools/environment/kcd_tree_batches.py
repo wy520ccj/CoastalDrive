@@ -40,7 +40,7 @@ uniform vec3 camera_world_position;
 flat out float tree_range_alpha;
 void main() {
 float tree_distance = length((p3d_ModelMatrix*vec4(tree_center,1.)).xyz-camera_world_position);
-float far_alpha = smoothstep(150.,170.,tree_distance);
+float far_alpha = smoothstep(120.,140.,tree_distance);
 tree_range_alpha = ''' + ('far_alpha*(1.-smoothstep(680.,700.,tree_distance));' if far else '1.-far_alpha;') + '''
 if (tree_range_alpha <= .0001) {
     gl_Position=vec4(2.,2.,2.,1.);
@@ -165,12 +165,11 @@ def batch_steps(root, kit):
             near.setName('local-near-'+tree.getName())
             near.setState(tree.getState(root))
             near.wrtReparentTo(near_group)
-            # 近组已有距离剔除；按实例缩放补偿世界距，避免小比例树提前切档或失踪。
-            near_scale = max(float(near.getSx(root)), .1)
-            near.node().clearSwitches()
-            near.node().addSwitch(45. / near_scale, 0)
-            near.node().addSwitch(701. / near_scale, 45. / near_scale)
+            # 近组直接使用完整3D枝叶的LOD1（不再在30-45m眼前做LOD0/LOD1变形切换与双倍绘制），远距由合批接管。
             near.getChild(2).removeNode()
+            near.getChild(0).removeNode()
+            near.node().clearSwitches()
+            near.node().addSwitch(10000, 0)
             for part in near.getChildren():
                 if isinstance(part.node(), GeomNode):
                     part.setShader(near_shader, 2)
@@ -180,7 +179,7 @@ def batch_steps(root, kit):
             yield 'local-far-tree-bake'
         center = np.mean(centers, axis=0)
         lod.setCenter(Vec3(*center))
-        lod.addSwitch(175+max(np.linalg.norm(p-center) for p in centers), 0)
+        lod.addSwitch(141+max(np.linalg.norm(p-center) for p in centers), 0)
         batch = make_batch(root, 'local-far-tree-batch-'+str(cell), meshes, state, far_shader)
         report.append({'trees': len(trees), 'vertices': batch.node().getGeom(0).getVertexData().getNumRows(),
                        'bytes': sum(row[0].nbytes+row[1].nbytes+row[2].nbytes for row in meshes)})

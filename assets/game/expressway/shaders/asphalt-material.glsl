@@ -17,8 +17,7 @@ vec3 asphalt_normal(vec3 geometric_normal, vec3 position) {
     if (magnitude < 1e-16) return n;
     mat3 basis = mat3(tangent,bitangent,n);
     vec3 detail = texture2D(asphalt_normals,v_texcoord).rgb*2.0-1.0;
-    float dist = length(position);
-    detail.xy *= mix(0.32, 0.06, smoothstep(10.0, 45.0, dist));
+    detail.xy *= 0.30;
     detail.z *= sqrt(magnitude);
     return normalize(basis * detail);
 }

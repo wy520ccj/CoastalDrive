@@ -87,9 +87,6 @@ uniform sampler2D dry_gloss;
 uniform sampler2D dry_height;
 float forest_weight() { return woodland_cover(v_world_position.xy)*.85; }
 vec2 kcd_uv() {
-    float ground_dist = length(camera_world_position-v_world_position);
-    float parallax_fade = 1.-smoothstep(12.,35.,ground_dist);
-    if (parallax_fade <= .001) return v_texcoord;
     vec3 n = normalize(v_world_tbn[2]);
     vec3 dx = dFdx(v_world_position), dy = dFdy(v_world_position);
     vec2 ux = dFdx(v_texcoord), uy = dFdy(v_texcoord);
@@ -100,8 +97,8 @@ vec2 kcd_uv() {
     float height = mix(mix(texture(pasture_height,v_texcoord*.25).r,
                           texture(dry_height,v_texcoord*.25).r,ground_dry_weight()),
                        texture(forest_height,v_texcoord*.25).r,w)-.5;
-    return v_texcoord - vec2(dot(eye,t),dot(eye,b)) / max(dot(eye,n),.45)
-                           * height * mix(.035,.028,w)*mix(1.,.25,city_lawn_weight())*parallax_fade;
+    return v_texcoord - vec2(dot(eye,t),dot(eye,b)) / max(dot(eye,n),.38)
+                           * height * mix(.030,.024,w)*mix(1.,.25,city_lawn_weight());
 }
 vec4 expressway_albedo() {
     vec2 p = kcd_uv();
@@ -132,9 +129,7 @@ vec3 kcd_normal(vec3 geometric_normal,vec3 position) {
     vec3 detail = mix(mix(texture(pasture_normal,p).rgb,
                          texture(dry_normal,p).rgb,ground_dry_weight()),
                       texture(forest_normal,p).rgb,w)*2.-1.;
-    float ground_dist = length(camera_world_position-v_world_position);
-    float bump_fade = mix(1.15,0.22,smoothstep(18.,65.,ground_dist));
-    detail.xy *= mix(1.0,0.85,w)*bump_fade*mix(1.,.3,city_lawn_weight());
+    detail.xy *= mix(1.30,1.10,w)*mix(1.,.3,city_lawn_weight());
     detail.z *= sqrt(magnitude);
     return normalize(mat3(t,b,n)*detail);
 }
@@ -190,7 +185,7 @@ def vegetation_material(shader):
     fragment = fragment.replace('if (base_color.a < foliage_alpha_cutoff) discard;', '''
 float lod_alpha = p3d_ColorScale.a;
 base_color.a /= max(lod_alpha,.0001);
-float opacity_width = max(fwidth(base_color.a),.08);
+float opacity_width = max(fwidth(base_color.a),.001);
 float foliage_visibility = 1.;
 if (base_color.a < foliage_alpha_cutoff) discard;
 base_color.a = clamp((base_color.a-foliage_alpha_cutoff)/opacity_width+.5,0.,1.)*foliage_visibility*lod_alpha;

@@ -244,13 +244,13 @@ grass_present = step(plant_seed,family_weight*distance_weight*woodland_density);
 vec4 model_position = vec4(floor_position + vec3(0.0, 0.0, p3d_Vertex.z*mix(.8,1.2,dry)*grass_vertical_scale), 1.0);''')
     present = 'grass_present = step(plant_seed,family_weight*distance_weight*woodland_density);'
     if smooth_distance:
-        # 远草改为随距离平滑沉入同色地表再剔除，避免 4x MSAA A2C 在中景铺出 2×2 点阵颗粒感。
+        # 世界中的株位/高度不随相机增生；距离只调原4x MSAA覆盖率，最终在草格卸载前归零。
         vertex = vertex.replace('float distance_weight = 1.-smoothstep(140.,190.,length(plant_world-camera_world_position));',
-                                'float distance_weight = 1.-smoothstep(105.,185.,length(plant_world-camera_world_position));')
-        replacement = 'grass_present = step(plant_seed,family_weight*woodland_density)*step(.01,distance_weight);'
+                                'float distance_weight = 1.-smoothstep(140.,215.,length(plant_world-camera_world_position));')
+        replacement = 'grass_present = step(plant_seed,family_weight*woodland_density)*step(.0001,distance_weight);'
         vertex = vertex.replace(present, replacement)
         present = replacement
-        vertex = vertex.replace(present, 'grass_fade = 1.;\n'+present)
+        vertex = vertex.replace(present, 'grass_fade = distance_weight;\n'+present)
     else:
         vertex = vertex.replace(present, 'grass_fade = 1.;\n'+present)
     if cull_absent:
@@ -265,15 +265,6 @@ if (grass_present < .5) {
     return;
 }
 ''' + growth + '\n' + height)
-    if smooth_distance:
-        vertex = vertex.replace(
-            'grass_height *= mix(.8,1.2,dry)*grass_vertical_scale;',
-            'grass_height *= mix(.8,1.2,dry)*grass_vertical_scale*distance_weight;',
-        )
-        vertex = vertex.replace(
-            'p3d_Vertex.z*mix(.8,1.2,dry)*grass_vertical_scale',
-            'p3d_Vertex.z*mix(.8,1.2,dry)*grass_vertical_scale*distance_weight',
-        )
     # 高度变化后同步校正几何法线；同株的生长值只取根部，不能让叶片各顶点各自缩放。
     vertex = vertex.replace('vec3 model_normal = p3d_Normal;',
         'vec3 model_normal = normalize(vec3(p3d_Normal.xy,p3d_Normal.z/(mix(.8,1.2,dry)*grass_vertical_scale)));')
@@ -422,10 +413,12 @@ def soft_cutout(node):
 
 
 def set_world_lod_range(node, world_distance):
-    """按实例缩放换算 LOD 切换距离，避免缩小的灌木和幼树在 45-100m 眼前突兀闪现。"""
+    """只为过小缩放的灌木/幼树兜底下限距离，避免 45m 眼前闪现且不拉高远距渲染开销。"""
     scale = max(float(node.getSx()), float(node.getSy()), float(node.getSz()), .05)
-    node.node().clearSwitches()
-    node.node().addSwitch(world_distance / scale, 0.)
+    current = float(node.node().getIn(0)) * scale
+    if current < world_distance:
+        node.node().clearSwitches()
+        node.node().addSwitch(world_distance / scale, 0.)
 
 
 def valid_verge(curve, p, s, minimum):
@@ -833,7 +826,7 @@ class LocalVegetation:
             for child in tuple(group.getChildren()):
                 if child.hasTag('city-courtyard-shrub') or child.hasTag('city-greenbelt-shrub'):
                     child.hide(SHADOW_MASK)
-                    set_world_lod_range(child, 210.)
+                    set_world_lod_range(child, 125.)
                     loose_shrubs.append(child)
                 elif child.hasTag('city-tree') or child.hasTag('city-courtyard-tree'):
                     child.hide(SHADOW_MASK)
@@ -844,7 +837,7 @@ class LocalVegetation:
                             if sub.getName() == 'garden-plants-distance':
                                 for shrub in sub.findAllMatches('**/kcd-hawthorn-*'):
                                     if isinstance(shrub.node(), LODNode):
-                                        set_world_lod_range(shrub, 210.)
+                                        set_world_lod_range(shrub, 125.)
             if loose_shrubs:
                 buckets = {}
                 for shrub in loose_shrubs:
@@ -933,7 +926,7 @@ class LocalVegetation:
                 young.setPos(under - origin - Vec3(0, 0, .15))
                 young.setH(rng.uniform(0, 360))
                 young.setScale(rng.uniform(3, 4.8) / float(young.getTag('source-height')))
-                set_world_lod_range(young, 240.)
+                set_world_lod_range(young, 160.)
                 root_slope(young, curve, young_d, s + offset, seed)
                 yield 'local-driving-understory'
         # 林缘与岩脚的真实低灌丛承担中层，右侧只在局部形成簇群，保留看海开口。
@@ -949,7 +942,7 @@ class LocalVegetation:
                 node.setPos(p - origin - Vec3(0, 0, .12))
                 node.setH(rng.uniform(0, 360))
                 node.setScale(rng.uniform(1.2, 2.2) / float(node.getTag('source-height')))
-                set_world_lod_range(node, 210.)
+                set_world_lod_range(node, 125.)
                 root_slope(node, curve, d, s, seed)
                 yield 'local-kcd-understory'
         # 主岩群以矮木接到林缘，保留可读石面；不把两块大石孤立摆在草坪上。
@@ -975,7 +968,7 @@ class LocalVegetation:
                 node.setPos(p - origin - Vec3(0, 0, .12))
                 node.setH((index * 47 + number * 83) % 360)
                 node.setScale(height / float(node.getTag('source-height')))
-                set_world_lod_range(node, 240. if young else 210.)
+                set_world_lod_range(node, 160. if young else 125.)
                 root_slope(node, curve, d, s, seed)
                 yield 'local-outcrop-understory'
         # 后排按完整地块组织；保留前排辨识树与主石面向道路的开口。
@@ -1024,7 +1017,7 @@ class LocalVegetation:
                     shrub.setH(plants_rng.uniform(0, 360))
                     shrub.setScale(plants_rng.uniform(3, 4.8) / float(shrub.getTag('source-height'))
                                    if young else plants_rng.uniform(1.1, 1.9) / float(shrub.getTag('source-height')))
-                    set_world_lod_range(shrub, 240. if young else 210.)
+                    set_world_lod_range(shrub, 160. if young else 125.)
                     root_slope(shrub, curve, under_d, under_s, seed)
                     yield 'local-grove-understory'
             if abs(d) > 78 or detail_seed % 3:
@@ -1058,7 +1051,7 @@ class LocalVegetation:
                     scale = height/float(shrub.getTag('source-height'))
                     width = scale*edge_rng.uniform(1.2, 1.6)
                     shrub.setScale(width, width, scale)
-                    set_world_lod_range(shrub, 210.)
+                    set_world_lod_range(shrub, 125.)
                     shrub.setPos(p-origin-Vec3(0, 0, .10))
                     shrub.setH(edge_rng.uniform(0, 360))
                     root_slope(shrub, curve, d, s, seed)
