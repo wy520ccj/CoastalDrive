@@ -188,6 +188,29 @@ def _unsupported_near_wheels(shapes, kinematics, velocity, angular, dt):
     return any(not supported for _body, supported, _parts in candidates)
 
 
+def _numeric_hull_world_query(system):
+    """全部未接管静态体均为已注册纯数值凸体且轮冠启用时，查询不访问 BulletWorld。"""
+    from vehicle_suspension import WorldSurface
+
+    if system is None or system.kinematics is None:
+        return False
+    checked = set()
+    for plane in system.kinematics:
+        if plane is None:
+            continue
+        surface = plane.surface
+        if not isinstance(surface, WorldSurface) or not surface.crown or surface.static_shapes is None:
+            return False
+        shapes = surface.static_shapes
+        key = id(shapes)
+        if key in checked:
+            continue
+        checked.add(key)
+        if not all(supported or body in shapes.hulls for body, supported, _parts in shapes):
+            return False
+    return bool(checked)
+
+
 def native_contact_geometry(system, *, velocity=None, angular=None, dt=0.):
     """准备真实几何；未接管的形状保留原世界查询，共同机械迭代仍用原生内核。"""
     from panda3d.core import BitMask32
@@ -814,8 +837,10 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                       car.longitudinal_stiffness, car.longitudinal_load_exponent,
                       car.lateral_stiffness, car.lateral_load_exponent)
                      for frame, car in zip(frames, configurations))
-        # 纯数值包可交出世界锁；含原世界查询的包保留世界锁，仅查询时接回解释器。
-        release_query_lock = query_lock is not None and not joint_contact_queries_world(geometry)
+        # 纯数值包或全部护栏走已注册纯数值凸体时可交出世界锁，避免海岸撞栏阻塞相机与快照线程。
+        release_query_lock = query_lock is not None and (
+            not joint_contact_queries_world(geometry) or _numeric_hull_world_query(suspension)
+        )
         if release_query_lock:
             query_lock.release()
         try:

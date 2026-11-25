@@ -27,7 +27,7 @@ from test_track import on_asphalt
 from tire_drivetrain import DrivetrainInput, DrivetrainStep
 from triangle_support import triangle_entry
 from vehicle_tire_step import TireAdvanceInput, tire_hardware
-from wheel_envelope import _simplex_coordinates, cylinder_box_entry
+from wheel_envelope import cylinder_box_entry
 
 _worker_geometry = None
 _worker_memory = None
@@ -125,7 +125,7 @@ class FrozenWorldSurface(CylinderSurface):
             return self.queries[key]
         covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,
             self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry,
-            _simplex_coordinates)
+            True)
         if not covered:
             # 离开预取邻域时仍查询完整真实静态几何；原范围、padding和三角面顺序保持。
             padding = self.wheel_radius + self.width / 2 + 1e-5
@@ -146,7 +146,7 @@ class FrozenWorldSurface(CylinderSurface):
             self.candidates.update(low=low,high=high,surfaces=surfaces,native_needed=False)
             covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,
                 self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry,
-                _simplex_coordinates)
+                True)
             if not covered:
                 raise AssertionError("数值候选必须覆盖刚完成筛选的真实路径")
         self.queries[key] = entry

@@ -14,6 +14,7 @@ DAYLIGHT = ROOT / 'logs/visual-upgrade-20261024/daylight-29'
 CANOPY_VISIBILITY = ROOT / 'logs/local-kcd-canopy-visibility'
 sys.path.insert(0, str(ROOT / 'src'))
 
+from city_static_candidate import batch_static_steps as city_static_batch_steps
 from kcd_local_assets import (
     load_ferns,
     load_local,
@@ -28,6 +29,7 @@ from panda3d.core import (
     AlphaTestAttrib,
     BitMask32,
     BoundingSphere,
+    FadeLODNode,
     GeomVertexReader,
     GeomVertexWriter,
     LODNode,
@@ -101,6 +103,24 @@ def woodland_texture(centers, radii, bounds):
     selected = ((centers[:, 0] + radii * 4 >= left) & (centers[:, 0] - radii * 4 <= left + width * 2)
                 & (centers[:, 1] + radii * 4 >= bottom) & (centers[:, 1] - radii * 4 <= bottom + height * 2))
     centers, radii = centers[selected], radii[selected]
+    if len(centers) == 0:
+        texture = Texture('shared-woodland-coverage')
+        texture.setup2dTexture(1, 1, Texture.TUnsignedByte, Texture.FRed)
+        texture.setRamImage(b'\x00')
+        texture.setMinfilter(Texture.FTLinear)
+        texture.setMagfilter(Texture.FTLinear)
+        texture.setWrapU(Texture.WMClamp)
+        texture.setWrapV(Texture.WMClamp)
+        return texture, (float(left), float(bottom), 1 / 2, 1 / 2)
+    # 覆盖场着色器对越界 UV 恒返回 0；裁剪到实际树冠影响盒加 2m 零边可保持逐像素等价。
+    pad = radii * 4.0 + 2.0
+    t_left = max(left, math.floor(float(np.min(centers[:, 0] - pad)) / 2) * 2)
+    t_bottom = max(bottom, math.floor(float(np.min(centers[:, 1] - pad)) / 2) * 2)
+    t_right = min(left + width * 2, math.ceil(float(np.max(centers[:, 0] + pad)) / 2) * 2)
+    t_top = min(bottom + height * 2, math.ceil(float(np.max(centers[:, 1] + pad)) / 2) * 2)
+    left, bottom = t_left, t_bottom
+    width = max(1, (t_right - left) // 2)
+    height = max(1, (t_top - bottom) // 2)
     influence = np.zeros((height, width), dtype=np.float32)
     x = left + (np.arange(width, dtype=np.float32) + .5) * 2
     y = bottom + (np.arange(height, dtype=np.float32) + .5) * 2
@@ -113,7 +133,7 @@ def woodland_texture(centers, radii, bounds):
         horizontal = np.exp(-((x[x0:x1] - center[0]) / (radius * 1.2)) ** 2)
         vertical = np.exp(-((y[y0:y1] - center[1]) / (radius * 1.2)) ** 2)
         influence[y0:y1, x0:x1] += vertical[:, None] * horizontal[None, :] * .8
-        if number % 4 == 3:
+        if number % 8 == 7:
             yield 'local-woodland-coverage'
     weight = np.clip((influence - .3) / 1.1, 0, 1)
     pixels = np.rint(weight * weight * (3 - 2 * weight) * 255).astype(np.uint8)
@@ -690,22 +710,52 @@ class LocalVegetation:
         origin = Vec3(*expressway_route.anchor(curve, index))
         centers = np.array([tuple(node.getPos(root) + origin)[:2] for node in trees], dtype=np.float32).reshape(-1, 2)
         radii = np.array([node.getSx(root) * float(node.getTag('source-crown-radius')) for node in trees], dtype=np.float32)
-        volume = root.getBounds()
-        low, high = volume.getMin(), volume.getMax()
-        bounds = (low.x + origin.x, low.y + origin.y, high.x + origin.x, high.y + origin.y)
-        dirty = [bounds]
-        for previous, (path, box, _centers, _radii) in tuple(self.forest_canopies.items()):
+        yield 'local-woodland-coverage'
+        # 仅取实际采样林冠覆盖的地表紧包围盒，避免把 650m 海面与 480m 远山算进覆盖纹理。
+        low_x = low_y = math.inf
+        high_x = high_y = -math.inf
+        for name in ('course-landscape', 'route-landscape', 'kcd-stream-grass'):
+            for node in root.findAllMatches('**/' + name):
+                tight = node.getTightBounds(root)
+                if tight is None:
+                    continue
+                n_low, n_high = tight
+                low_x = min(low_x, n_low.x + origin.x)
+                low_y = min(low_y, n_low.y + origin.y)
+                high_x = max(high_x, n_high.x + origin.x)
+                high_y = max(high_y, n_high.y + origin.y)
+        if low_x > high_x:
+            volume = root.getBounds()
+            low, high = volume.getMin(), volume.getMax()
+            bounds = (low.x + origin.x, low.y + origin.y, high.x + origin.x, high.y + origin.y)
+        else:
+            bounds = (low_x, low_y, high_x, high_y)
+        yield 'local-woodland-coverage'
+        if len(centers):
+            pad = radii * 4.0
+            canopy_box = (
+                float(np.min(centers[:, 0] - pad)),
+                float(np.min(centers[:, 1] - pad)),
+                float(np.max(centers[:, 0] + pad)),
+                float(np.max(centers[:, 1] + pad)),
+            )
+        else:
+            canopy_box = bounds
+        dirty = [canopy_box]
+        for previous, (path, _box, prev_canopy, _centers, _radii) in tuple(self.forest_canopies.items()):
             if path.isEmpty():
-                dirty.append(box)
+                dirty.append(prev_canopy)
                 del self.forest_canopies[previous]
-        self.forest_canopies[index] = root, bounds, centers, radii
-        all_centers = np.concatenate([item[2] for item in self.forest_canopies.values()])
-        all_radii = np.concatenate([item[3] for item in self.forest_canopies.values()])
+        self.forest_canopies[index] = root, bounds, canopy_box, centers, radii
+        all_centers = np.concatenate([item[3] for item in self.forest_canopies.values()])
+        all_radii = np.concatenate([item[4] for item in self.forest_canopies.values()])
         # 新段准备时同步刷新相交旧段，所有覆盖场都计入同一组周围实际树冠。
         pending = []
-        for path, box, _centers, _radii in tuple(self.forest_canopies.values()):
-            if not any(box[0] <= region[2] and box[2] >= region[0] and box[1] <= region[3] and box[3] >= region[1]
-                       for region in dirty):
+        for path, box, _cbox, _centers, _radii in tuple(self.forest_canopies.values()):
+            if path is not root and not any(
+                box[0] <= region[2] and box[2] >= region[0] and box[1] <= region[3] and box[3] >= region[1]
+                for region in dirty
+            ):
                 continue
             revision = object()
             path.setPythonTag('woodland-revision', revision)
@@ -715,6 +765,7 @@ class LocalVegetation:
             # 转向会令分帧构建交错；旧计算不能覆盖后来已经登记的新树冠。
             if not path.isEmpty() and path.getPythonTag('woodland-revision') is revision:
                 apply_woodland_inputs(path, texture, coordinates)
+            yield 'local-woodland-coverage'
         smooth_normals = None
         if isinstance(curve, CareerCourse) and not coast_candidate(curve.course_id):
             from career_terrain import terrain
@@ -759,6 +810,36 @@ class LocalVegetation:
                         root_slope(node, curve, d, s, seed)
                     node.setTag('root-grounded', '1')
             yield phase
+        yield from city_static_batch_steps(root, kit['lamp'].getName())
+        for group in root.findAllMatches('**/mainland-city'):
+            # 城市低灌木不投 4K 太阳阴影，中庭与绿带灌木补齐与庭院一致的 190m 距离裁剪。
+            loose_shrubs = []
+            for child in tuple(group.getChildren()):
+                if child.hasTag('city-courtyard-shrub') or child.hasTag('city-greenbelt-shrub'):
+                    child.hide(SHADOW_MASK)
+                    loose_shrubs.append(child)
+                elif child.hasTag('city-tree') or child.hasTag('city-courtyard-tree'):
+                    child.hide(SHADOW_MASK)
+                elif child.getName() == 'city-garden':
+                    for sub in child.getChildren():
+                        if sub.hasTag('city-garden-tree') or sub.getName() == 'garden-plants-distance':
+                            sub.hide(SHADOW_MASK)
+            if loose_shrubs:
+                buckets = {}
+                for shrub in loose_shrubs:
+                    key = int(shrub.getPos(group).y // 50)
+                    buckets.setdefault(key, []).append(shrub)
+                for key, items in sorted(buckets.items()):
+                    center = sum((item.getPos(group) for item in items), Vec3(0)) / len(items)
+                    radius = max((item.getPos(group) - center).length() for item in items)
+                    lod = FadeLODNode(f'city-shrubs-distance-{key}')
+                    lod.setCenter(center)
+                    lod.addSwitch(190.0 + radius, 0.0)
+                    lod.setFadeTime(.35)
+                    holder = group.attachNewNode(lod)
+                    for item in items:
+                        item.wrtReparentTo(holder)
+            yield 'city-foliage-optimize'
         yield from tree_batch_steps(root, kit)
 
     def vegetation(self, root, index, seed, curve, kit, detail_parent):
@@ -953,6 +1034,14 @@ class LocalVegetation:
             fern.setH(heading)
             root_slope(fern, curve, d, s, seed)
             yield 'local-grove-ferns'
+        grass_floor_cache = {}
+
+        def cached_grass_floor(d_val, s_val):
+            key = (d_val, s_val)
+            if key not in grass_floor_cache:
+                grass_floor_cache[key] = floor_point(curve, d_val, s_val, seed)
+            return grass_floor_cache[key]
+
         for cell_start in range(start, start + 200, 20):
             center_s = cell_start + 10
             center = expressway_route.sample(curve, center_s)
@@ -970,10 +1059,10 @@ class LocalVegetation:
                             yield 'local-grass-site-checks'
                         if urban_roadside(d, s) and d >= 59+expressway_route._city_shift(s, seed):
                             continue
-                        p = floor_point(curve, d, s, seed)
+                        p = cached_grass_floor(d, s)
                         if p is None or p.z < -2 or not valid_verge(curve, p, s, 10):
                             continue
-                        floors = [floor_point(curve, d + dx, s + dy, seed)
+                        floors = [cached_grass_floor(d + dx, s + dy)
                                   for dx, dy in ((-2, -2), (2, -2), (-2, 2), (2, 2))]
                         if any(point is None for point in floors) or (coastal and any(point.z < -2 for point in floors)):
                             continue

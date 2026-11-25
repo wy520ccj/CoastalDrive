@@ -25,7 +25,7 @@ from wheel_contact_kernels import (
 from convex_queries import HullGeometry, native_transform, wheel_hull
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
 from triangle_support import triangle_entry
-from wheel_envelope import _simplex_coordinates, cylinder_box_entry
+from wheel_envelope import cylinder_box_entry
 
 
 @dataclass(frozen=True)
@@ -203,7 +203,7 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
         envelope = wheel_sweep_shape(radius, width, shoulder, crown)
     batch = bool(surfaces) and not native_needed and not hulls
     surface_hits = (surface_initial_hits(surfaces, candidate_cache, world_rays, relative_rays, tuple(axes), origin,
-                    radius, width, shoulder, crown, CylinderSurface, RayContact, _simplex_coordinates,
+                    radius, width, shoulder, crown, CylinderSurface, RayContact, None,
                     ray_origin is not None) if batch else None)
     results = []
     for index, ((start, end), (relative_start, relative_end), axis) in enumerate(zip(world_rays, relative_rays, axes)):

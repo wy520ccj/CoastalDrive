@@ -80,7 +80,8 @@ def test_actual_coastal_hulls_query_same_geometry_without_changing_collision_mas
         masks = tuple(body.getIntoCollideMask() for body in bodies)
         old = static_support_shapes(world,car._chassis,BitMask32.bit(0))
         new = static_support_shapes(world,car._chassis,BitMask32.bit(0),cache={},packet_cache={})
-        assert len(new.hulls)==2
+        assert {body.getName() for body in new.hulls} == {'inner-rail', 'outer-rail'}
+        assert sum(len(shapes) for shapes in new.hulls.values()) == 512
         count = 0
         for body in bodies:
             if body not in new.hulls:

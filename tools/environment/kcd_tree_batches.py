@@ -53,16 +53,31 @@ if (tree_range_alpha <= .0001) {
     return tuple(result)
 
 
-def baked_far_mesh(tree, root):
+def baked_far_mesh(tree, root, _cache=None):
     """只烘焙原LOD2的种植变换与坡根，UV/顶点遮蔽/索引保持原值。"""
     part = tree.getChild(2)
     geom = part.node().getGeom(0)
     data = geom.getVertexData()
     if data.getFormat() != GeomVertexFormat.getV3n3c4t2() or geom.getNumPrimitives() != 1:
         raise ValueError('远树合批需要原V3n3c4t2索引三角网格：'+part.getName())
-    packed = np.frombuffer(data.getArray(0).getHandle().getData(), dtype=SOURCE_DTYPE).copy()
-    points = packed['p'].astype(np.float64)
-    stage = part.findAllTextureStages()[0]
+    primitive = geom.getPrimitive(0)
+    if primitive.getIndexType() != Geom.NTUint32:
+        raise ValueError('原树三角形索引应为uint32：'+part.getName())
+    key = (id(data), id(primitive))
+    cached = _cache.get(key) if _cache is not None else None
+    if cached is None:
+        base_packed = np.frombuffer(data.getArray(0).getHandle().getData(), dtype=SOURCE_DTYPE).copy()
+        base_points = base_packed['p'].astype(np.float64)
+        base_normals = base_packed['n'].astype(np.float64)
+        base_indices = np.frombuffer(primitive.getVertices().getHandle().getData(), dtype='<u4').copy()
+        stage = part.findAllTextureStages()[0]
+        cached = (base_packed, base_points, base_normals, base_indices, stage)
+        if _cache is not None:
+            _cache[key] = cached
+    else:
+        base_packed, base_points, base_normals, base_indices, stage = cached
+    packed = base_packed.copy()
+    points = base_points.copy()
     texture_matrix = part.getNetState().getAttribDef(TexMatrixAttrib.getClassSlot()).getTransform(stage).getMat()
     slope = np.array((texture_matrix.getCell(2, 0), texture_matrix.getCell(2, 1)))
     anchor = part.getShaderInput('root_anchor').getVector().x
@@ -71,14 +86,10 @@ def baked_far_mesh(tree, root):
     matrix = part.getMat(root)
     transform = np.array([[matrix.getCell(r, c) for c in range(4)] for r in range(4)])
     packed['p'] = points@transform[:3, :3]+transform[3, :3]
-    normals = packed['n'].astype(np.float64)@np.linalg.inv(transform[:3, :3]).T
+    normals = base_normals@np.linalg.inv(transform[:3, :3]).T
     packed['n'] = normals/np.linalg.norm(normals, axis=1)[:, None]
     center = np.array(tree.getMat(root).xformPoint(tree.node().getCenter()), dtype=np.float32)
-    primitive = geom.getPrimitive(0)
-    if primitive.getIndexType() != Geom.NTUint32:
-        raise ValueError('原树三角形索引应为uint32：'+part.getName())
-    indices = np.frombuffer(primitive.getVertices().getHandle().getData(), dtype='<u4').copy()
-    return packed, np.tile(center, (len(packed), 1)), indices
+    return packed, np.broadcast_to(center, (len(packed), 3)), base_indices
 
 
 def make_batch(root, name, meshes, state, shader):
@@ -87,12 +98,24 @@ def make_batch(root, name, meshes, state, shader):
     extra.addColumn(InternalName.make('tree_center'), 3, Geom.NTFloat32, Geom.COther)
     format.addArray(extra)
     data = GeomVertexData(name, GeomVertexFormat.registerFormat(format), Geom.UHStatic)
-    vertices = np.concatenate([row[0] for row in meshes])
-    data.setNumRows(len(vertices))
+    total_vertices = sum(len(row[0]) for row in meshes)
+    total_indices = sum(len(row[2]) for row in meshes)
+    vertices = np.empty(total_vertices, dtype=SOURCE_DTYPE)
+    centers = np.empty((total_vertices, 3), dtype=np.float32)
+    indices = np.empty(total_indices, dtype='<u4')
+    v_pos = 0
+    i_pos = 0
+    for packed, center_arr, idx in meshes:
+        v_len = len(packed)
+        i_len = len(idx)
+        vertices[v_pos:v_pos + v_len] = packed
+        centers[v_pos:v_pos + v_len] = center_arr
+        indices[i_pos:i_pos + i_len] = idx + np.uint32(v_pos)
+        v_pos += v_len
+        i_pos += i_len
+    data.setNumRows(total_vertices)
     data.modifyArray(0).modifyHandle().setData(vertices.tobytes())
-    data.modifyArray(1).modifyHandle().setData(np.concatenate([row[1] for row in meshes]).tobytes())
-    offsets = np.cumsum([0]+[len(row[0]) for row in meshes[:-1]], dtype=np.uint32)
-    indices = np.concatenate([row[2]+offset for row, offset in zip(meshes, offsets, strict=True)])
+    data.modifyArray(1).modifyHandle().setData(centers.tobytes())
     triangles = GeomTriangles(Geom.UHStatic)
     triangles.setIndexType(Geom.NTUint32)
     triangles.modifyVertices().modifyHandle().setData(indices.tobytes())
@@ -113,10 +136,22 @@ def batch_steps(root, kit):
     groups = defaultdict(list)
     for cell in root.findAllMatches('**/detail-cell-*'):
         groups[int(cell.getName().split('-')[-1])//2].extend(cell.findAllMatches('**/kcd-oak-*'))
-    # 只收LOD根，不能把同名前缀的各级Geom算成另一株。
-    groups = {key: [tree for tree in trees if isinstance(tree.node(), LODNode)] for key, trees in groups.items()}
+    city = root.find('**/mainland-city')
+    if not city.isEmpty():
+        city_trees = [tree for tree in city.findAllMatches('**/kcd-oak-*') if isinstance(tree.node(), LODNode)]
+        if city_trees:
+            groups['city'] = city_trees
+    # 只收LOD根且跳过已隐藏节点（含被父节点隐藏的越界树），不能把同名前缀的各级Geom算成另一株。
+    groups = {
+        key: [
+            tree for tree in trees
+            if isinstance(tree.node(), LODNode) and not tree.isHidden() and not tree.getParent().isHidden()
+        ]
+        for key, trees in groups.items()
+    }
+    mesh_cache = {}
     report = []
-    for cell, trees in sorted(groups.items()):
+    for cell, trees in sorted(groups.items(), key=lambda item: (isinstance(item[0], str), item[0])):
         if not trees:
             continue
         lod = LODNode('local-near-tree-distance')
@@ -126,7 +161,7 @@ def batch_steps(root, kit):
         # 新节点仍挂在当前路段下；只携带相对状态，不能冻结相机等祖先的逐帧输入。
         state = trees[0].getChild(2).getState(root)
         for tree in trees:
-            meshes.append(baked_far_mesh(tree, root))
+            meshes.append(baked_far_mesh(tree, root, _cache=mesh_cache))
             centers.append(meshes[-1][1][0])
             near = tree.copyTo(tree.getParent())
             near.setName('local-near-'+tree.getName())

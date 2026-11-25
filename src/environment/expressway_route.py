@@ -205,6 +205,7 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
 
     # 直接使用冻结物理路网的显示网格，道路/护栏不重新近似。
     surfaces = curve_mesh.surfaces(curve, index) if curve else surface_meshes()
+    yield "surface-prepare"
     # 道路和路肩共用的边线点完全相同，只保留本段的精确投影结果。
     surface_inputs = {}
     for name, (vertices, faces) in surfaces.items():
@@ -233,7 +234,7 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
                 shadow, uv = surface_inputs[vertex]
                 coordinates.append(shadow)
                 road_uv.append(uv)
-                if len(coordinates) % 32 == 0:
+                if len(coordinates) % 8 == 0:
                     yield 'surface-coordinates'
             set_rail_shadow_coordinates(node, coordinates, faces)
             node.setTexture(kit["aggregate"])

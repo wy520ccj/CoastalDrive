@@ -1,6 +1,5 @@
 """已计算法线的地表直接写入索引网格，避免展开三角形后再覆写各顶点。"""
 
-from array import array
 from functools import lru_cache
 
 from panda3d.core import (
@@ -55,19 +54,23 @@ def set_rail_shadow_coordinates(node, coordinates, faces=None, geom_index=0):
 
 
 def surface_mesh(name, vertices, faces, normals, colors, uv):
-    data = GeomVertexData(name, GeomVertexFormat.getV3n3c4t2(), Geom.UHStatic)
-    data.setNumRows(len(vertices))
-    # Panda内置格式的颜色是4个uint8，其余为float32。
-    import struct
+    import numpy as np
 
-    packed = bytearray()
-    for p, n, c, t in zip(vertices, normals, colors, uv):
-        packed.extend(struct.pack("=6f4B2f", *p, *n,
-                                  *(round(max(0,min(1,v))*255) for v in c), *t))
-    data.modifyArray(0).modifyHandle().setData(bytes(packed))
+    count = len(vertices)
+    data = GeomVertexData(name, GeomVertexFormat.getV3n3c4t2(), Geom.UHStatic)
+    data.setNumRows(count)
+    # Panda内置格式的颜色是4个uint8，其余为float32。
+    dtype = np.dtype([('p', '<f4', 3), ('n', '<f4', 3), ('c', 'u1', 4), ('uv', '<f4', 2)])
+    packed = np.empty(count, dtype=dtype)
+    if count:
+        packed['p'] = vertices
+        packed['n'] = normals
+        packed['c'] = np.rint(np.clip(np.asarray(colors, dtype=np.float64), 0.0, 1.0) * 255.0).astype(np.uint8)
+        packed['uv'] = uv
+    data.modifyArray(0).modifyHandle().setData(packed.tobytes())
     triangles = GeomTriangles(Geom.UHStatic)
     triangles.setIndexType(Geom.NTUint32)
-    indices = array("I", (i for face in faces for i in face))
+    indices = np.asarray(faces, dtype='<u4').reshape(-1)
     triangles.modifyVertices().modifyHandle().setData(indices.tobytes())
     geom = Geom(data)
     geom.addPrimitive(triangles)

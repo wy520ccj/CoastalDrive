@@ -17,7 +17,7 @@ from panda3d.bullet import (
 )
 from panda3d.core import BitMask32, TransformState, Vec3
 
-from coastal_collision import add_rail_shapes
+from coastal_collision import build_rail_bodies
 from coastal_map import SEA_LEVEL, map_meshes, on_road
 from driver_assist import GAME_INPUT
 from highway_driver import HighwayDriver
@@ -287,11 +287,14 @@ class Simulation:
         return linear + angular.cross(point - origin)
 
     def _player_manifolds(self):
+        chassis = self._chassis
         for manifold in self._world.getManifolds():
-            node0, node1 = manifold.getNode0(), manifold.getNode1()
-            if node0 == self._chassis:
-                yield manifold, node1, True
-            elif node1 == self._chassis:
+            if manifold.getNumManifoldPoints() <= 0:
+                continue
+            node0 = manifold.getNode0()
+            if node0 == chassis:
+                yield manifold, manifold.getNode1(), True
+            elif manifold.getNode1() == chassis:
                 yield manifold, node0, False
 
     def _read_impact_contacts(self, before, *, accumulated=None, publish=True, manifolds=None):
@@ -482,17 +485,20 @@ class Simulation:
 
     def _build_road(self, meshes):
         for name, (vertices, triangles) in meshes.items():
-            body = BulletRigidBodyNode(name)
             if name in ("inner-rail", "outer-rail"):
-                add_rail_shapes(body, vertices)
-            else:
-                mesh = BulletTriangleMesh()
-                for triangle in triangles:
-                    mesh.addTriangle(*(Vec3(*vertices[i]) for i in triangle))
-                shape = BulletTriangleMeshShape(mesh, dynamic=False)
-                shape.setMargin(0.01)
-                body.addShape(shape)
-                body.setPythonTag("suspension_mesh", TriangleSupport.build(tuple(tuple(vertices[i] for i in triangle) for triangle in triangles)))
+                for body in build_rail_bodies(name, vertices):
+                    # Bits 0/1/2 are surface queries, vehicle collision and camera obstruction.
+                    body.setIntoCollideMask(BitMask32(7))
+                    self._world.attachRigidBody(body)
+                continue
+            body = BulletRigidBodyNode(name)
+            mesh = BulletTriangleMesh()
+            for triangle in triangles:
+                mesh.addTriangle(*(Vec3(*vertices[i]) for i in triangle))
+            shape = BulletTriangleMeshShape(mesh, dynamic=False)
+            shape.setMargin(0.01)
+            body.addShape(shape)
+            body.setPythonTag("suspension_mesh", TriangleSupport.build(tuple(tuple(vertices[i] for i in triangle) for triangle in triangles)))
             # Bits 0/1/2 are surface queries, vehicle collision and camera obstruction.
             body.setIntoCollideMask(BitMask32(7))
             self._world.attachRigidBody(body)
