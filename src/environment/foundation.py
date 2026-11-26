@@ -178,14 +178,15 @@ float shadow_caster_contrib(sampler2DShadow shadowmap, vec4 shadowpos) {
 
 def update_daylight(scene, position):
     """固定太阳方向，沿投影纹素格跟车；不让移动相机改变天空朝向。"""
-    offset = Vec3(*scene.coastal_daylight['directional_sun'])*156.25
+    lens, size = scene.sun_path.node().getLens(), scene.sun_path.node().getShadowBufferSize()
+    distance = 360.0 if lens.getFar() > 400.0 else 156.25
+    offset = Vec3(*scene.coastal_daylight['directional_sun']) * distance
     sun = scene.sun_path
     sun.setPos(offset)
     sun.lookAt(0, 0, 0)
     inverse = sun.getQuat().conjugate()
     origin = Vec3(0, scene.base.session.render_origin(), 0)
     light_position = inverse.xform(position+offset+origin)
-    lens, size = sun.node().getLens(), sun.node().getShadowBufferSize()
     for axis, step in ((0, lens.getFilmSize().x/size.x), (2, lens.getFilmSize().y/size.y)):
         light_position[axis] = round(light_position[axis]/step)*step
     sun.setPos(sun.getQuat().xform(light_position)-origin)

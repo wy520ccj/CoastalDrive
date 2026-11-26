@@ -29,10 +29,15 @@ def noise_value(a, b, seed):
 def mountain_point(curve, side, width, s, seed):
     if side < 0:
         edge = terrain_point(curve, -120, s, seed)
-        x, y, base = edge.x-width, edge.y, edge.z
+        if curve is not None:
+            heading = math.radians(curve.sample(s).heading)
+            x, y = edge.x - width * math.cos(heading), edge.y - width * math.sin(heading)
+        else:
+            x, y = edge.x - width, edge.y
+        base = edge.z
     else:
-        center = sample(curve, s)
-        x, y, base = 430+width, center.y, -4.0
+        center = sample(curve, s, 430 + width)
+        x, y, base = center.x, center.y, -4.0
     mass, fade = mountain_height(width,s,seed)
     z = base*(1-fade) + (mass-4)*fade
     return Vec3(x, y, z)

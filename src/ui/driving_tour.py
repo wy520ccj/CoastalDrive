@@ -129,7 +129,7 @@ class DrivingTourPanel:
                                             self.box(0, 848, self.width, 93)))
         self.fill(self.left, 26, 4.5, 56, theme.AMBER, 2)
         self.text('海岸巡回', self.left+18, 56, 34, WHITE, bold=True)
-        self.text('三站独立预算  |  COASTAL TOUR', self.left+18, 88, 17, theme.DARK_SUB)
+        self.text('三站独立预算', self.left+18, 88, 17, theme.DARK_SUB)
         self.progress = self.text('历史记录' if self.page else f'已完成 {len(self.store.current)} / 3 站',
                                   self.width-self.left, 54, 26, WHITE, bold=True, right=True)
         legacy = self.page == 1 and self.history == 4

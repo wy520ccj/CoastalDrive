@@ -1,5 +1,20 @@
 #include "joint_contact_api.h"
 typedef struct {
+    int (*cast_points)(const void *wheel_ptr, const void *target_ptr,
+                       const double from_pose[7], const double to_pose[7],
+                       const double body_pose[7], const double shape_pose[7],
+                       float ceiling, float *fraction_out, float normal_out[3], float point_out[3]);
+    void (*hull_bounds)(const void *target_ptr, const double body_pose[7],
+                        const double shape_pose[7], double low_out[3], double high_out[3]);
+    const char *capsule_name;
+} JointConvexCastApi;
+typedef struct {
+    const void *hull;
+    double body_pose[7], shape_pose[7];
+    double low[3], high[3];
+    int group;
+} JointHullPart;
+typedef struct {
     int present;
     double hub[3],direction[3],normal[3],point[3],length;
     double axis[3],origin[3],low[3],high[3],radius,reach,width,shoulder,crown;
@@ -7,8 +22,16 @@ typedef struct {
     SurfacePacket *complete;
     SurfacePacket *candidate;
     double candidate_low[3],candidate_high[3];
+    const void *wheel_hull;
+    JointHullPart *hulls;
+    Py_ssize_t hull_count;
 } JointPlane;
-typedef struct { JointPlane planes[4]; double damping; PyObject *complete_owners,*query; } JointContacts;
+typedef struct {
+    JointPlane planes[4];
+    double damping;
+    PyObject *complete_owners, *hull_owners, *query;
+    const JointConvexCastApi *convex_api;
+} JointContacts;
 static void joint_candidate_free(SurfacePacket *packet) {
     PyMem_RawFree(packet->parts);PyMem_RawFree(packet);
 }
@@ -29,14 +52,42 @@ static double joint_fsum(const double *values,int count) {
     else hi=0.; return hi;
 }
 
+static int joint_pose7(PyObject *obj, double out[7]) {
+    if (!PyTuple_Check(obj) || PyTuple_GET_SIZE(obj) != 7) {
+        PyErr_SetString(PyExc_ValueError, "凸体姿态须为七元组");
+        return 0;
+    }
+    for (int i = 0; i < 7; ++i) {
+        out[i] = PyFloat_AsDouble(PyTuple_GET_ITEM(obj, i));
+        if (PyErr_Occurred()) return 0;
+    }
+    return 1;
+}
+
+static const JointConvexCastApi *joint_convex_api(void) {
+    static const JointConvexCastApi *cached = NULL;
+    if (!cached) {
+        PyObject *mod = PyImport_ImportModule("convex_cast_kernels");
+        if (!mod) return NULL;
+        PyObject *cap = PyObject_GetAttrString(mod, "_convex_cast_api");
+        Py_DECREF(mod);
+        if (!cap) return NULL;
+        cached = (const JointConvexCastApi *)PyCapsule_GetPointer(cap, "CoastalDrive.convex_cast_api.v1");
+        Py_DECREF(cap);
+    }
+    return cached;
+}
+
 static void joint_contacts_free(PyObject *capsule) {
     JointContacts *data=PyCapsule_GetPointer(capsule,JOINT_CONTACT_PACKET_NAME);
     if(!data)return;
     for(int i=0;i<4;++i){
         if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
         if(data->planes[i].candidate)joint_candidate_free(data->planes[i].candidate);
+        if(data->planes[i].hulls)PyMem_RawFree(data->planes[i].hulls);
     }
     Py_XDECREF(data->complete_owners);
+    Py_XDECREF(data->hull_owners);
     Py_XDECREF(data->query);
     PyMem_Free(data);
 }
@@ -59,20 +110,70 @@ static PyObject *joint_contact_queries_world(PyObject *self,PyObject *capsule) {
 }
 
 static PyObject *joint_contact_prepare(PyObject *self,PyObject *args) {
-    PyObject *contacts,*complete=Py_None;double damping;
-    if(!PyArg_ParseTuple(args,"Od|O",&contacts,&damping,&complete))return NULL;
+    PyObject *contacts,*complete=Py_None,*hulls_arg=Py_None;double damping;
+    if(!PyArg_ParseTuple(args,"Od|OO",&contacts,&damping,&complete,&hulls_arg))return NULL;
     if(PyTuple_Size(contacts)!=4){PyErr_SetString(PyExc_ValueError,"连续求解须为四轮接点");return NULL;}
     if(complete!=Py_None&&(!PyTuple_Check(complete)||PyTuple_GET_SIZE(complete)!=4)){
         PyErr_SetString(PyExc_ValueError,"完整几何须与四轮对应");return NULL;}
+    if(hulls_arg!=Py_None&&(!PyTuple_Check(hulls_arg)||PyTuple_GET_SIZE(hulls_arg)!=4)){
+        PyErr_SetString(PyExc_ValueError,"凸体几何须与四轮对应");return NULL;}
     JointContacts *data=PyMem_Calloc(1,sizeof(*data));if(!data)return PyErr_NoMemory();
     data->damping=damping;
     data->complete_owners=Py_NewRef(complete);
+    data->hull_owners=Py_NewRef(hulls_arg);
+    if(hulls_arg!=Py_None) {
+        data->convex_api=joint_convex_api();
+        if(!data->convex_api)goto failed;
+    }
     for(int i=0;i<4;++i) {
         PyObject *contact=PyTuple_GET_ITEM(contacts,i);JointPlane *plane=&data->planes[i];
         if(contact==Py_None)continue;
         if(complete!=Py_None) {
             plane->complete=PyCapsule_GetPointer(PyTuple_GET_ITEM(complete,i),surface_packet_name);
             if(!plane->complete)goto failed;
+        }
+        if(hulls_arg!=Py_None) {
+            PyObject *wheel_entry=PyTuple_GET_ITEM(hulls_arg,i);
+            if(wheel_entry!=Py_None) {
+                if(!PyTuple_Check(wheel_entry)||PyTuple_GET_SIZE(wheel_entry)!=2){
+                    PyErr_SetString(PyExc_ValueError,"单轮凸体包须含轮冠与凸体组");goto failed;}
+                PyObject *wh_cap=PyTuple_GET_ITEM(wheel_entry,0);
+                PyObject *groups=PyTuple_GET_ITEM(wheel_entry,1);
+                plane->wheel_hull=PyCapsule_GetPointer(wh_cap,data->convex_api->capsule_name);
+                if(!plane->wheel_hull||!PyTuple_Check(groups))goto failed;
+                Py_ssize_t total=0, ngroups=PyTuple_GET_SIZE(groups);
+                for(Py_ssize_t g=0;g<ngroups;++g){
+                    PyObject *grp=PyTuple_GET_ITEM(groups,g);
+                    if(!PyTuple_Check(grp)){PyErr_SetString(PyExc_ValueError,"凸体组须为元组");goto failed;}
+                    total+=PyTuple_GET_SIZE(grp);
+                }
+                if(total>0) {
+                    plane->hulls=PyMem_RawMalloc((size_t)total*sizeof(JointHullPart));
+                    if(!plane->hulls){PyErr_NoMemory();goto failed;}
+                    Py_ssize_t pos=0;
+                    for(Py_ssize_t g=0;g<ngroups;++g){
+                        PyObject *grp=PyTuple_GET_ITEM(groups,g);
+                        for(Py_ssize_t j=0;j<PyTuple_GET_SIZE(grp);++j){
+                            PyObject *hg=PyTuple_GET_ITEM(grp,j);
+                            PyObject *nat=PyObject_GetAttrString(hg,"native");
+                            PyObject *bp=PyObject_GetAttrString(hg,"body_pose");
+                            PyObject *sp=PyObject_GetAttrString(hg,"shape_pose");
+                            int hok=nat&&bp&&sp;
+                            if(hok){
+                                plane->hulls[pos].hull=PyCapsule_GetPointer(nat,data->convex_api->capsule_name);
+                                hok=plane->hulls[pos].hull&&joint_pose7(bp,plane->hulls[pos].body_pose)&&joint_pose7(sp,plane->hulls[pos].shape_pose);
+                                if(hok)data->convex_api->hull_bounds(plane->hulls[pos].hull,plane->hulls[pos].body_pose,
+                                                                     plane->hulls[pos].shape_pose,plane->hulls[pos].low,plane->hulls[pos].high);
+                                plane->hulls[pos].group=(int)g;
+                            }
+                            Py_XDECREF(nat);Py_XDECREF(bp);Py_XDECREF(sp);
+                            if(!hok)goto failed;
+                            ++pos;
+                        }
+                    }
+                    plane->hull_count=total;
+                }
+            }
         }
         PyObject *surface=PyObject_GetAttrString(contact,"surface");if(!surface)goto failed;
         PyObject *cache=PyObject_GetAttrString(surface,"candidates");
@@ -106,8 +207,10 @@ failed:
     for(int i=0;i<4;++i){
         if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
         if(data->planes[i].candidate)joint_candidate_free(data->planes[i].candidate);
+        if(data->planes[i].hulls)PyMem_RawFree(data->planes[i].hulls);
     }
     Py_XDECREF(data->complete_owners);
+    Py_XDECREF(data->hull_owners);
     PyMem_Free(data);return NULL;
 }
 
@@ -219,6 +322,56 @@ static int joint_contact_evaluate(void *packet,const double *velocity,const doub
         }
         SurfaceEntry hit={0};
         if(!joint_surface_values(selected,start,end,we,p->origin,p->radius,p->width,p->shoulder,p->crown,&hit))return 0;
+        if(p->hull_count>0&&p->wheel_hull&&data->convex_api) {
+            double transverse=hypot(we[1],we[2]);
+            double qr=1.,qi=0.,qj=0.,qk=0.;
+            if(transverse!=0.) {
+                double half=atan2(transverse,we[0])*.5,s=sin(half);
+                qr=cos(half);qj=s*(-we[2]/transverse);qk=s*(we[1]/transverse);
+            } else if(we[0]<0.) {
+                qr=0.;qk=1.;
+            }
+            double from_pose[7]={start[0]+p->origin[0],start[1]+p->origin[1],start[2]+p->origin[2],qr,qi,qj,qk};
+            double to_pose[7]={end[0]+p->origin[0],end[1]+p->origin[1],end[2]+p->origin[2],qr,qi,qj,qk};
+            double w_low[3],w_high[3],w_pad=p->radius+p->width*0.5+p->shoulder+1e-3;
+            for(int a=0;a<3;++a){
+                w_low[a]=fmin(from_pose[a],to_pose[a])-w_pad;
+                w_high[a]=fmax(from_pose[a],to_pose[a])+w_pad;
+            }
+            int best_found=0,cur_group=-1,grp_found=0;
+            float best_frac=1.f,best_n[3]={0.f},best_p[3]={0.f};
+            float grp_frac=1.f,grp_n[3]={0.f},grp_p[3]={0.f};
+            for(Py_ssize_t h=0;h<p->hull_count;++h) {
+                const JointHullPart *hp=&p->hulls[h];
+                if(hp->group!=cur_group) {
+                    if(grp_found&&(!best_found||grp_frac<best_frac)) {
+                        best_found=1;best_frac=grp_frac;
+                        memcpy(best_n,grp_n,sizeof(best_n));memcpy(best_p,grp_p,sizeof(best_p));
+                    }
+                    cur_group=hp->group;grp_found=0;grp_frac=1.f;
+                }
+                if(w_high[0]<hp->low[0]||w_low[0]>hp->high[0]
+                   ||w_high[1]<hp->low[1]||w_low[1]>hp->high[1]
+                   ||w_high[2]<hp->low[2]||w_low[2]>hp->high[2])
+                    continue;
+                float f,hn[3],pt[3];
+                if(data->convex_api->cast_points(p->wheel_hull,hp->hull,from_pose,to_pose,
+                                                 hp->body_pose,hp->shape_pose,grp_found?grp_frac:1.f,
+                                                 &f,hn,pt)) {
+                    grp_found=1;grp_frac=f;
+                    memcpy(grp_n,hn,sizeof(grp_n));memcpy(grp_p,pt,sizeof(grp_p));
+                }
+            }
+            if(grp_found&&(!best_found||grp_frac<best_frac)) {
+                best_found=1;best_frac=grp_frac;
+                memcpy(best_n,grp_n,sizeof(best_n));memcpy(best_p,grp_p,sizeof(best_p));
+            }
+            if(best_found&&(!hit.found||(double)best_frac<=hit.fraction)) {
+                hit.found=1;hit.fraction=(double)best_frac;
+                for(int a=0;a<3;++a){hit.normal[a]=(double)best_n[a];hit.point[a]=(double)best_p[a]-p->origin[a];}
+                hit.face=0;
+            }
+        }
         if(!hit.found)continue;
         double *normal=hit.normal,a1=-dot(normal,de);if(a1<=0.)continue;
         double change[3];int equal=1;for(int a=0;a<3;++a){change[a]=hit.point[a]-p->point[a];if(normal[a]!=p->normal[a])equal=0;}

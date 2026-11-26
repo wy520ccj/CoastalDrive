@@ -52,7 +52,7 @@ class CoastalDrivingHUD:
         self.notice.textNode.setWordwrap(416/19)
 
         # ── 左下角轻透键位与电台条 ──
-        self.help_frame = self.panel(510, 104, color=(0.045, 0.062, 0.088, 0.42))
+        self.help_frame = self.panel(510, 104, color=(0.045, 0.062, 0.088, 0.28))
         self.primary_keys = self.label(self.help_frame, '', 16, 28, 19)
         self.secondary_keys = self.label(self.help_frame, '', 16, 56, 18, SOFT)
         self.radio = [self.label(self.help_frame, name, 16, 86, 17, theme.STEEL_TEXT, mutable=False)
@@ -323,7 +323,8 @@ class CoastalDrivingHUD:
         simulation = driving_mode == DrivingMode.SIMULATION
         primary_keys = ('C 视角   Esc 暂停' if automatic else 'W 油门   S 刹车   A/D 转向' if simulation else
                         'W 油门   S 刹车·倒车   A/D 转向')
-        secondary_keys = 'R 复位' if automatic else ('Q 倒挡  E 前进  ' if simulation else '')+'C 视角  R 复位  Esc 暂停'
+        secondary_keys = ('R 复位  N 电台  M 静音' if automatic else
+                          ('Q 倒挡  E 前进  ' if simulation else '') + 'C 视角  R 复位  N 电台  M 静音  Esc 暂停')
         self.text(self.primary_keys, primary_keys)
         self.text(self.secondary_keys, secondary_keys)
         if station != self._station:
@@ -331,7 +332,7 @@ class CoastalDrivingHUD:
             for index, label in enumerate(self.radio):
                 label.show() if index == station else label.hide()
             height = 80 if station is None else 104
-            self.help_frame['frameSize'] = (0, 510, -height, 0)
+            self.help_frame['frameSize'] = (0, 620, -height, 0)
             self.help_frame.setZ(-941/2+36+height)
         self.text(self.speed, f'{abs(player.speed)*3.6:03.0f}')
         self.text(self.gear, 'R' if player.gear < 0 else 'N' if player.gear == 0 else f'D{player.gear}')

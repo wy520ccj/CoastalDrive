@@ -52,6 +52,54 @@ def includes(index, curve):
     return curve is None and 0 <= index < END // SEGMENT_LENGTH
 
 
+def _weld_static_mesh(root):
+    """合并静态模板的零碎 Geom 并焊接重复角点，保留完全一致的几何与渲染属性。"""
+    import numpy as np
+    from panda3d.core import Geom, GeomTriangles, GeomVertexData, GeomVertexFormat
+
+    root.clearModelNodes()
+    root.flattenStrong()
+    for path in root.findAllMatches("**/+GeomNode"):
+        node = path.node()
+        for idx in range(node.getNumGeoms()):
+            geom = node.getGeom(idx)
+            data = geom.getVertexData()
+            if data.getFormat() != GeomVertexFormat.getV3n3c4t2() or data.getNumArrays() != 1:
+                continue
+            raw = np.frombuffer(data.getArray(0).getHandle().getData(), dtype=np.uint8).reshape(-1, 36)
+            if len(raw) == 0:
+                continue
+            tri_indices = []
+            for p_idx in range(geom.getNumPrimitives()):
+                prim = geom.getPrimitive(p_idx).decompose()
+                tri_indices.extend(prim.getVertex(i) for i in range(prim.getNumVertices()))
+            if not tri_indices:
+                continue
+            src = raw[np.asarray(tri_indices, dtype=np.intp)]
+            # 按整行 36 字节（位置/法线/颜色/UV）去重，几何与属性逐顶点完全等价。
+            _, first_pos, inverse = np.unique(
+                src.view(np.dtype((np.void, 36))).ravel(), return_index=True, return_inverse=True
+            )
+            order = np.argsort(first_pos)
+            remap = np.empty(len(order), dtype=np.intp)
+            remap[order] = np.arange(len(order))
+            unique_rows = np.ascontiguousarray(src[first_pos[order]])
+            new_indices = remap[inverse]
+            new_data = GeomVertexData(data.getName(), GeomVertexFormat.getV3n3c4t2(), Geom.UHStatic)
+            new_data.setNumRows(len(unique_rows))
+            new_data.modifyArray(0).modifyHandle().setData(unique_rows.tobytes())
+            new_prim = GeomTriangles(Geom.UHStatic)
+            if len(unique_rows) <= 65535:
+                new_prim.setIndexType(Geom.NTUint16)
+                new_prim.modifyVertices().modifyHandle().setData(new_indices.astype('<u2').tobytes())
+            else:
+                new_prim.setIndexType(Geom.NTUint32)
+                new_prim.modifyVertices().modifyHandle().setData(new_indices.astype('<u4').tobytes())
+            new_geom = Geom(new_data)
+            new_geom.addPrimitive(new_prim)
+            node.setGeom(idx, new_geom)
+
+
 def load_kit(loader, parent, old_trees):
     """每个Scene加载一次；资源跟随已有Scene父节点释放。"""
     folder = resource_root() / "assets/game/expressway"
@@ -142,6 +190,8 @@ def load_kit(loader, parent, old_trees):
     kit["surface-material"] = surface
     for name in KIT_NAMES + SIGN_NAMES:
         kit[name].setMaterial(surface,1)
+    # 合并并焊接排水格栅的多段重复角点，避免流送期间逐段重复写入近五万条顶点属性。
+    _weld_static_mesh(kit["drain-grate"])
     from environment.expressway_buildings import load_city_models
 
     kit['city-shrub'] = kit['fine-shrubs']

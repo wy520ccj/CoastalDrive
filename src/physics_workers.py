@@ -577,6 +577,20 @@ class PhysicsWorkers:
                         kinematics=request.parameters['suspension'].kinematics))
             yield result
 
+    def drain(self, pending):
+        """算术异常恢复前排空本子步挂起请求，防止错位旧包污染后续子步。"""
+        for handle in pending:
+            if handle is None:
+                continue
+            index, identifier = handle
+            if identifier in self.completed:
+                del self.completed[identifier]
+            elif identifier in self.pending[index]:
+                try:
+                    self._receive(index, identifier)
+                except ArithmeticError:
+                    pass
+
     def diagnostics(self):
         values = {}
         for column,name in ((0,'wall'),(1,'cpu')):

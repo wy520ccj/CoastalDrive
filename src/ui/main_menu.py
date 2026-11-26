@@ -34,13 +34,14 @@ class MainMenu:
         self.vehicle_view = vehicle_view
         self.confirm_action = confirm_action
         self.actions = (*actions, lab_action, driving_mode_action)
-        self.order = (2, 3, 1, 0, 6, 7, 4, 5)
+        self.right_cards = (2, 1, 0)
         if highway_action is not None:
             self.actions = (*self.actions, highway_action)
-            self.order = (2, 3, 1, 8, 0, 6, 7, 4, 5)
+            self.right_cards = (2, 1, 0, 8)
         self.continue_index = len(self.actions)
         self.actions = (*self.actions, continue_action)
-        self.order = (self.continue_index, *self.order)
+        self.right_column = (6, *self.right_cards, self.continue_index)
+        self.order = (self.continue_index, 6, 3, *self.right_cards, 5, 7, 4)
         self.selected, self.aspect = self.continue_index, None
         self.widgets, self.subtitles, self.tile_frames = [], {}, []
         self.buttons = []
@@ -149,8 +150,7 @@ class MainMenu:
         # 右侧高分抗锯齿单选圆环。
         r_s = 23
         r_box = ((w/2-38)*unit, (w/2-38+r_s)*unit, (-r_s/2)*unit, (r_s/2)*unit)
-        default_radio = 'atelier/radio-installed.png' if index == 2 else 'atelier/radio-idle.png'
-        radio = atelier.picture(node, self.loader, default_radio, r_box)
+        radio = atelier.picture(node, self.loader, 'atelier/radio-idle.png', r_box)
         self.tile_frames.append(radio)
         self.btn_radios[index] = radio
 
@@ -265,11 +265,9 @@ class MainMenu:
         pad = 28.
         rx = stage_w + pad
         rw = dock_w - 2 * pad
-        self.place_label('第一季  /  海岸驾驶', rx, 112, 13.5, theme.DARK_SUB)
-        self.place_label('出发方式', rx, 152, 31, WHITE, bold=True)
-        self.place_label('选择赛事模式或自由巡游。', rx, 182, 14.5, theme.DARK_SUB)
+        self.place_label('出发方式', rx, 134, 32, WHITE, bold=True)
 
-        # 右栏核心 4 枚内嵌写实缩略图的高质感微光选项卡片（1:1 复刻参考图 4 行轮胎实拍卡片质感！）。
+        # 右栏核心 4 枚内嵌写实缩略图的高质感微光选项卡片。
         has_highway = 8 in self.order
         cards_spec = (
             (2, '生涯赛事', '章节奖牌 · 解锁车辆', 'career', '推荐'),
@@ -281,24 +279,23 @@ class MainMenu:
             (1, '滨海自由驾驶', '阳光海岸环路巡游', 'free', None),
             (0, '计时挑战', old_goal or '预算 5000 · 用时与油耗', 'timetrial', None),
         )
-        card_h = 88. if has_highway else 104.
-        card_gap = 12.
+        card_h = 94. if has_highway else 110.
+        card_gap = 13.
         for ci, (idx, title, sub, thumb_name, badge) in enumerate(cards_spec):
-            cy = 206. + ci * (card_h + card_gap)
+            cy = 172. + ci * (card_h + card_gap)
             self._option_card(idx, title, sub, thumb_name, rx, cy, rw, card_h, badge=badge)
 
-        # 卡片下方：双栏进度与推荐赛事对比条（复刻参考图「已安装 → 待安装」节奏）。
-        sum_y = 618.
+        # 卡片下方：双栏进度与推荐赛事对比条。
+        sum_y = 622.
         self.fill(rx, sum_y, rw, 1, (0.20, 0.24, 0.31, 0.85), 0)
-        self.place_label('赛季星级', rx, sum_y+28, 13.5, theme.DARK_SUB)
-        self.place_label('→', rx+rw*0.42, sum_y+62, 22, theme.DARK_SUB, center=True)
-        self.place_label('下一场推荐', rx+rw*0.52, sum_y+28, 13.5, theme.DARK_SUB)
-        next_sub = self.place_label(next_name or '海岸初驶', rx+rw*0.52, sum_y+62, 23, theme.AMBER, bold=True)
+        self.place_label('赛季星级', rx, sum_y+32, 13.5, theme.DARK_SUB)
+        self.place_label('→', rx+rw*0.42, sum_y+70, 22, theme.DARK_SUB, center=True)
+        self.place_label('下一场推荐', rx+rw*0.52, sum_y+32, 13.5, theme.DARK_SUB)
+        next_sub = self.place_label(next_name or '海岸初驶', rx+rw*0.52, sum_y+72, 23, theme.AMBER, bold=True)
         self.subtitles[self.continue_index] = next_sub
-        self.place_label('进入后可原车发车或调整方案。', rx, sum_y+98, 14, theme.DARK_SUB)
 
         # 右栏底部行动行：缎面暖琥珀金主按钮「继续赛季」（配方向盘图标）+ 细描边暗钢「退出」。
-        cta_y, cta_h = 746., 66.
+        cta_y, cta_h = 752., 66.
         exit_w = 114.
         go_w = rw - exit_w - 12.
         go_btn = self._make_btn(self.continue_index, '继续赛季', rx, cta_y, go_w, cta_h,
@@ -310,37 +307,23 @@ class MainMenu:
         self._make_btn(5, '退出', rx+go_w+12, cta_y, exit_w, cta_h,
                        tex_name='atelier/btn-ghost.png', text_fg=(0.76, 0.81, 0.88, 1), text_scale=18, kind='ghost')
 
-        # ── 底部通宽拉丝黑曜石序号进度底栏 + 右下角斜切角标（1:1 复刻参考图底栏！）──
+        # ── 底部通宽拉丝黑曜石操作提示底栏 ──
         self.pic('atelier/footer-surface.png', 0, foot_y, self.width, 941-foot_y)
-        self.pic('atelier/footer-corner-tag.png', self.width - 178, foot_y + 38, 178, 45)
-        self.place_label('海岸工坊 · S1', self.width - 24, foot_y + 68, 13.5, theme.DARK_SUB, right=True)
-
-        steps = (('1', '选择模式', True), ('2', '车辆调校', False), ('3', '海岸试驾', False))
-        step_span = 260. if aspect > 1.5 else 210.
-        start_sx = self.width/2 - step_span - 60
-        sy = foot_y + 42
-        for si, (num, s_label, is_on) in enumerate(steps):
-            cx = start_sx + si * step_span
-            self.pic('atelier/step-active.png' if is_on else 'atelier/step-idle.png', cx-16, sy-16, 32, 32)
-            self.place_label(num, cx, sy+7, 15, INK if is_on else theme.DARK_SUB, bold=True, center=True)
-            self.place_label(s_label, cx+26, sy+7, 16, theme.AMBER if is_on else theme.DARK_SUB, bold=is_on)
-            if si < 2:
-                self.fill(cx+112, sy-0.5, step_span-144, 1.2, (0.24, 0.28, 0.36, 0.9), 0)
-
-        self.place_label('↑ ↓ 选择   Enter 确认   F2 辅助', 34, sy+7, 14, theme.DARK_SUB)
+        self.place_label('↑ ↓ ← → 选择   Enter 确认   F2 辅助', 34, foot_y + 49, 14, theme.DARK_SUB)
 
         for node, x, y, align in (
-            (self.stars, rx, sum_y+62, TextNode.ALeft),
+            (self.stars, rx, sum_y+72, TextNode.ALeft),
             (self.credits, strip_x+strip_w-16, 766, TextNode.ARight),
             (self.pi_text, strip_x+122, 765, TextNode.ACenter),
             (self.car_name, strip_x+18, 804, TextNode.ALeft),
             (self.pi_specs, strip_x+18, 833, TextNode.ALeft),
-            (self.vehicle_note, strip_x+230, 833, TextNode.ALeft),
+            (self.vehicle_note, strip_x+18, 678, TextNode.ALeft),
             (self.notice, strip_x+18, 722, TextNode.ALeft),
         ):
             node.reparentTo(self.layout)
             node.setPos(*self.point(x, y))
             node.textNode.setAlign(align)
+        self.vehicle_note.setScale(13.5 * unit)
 
         # 3D 实车贴合落日车库湿润水泥地面透视落位（低机位前左 3/4 视角，与左下车辆卡留足呼吸空间）。
         self.car_box = self.box(130, 165, stage_w-145, 555)
@@ -361,7 +344,6 @@ class MainMenu:
         self.car_name.setText(car.name)
         self.pi_text.setText(f'{letter} {score}')
         self.pi_specs.setText(f'{power_kw:.0f} kW  |  {vehicle.config.mass:.0f} kg  |  {car.category}')
-        self.vehicle_note.setText('')
         if self.mini_car_frame is not None:
             thumb_id = vehicle.design_id if vehicle.design_id in (
                 'game-tuned', 'coastal-hatch', 'coastal-roadster', 'gr86-2022-premium-6mt',
@@ -401,9 +383,8 @@ class MainMenu:
                 if i in self.btn_icons:
                     self.btn_icons[i]['frameColor'] = (1.06, 1.02, 0.96, 1.0) if focused else (0.86, 0.88, 0.92, 0.95)
                 if i in self.btn_radios:
-                    idle_r = 'atelier/radio-installed.png' if i == 2 else 'atelier/radio-idle.png'
                     self.btn_radios[i]['frameTexture'] = atelier.tex(self.loader,
-                        'atelier/radio-active.png' if focused else idle_r)
+                        'atelier/radio-active.png' if focused else 'atelier/radio-idle.png')
             elif kind == 'left-tab':
                 button['frameTexture'] = atelier.tex(self.loader,
                     'atelier/left-tab-active.png' if focused else 'atelier/left-tab-idle.png')
@@ -417,15 +398,36 @@ class MainMenu:
                     self.top_tab_underlines[i].show() if focused else self.top_tab_underlines[i].hide()
 
     def move(self, direction):
-        if self.selected in (7, 4, 5):
-            self.select(self.continue_index if direction > 0 else 6)
+        left_col = (7, 4)
+        if self.selected in left_col:
+            if direction < 0 and self.selected == 7:
+                self.select(3)
+            else:
+                self.select(left_col[(left_col.index(self.selected) + direction) % len(left_col)])
+        elif self.selected == 3:
+            self.select(7 if direction > 0 else self.continue_index)
+        elif self.selected == 5:
+            self.select(6 if direction > 0 else self.right_cards[-1])
         else:
-            self.select(self.order[(self.order.index(self.selected)+direction) % len(self.order)])
+            col = self.right_column
+            self.select(col[(col.index(self.selected) + direction) % len(col)])
 
     def horizontal(self, direction):
-        footer = (7, 4, 5)
-        if self.selected in footer:
-            self.select(footer[(footer.index(self.selected)+direction) % len(footer)])
+        if self.selected in (self.continue_index, 5):
+            if direction > 0 and self.selected == self.continue_index:
+                self.select(5)
+            elif direction < 0 and self.selected == 5:
+                self.select(self.continue_index)
+            elif direction < 0:
+                self.select(4)
+            else:
+                self.select(7)
+        elif self.selected in (3, 6):
+            self.select(6 if self.selected == 3 else 3)
+        elif self.selected in (7, 4):
+            self.select(self.right_cards[0] if self.selected == 7 else self.right_cards[1])
+        elif self.selected in self.right_cards:
+            self.select(7 if self.selected in self.right_cards[:2] else 4)
         else:
             self.move(direction)
 

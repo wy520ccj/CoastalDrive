@@ -147,7 +147,7 @@ static int joint_wheel_map_values(WheelMap *packet,int wheel,const double base[9
 }
 
 typedef struct {
-    WheelMap *map;int wheel,rolling;
+    WheelMap *map;int wheel,rolling,game;
     double base[9],velocity[3],active[3],tangent[3],axle[3],moment_x[3],moment_y[3];
     double radius,previous[2],parameters[3],hardware[5],lateral_bias;
     int *warm_branches; int (*warm_modes)[4]; PyObject *hypot;
@@ -201,6 +201,7 @@ static int joint_wheel_force_values(void *context,double fx,double fy,int jacobi
 }
 
 static int joint_wheel_newton_values(JointWheelForce *data,double tolerance,double force[2],double *final_error) {
+    if(data->game)return bounded_force_newton(joint_wheel_force_values,data,data->parameters[0],tolerance,force,final_error);
     double error=0.;
     for (int iteration=0;iteration<20;++iteration) {
         double residual[2],matrix[4];
@@ -244,11 +245,13 @@ static int joint_wheel_force_result(JointWheelForce *context,double tolerance,do
         }
         double rhs_x=slopes[0]*patch[0],rhs_y=slopes[1]*patch[1];
         double determinant=matrix[0]*matrix[3]-matrix[1]*matrix[2];
-        if (determinant==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"轮胎初值切线行列式为零"); return 0; }
-        force[0]=(matrix[3]*rhs_x-matrix[1]*rhs_y)/determinant;
-        force[1]=(matrix[0]*rhs_y-matrix[2]*rhs_x)/determinant;
+        if (determinant==0.&&!context->game) { PyErr_SetString(PyExc_ZeroDivisionError,"轮胎初值切线行列式为零"); return 0; }
+        if(!context->game||(isfinite(determinant)&&fabs(determinant)>1e-12)) {
+            force[0]=(matrix[3]*rhs_x-matrix[1]*rhs_y)/determinant;
+            force[1]=(matrix[0]*rhs_y-matrix[2]*rhs_x)/determinant;
+        }
     }
-    int solved=context->rolling ? rolling_root_values(joint_wheel_force_values,context,context->parameters[0],tolerance,force,context->hypot,&error)
+    int solved=context->rolling ? rolling_root_values(joint_wheel_force_values,context,context->parameters[0],tolerance,force,context->hypot,&error,context->game)
                                : joint_wheel_newton_values(context,tolerance,force,&error);
     if (!solved) return 0;
     if (!joint_wheel_force_state(context,force[0],force[1],state,end_velocity,&brake,&selected,&mode)) return 0;

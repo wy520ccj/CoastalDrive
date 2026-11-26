@@ -153,18 +153,21 @@ def native_mechanical_workspace(config, thread):
     return _native_mechanical_workspace(thread)
 
 
-def _unsupported_near_wheels(shapes, kinematics, velocity, angular, dt):
-    """保守包络内无未接管刚体时，可直接走已支持表面的原生求解路径。"""
+def _near_wheel_hulls(shapes, kinematics, velocity, angular, dt):
+    """逐轮检查保守子步包络内的未接管刚体：全为已注册纯数值凸体时返回逐轮凸体列表，否则返回 None 回退原查询。"""
     from wheel_contact_kernels import prepared_support_candidates
 
+    from convex_queries import wheel_hull
+
     if velocity is None or angular is None or dt <= 0. or dt > 0.02:
-        return True
+        return None
     linear_speed = math.sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] + velocity[2] * velocity[2])
     angular_speed = math.sqrt(angular[0] * angular[0] + angular[1] * angular[1] + angular[2] * angular[2])
-    low_x = low_y = low_z = math.inf
-    high_x = high_y = high_z = -math.inf
+    per_wheel = []
+    any_hull = False
     for plane in kinematics:
         if plane is None:
+            per_wheel.append(None)
             continue
         surface = plane.surface
         ox, oy, oz = surface.offset
@@ -176,16 +179,33 @@ def _unsupported_near_wheels(shapes, kinematics, velocity, angular, dt):
         pad = radius + surface.width * 0.5 + 0.35 + (linear_speed + 60.0) * dt + (angular_speed + 30.0) * dt * hub_r
         sx, sy, sz = ox + hx - radius * dx, oy + hy - radius * dy, oz + hz - radius * dz
         ex, ey, ez = ox + hx + reach * dx, oy + hy + reach * dy, oz + hz + reach * dz
-        low_x = min(low_x, sx - pad, ex - pad)
-        low_y = min(low_y, sy - pad, ey - pad)
-        low_z = min(low_z, sz - pad, ez - pad)
-        high_x = max(high_x, sx + pad, ex + pad)
-        high_y = max(high_y, sy + pad, ey + pad)
-        high_z = max(high_z, sz + pad, ez + pad)
-    if low_x > high_x:
-        return False
-    candidates = prepared_support_candidates(shapes.native, (low_x, low_y, low_z), (high_x, high_y, high_z))
-    return any(not supported for _body, supported, _parts in candidates)
+        low = (min(sx, ex) - pad, min(sy, ey) - pad, min(sz, ez) - pad)
+        high = (max(sx, ex) + pad, max(sy, ey) + pad, max(sz, ez) + pad)
+        candidates = prepared_support_candidates(shapes.native, low, high)
+        wheel_groups = []
+        for body, supported, parts in candidates:
+            if supported:
+                continue
+            if not surface.crown or body not in shapes.hulls:
+                return None
+            selected = tuple(shapes.hull_parts[id(part)] for part, _center, _half in parts)
+            if selected:
+                wheel_groups.append(selected)
+        if wheel_groups:
+            wh = wheel_hull(radius, surface.width, surface.shoulder, surface.crown)
+            if wh is None:
+                return None
+            any_hull = True
+            per_wheel.append((wh, tuple(wheel_groups)))
+        else:
+            per_wheel.append(None)
+    return tuple(per_wheel) if any_hull else ()
+
+
+def _unsupported_near_wheels(shapes, kinematics, velocity, angular, dt):
+    """保守包络内无未接管刚体时，可直接走已支持表面的原生求解路径。"""
+    result = _near_wheel_hulls(shapes, kinematics, velocity, angular, dt)
+    return result is None or bool(result)
 
 
 def _numeric_hull_world_query(system):
@@ -222,6 +242,7 @@ def native_contact_geometry(system, *, velocity=None, angular=None, dt=0.):
     complete = []
     direct_shapes = None
     checked_shapes = {}
+    wheel_hulls = None
 
     def world_query(velocity, angular, dt):
         result = finite_contact_system(system, velocity, angular, dt)
@@ -246,12 +267,16 @@ def native_contact_geometry(system, *, velocity=None, angular=None, dt=0.):
                 complete.append(shapes.joint_surfaces)
             else:
                 key = id(shapes)
-                near_unsupported = checked_shapes.get(key)
-                if near_unsupported is None:
-                    near_unsupported = _unsupported_near_wheels(shapes, system.kinematics, velocity, angular, dt)
-                    checked_shapes[key] = near_unsupported
-                if near_unsupported:
+                if key not in checked_shapes:
+                    checked_shapes[key] = _near_wheel_hulls(shapes, system.kinematics, velocity, angular, dt)
+                near_hulls = checked_shapes[key]
+                if near_hulls is None:
                     return joint_contact_query_prepare(world_query)
+                if near_hulls:
+                    if wheel_hulls is None:
+                        wheel_hulls = near_hulls
+                    elif wheel_hulls != near_hulls:
+                        return joint_contact_query_prepare(world_query)
                 if shapes.supported_joint_surfaces is None:
                     shapes.supported_joint_surfaces = joint_surface_prepare(
                         tuple(group for group in shapes if group[1])
@@ -261,6 +286,8 @@ def native_contact_geometry(system, *, velocity=None, angular=None, dt=0.):
             if not all(supported for _body, supported, _parts in shapes):
                 return joint_contact_query_prepare(world_query)
             complete.append(joint_surface_prepare(shapes))
+    if wheel_hulls is not None:
+        return joint_contact_prepare(system.kinematics, system.angular_damping, tuple(complete), wheel_hulls)
     return joint_contact_prepare(system.kinematics, system.angular_damping, tuple(complete))
 
 
@@ -271,9 +298,13 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        shaft_omega=None, shaft_inertia=None, shaft_axis=None,
                        synchronizing=False, synchronizer_capacity=0.,
                        downstream_omega=(), downstream_inertias=(), downstream_axes=(),
-                       suspension=None, rolling_coefficients=(0.,) * 4, query_lock=None):
+                       suspension=None, rolling_coefficients=(0.,) * 4, query_lock=None,
+                       game_solver_tolerance=False):
     """九维q含实体输入轴；未指定输入轴时保留原八维机制供旧/新A/B。"""
     mass, wheel_inertia = config.mass, config.wheel_inertia
+    game = game_solver_tolerance
+    game_option = (True,) if game else ()
+    wheel_tolerance = .1 if game else .0001
     shaft = shaft_omega is not None
     wheel_start, dimensions = (5, 9) if shaft else (4, 8)
     hard_gear = bool(ratio and not synchronizing) if shaft else bool(ratio)
@@ -588,15 +619,17 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     def solve_wheel(i, gyro):
         frame, car = frames[i], configurations[i]
+        grip = contact_parameters[i][0]
+        force_limit = grip if game else None
         if shaft and car.tire_compliance:
             fx, fy, brake, _error = loaded_wheel_force_solution(wheel_map, i, forces, velocity,
                 normal_forces if suspension is not None else None, normal_responses,
                 suspension.gradients if suspension is not None else None, gyro,
                 road_torques if rolling_active else None, active_limits, warm_branches, warm_modes,
                 moments_x[i], moments_y[i], deformations[i], contact_parameters[i], tire_hardware[i],
-                rolling[i], .0001, forces[i][:2],
+                rolling[i], wheel_tolerance, forces[i][:2],
                 suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, None,
-                frame.steering_lateral_velocity)
+                frame.steering_lateral_velocity, *game_option)
             return (fx, fy, brake), "magic-formula" if wheel_loads[i] > 0 else "airborne"
         if shaft:
             free_base_wheel, velocity_base = wheel_free_state(wheel_map, forces, velocity,
@@ -711,27 +744,41 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 c, d = matrix[1]
                 rhs_x, rhs_y = tuple(slopes[a] * patch[a] for a in range(2))
                 determinant = a * d - b * c
-                guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
+                if not game or abs(determinant) > 1e-12:
+                    guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
             if rolling[i]:
-                fx, fy, _error = _solve_rolling_force(residual, jacobian, contact_parameters[i][0],
-                                                     tolerance=.0001, initial=guess)
+                fx, fy, _error = _solve_rolling_force(residual, jacobian, grip,
+                    tolerance=wheel_tolerance, initial=guess, game_solver_tolerance=game)
             else:
-                fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=guess, jacobian=jacobian)
+                fx, fy, _error = _solve_force(residual, tolerance=wheel_tolerance, initial=guess,
+                                             jacobian=jacobian, grip=force_limit)
         else:
             sticking = False
             if static[i]:
-                fx, fy, _error = _solve_force(sticking_residual, tolerance=.0001,
-                                             initial=forces[i][:2], jacobian=sticking_jacobian)
-                sticking = math.hypot(fx, fy) <= contact_parameters[i][0]
+                fx, fy, error = _solve_force(sticking_residual, tolerance=wheel_tolerance,
+                                            initial=forces[i][:2], jacobian=sticking_jacobian, grip=force_limit)
+                sticking = math.hypot(fx, fy) <= grip and (not game or error < wheel_tolerance)
             if sticking:
                 mode = "sticking"
             else:
-                fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=forces[i][:2])
+                fx, fy, _error = _solve_force(residual, tolerance=wheel_tolerance, initial=forces[i][:2], grip=force_limit)
         _end, _velocity, brake, _index = local_state(fx, fy)
         return (fx, fy, brake), mode
 
     def correct_brakes(state):
         forces[:] = wheel_brake_correction(wheel_map, state, forces, shared_branch, shared_port_index)
+
+    def limit_forces():
+        changed = False
+        for i, ((fx, fy, brake), (grip, _cx, _cy)) in enumerate(zip(forces, contact_parameters)):
+            magnitude = math.hypot(fx, fy)
+            if not math.isfinite(magnitude) or not math.isfinite(grip) or grip < 0.:
+                raise ArithmeticError("游戏轮胎力非有限值")
+            if magnitude > grip:
+                scale = math.nextafter(grip / magnitude, 0.)
+                forces[i] = fx * scale, fy * scale, brake
+                changed = True
+        return changed
 
     def correct_contacts(guess):
         """强耦合时联合修正八个接触力；仍解同一末状态，不改力/制动门槛。"""
@@ -795,8 +842,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 continue
             after = residual(candidate)
             if max(math.hypot(*after[2 * i:2 * i + 2]) for i in range(4)) < before:
-                return
+                return True
         forces[:] = original
+        return False
 
     def correct_suspension(guess, velocity_guess):
         """联立修正六维末速度与曲面反力，消除大轮荷时滞后几何的慢收敛。"""
@@ -828,9 +876,10 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             after = residual(candidate)
             if max(abs(value) for value in after) < before:
                 normal_loads()
-                return
+                return True
         suspension, normal_forces = original_system, original_forces
         normal_projection()
+        return False
 
     if geometry is not None:
         laws = tuple((frame.mu, car.tire_reference_load, car.tire_peak_load_exponent,
@@ -853,7 +902,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                  rolling, wheel_supported, wheel_loads, tire_hardware, laws,
                  suspension.gradients, suspension.touching,
                  tuple(0. if value is None else value for value in suspension.alignment),
-                 tuple(frame.steering_lateral_velocity for frame in frames)))
+                 tuple(frame.steering_lateral_velocity for frame in frames)), *game_option)
         finally:
             if release_query_lock:
                 query_lock.acquire()
@@ -866,66 +915,140 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         state = initial
         normal_error = 0.
         geometry_error = 0.
-        normal_tolerance = 1e-10
-        for sweep in range(20):
-            state, end_velocity, clutch, loss, gear_reaction = shared(state)
-            if suspension is not None:
-                suspension = contact_system(end_velocity, state[:3])
-                normal_projection()
-                normal_forces = normal_load_solution(end_velocity, state[:3],
-                                                    mobility=normal_mobility, forces=normal_forces)
-                normal_loads()
+        force_tol, brake_tol, normal_tol, geometry_tol = (.5, .05, 1., 1e-4) if game else (.001, 1e-9, 1e-10, 1e-12)
+        limit = (10 if dt < 1. / 180 else 14) if game else 20
+        best = None
+        best_merit = previous_merit = math.inf
+        converged = corrected = False
+        try:
+            for sweep in range(limit):
+                if game and sweep >= 5:
+                    old_state, old_forces, old_normal = state, tuple(forces), normal_forces
                 state, end_velocity, clutch, loss, gear_reaction = shared(state)
-            gyro = cross(spin(state), state[:3])
-            for i in (range(4) if sweep % 2 == 0 else range(3, -1, -1)):
-                forces[i], modes[i] = solve_wheel(i, gyro)
+                if suspension is not None:
+                    suspension = contact_system(end_velocity, state[:3])
+                    normal_projection()
+                    normal_forces = normal_load_solution(end_velocity, state[:3],
+                                                        mobility=normal_mobility, forces=normal_forces)
+                    normal_loads()
+                    state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                gyro = cross(spin(state), state[:3])
+                for i in (range(4) if sweep % 2 == 0 else range(3, -1, -1)):
+                    forces[i], modes[i] = solve_wheel(i, gyro)
 
 
-            state, end_velocity, clutch, loss, gear_reaction = shared(state)
-            if shaft:
-                correct_brakes(state)
                 state, end_velocity, clutch, loss, gear_reaction = shared(state)
-            if suspension is not None:
-                # 接触块之后用实际末速度刷新硬件反力，再同步机械速度。
-                # 预条件块的力与直接本构式可能相差一个舍入位，不能把它留作收敛残差。
-                normal_forces = normal_load_solution(end_velocity, state[:3])
-                normal_loads()
-                state, end_velocity, clutch, loss, gear_reaction = shared(state)
-            if shaft:
-                maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
-                    deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
-                    tire_compliance, None, tuple(frame.steering_lateral_velocity for frame in frames))
+                if shaft:
+                    correct_brakes(state)
+                    state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                if suspension is not None:
+                    # 接触块之后用实际末速度刷新硬件反力，再同步机械速度。
+                    # 预条件块的力与直接本构式可能相差一个舍入位，不能把它留作收敛残差。
+                    normal_forces = normal_load_solution(end_velocity, state[:3])
+                    normal_loads()
+                    clamped = game and limit_forces()
+                    state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                    if shaft and clamped:
+                        correct_brakes(state)
+                        state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                if shaft:
+                    maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
+                        deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
+                        tire_compliance, None, tuple(frame.steering_lateral_velocity for frame in frames))
+                else:
+                    maximum, brake_error = 0., 0.
+                    for i in range(4):
+                        fx, fy, brake = forces[i]
+                        if modes[i] == "sticking":
+                            _vx, _vy, slip = velocities(i, state, end_velocity)
+                            error = math.hypot(slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
+                                               slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1]))))
+                        else:
+                            target, _details = contact(i, state, end_velocity, fx, fy)
+                            error = math.hypot(fx - target[0], fy - target[1])
+                        maximum = max(maximum, error)
+                        target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
+                                           / (dt * dot(brake_gradients[i], responses[i][2]))))
+                        brake_error = max(brake_error, abs(brake - target_brake))
+                if suspension is not None:
+                    target_forces = normal_load_solution(end_velocity, state[:3])
+                    target_system = contact_system(end_velocity, state[:3])
+                    normal_error, geometry_error = suspension_residuals(normal_forces, target_forces,
+                        suspension.gradients, target_system.gradients, dt)
+                if game and not all(map(math.isfinite, (
+                        maximum, brake_error, normal_error, geometry_error, *state, *end_velocity, clutch, loss,
+                        gear_reaction, *normal_forces, *wheel_loads, *road_torques, *active_limits, *bias_ports,
+                        *(value for force in forces for value in force)))):
+                    break
+                if maximum < force_tol and brake_error < brake_tol and normal_error < normal_tol and geometry_error < geometry_tol:
+                    converged = True
+                    break
+                if game:
+                    merit = max(maximum / force_tol, brake_error / brake_tol, normal_error, geometry_error / geometry_tol)
+                    if merit < best_merit:
+                        best_merit = merit
+                        best = (state, end_velocity, clutch, loss, gear_reaction, tuple(forces), tuple(modes),
+                                suspension, wheel_loads, contact_parameters, shared_branch, road_torques,
+                                active_limits, maximum, normal_error)
+                    stalled = merit >= previous_merit
+                    previous_merit = merit
+                    if sweep >= 5 and stalled:
+                        state = tuple(.5 * a + .5 * b for a, b in zip(old_state, state))
+                        forces[:] = [tuple(.5 * a + .5 * b for a, b in zip(old, new))
+                                     for old, new in zip(old_forces, forces)]
+                        if suspension is not None:
+                            normal_forces = tuple(.5 * a + .5 * b if touching else 0.
+                                                  for a, b, touching in zip(old_normal, normal_forces, suspension.touching))
+                            normal_loads()
+                        limit_forces()
+                        continue
+                    if corrected or sweep + 1 == limit:
+                        continue
+                # 接触误差已小于力门槛时，仍会推动末姿态；几何未收敛也需联立细化接触力。
+                if shaft and sweep >= 8 and (maximum >= force_tol or geometry_error >= geometry_tol):
+                    accepted = correct_contacts(state)
+                    if game:
+                        if not accepted:
+                            break
+                        corrected = True
+                        limit_forces()
+                if (suspension is not None and sweep >= 8 and maximum < force_tol
+                        and (normal_error >= normal_tol or geometry_error >= geometry_tol)
+                        and (not game or not corrected)):
+                    accepted = correct_suspension(state, end_velocity)
+                    if game and not accepted:
+                        break
+                    corrected = True
             else:
-                maximum, brake_error = 0., 0.
-                for i in range(4):
-                    fx, fy, brake = forces[i]
-                    if modes[i] == "sticking":
-                        _vx, _vy, slip = velocities(i, state, end_velocity)
-                        error = math.hypot(slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
-                                           slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1]))))
-                    else:
-                        target, _details = contact(i, state, end_velocity, fx, fy)
-                        error = math.hypot(fx - target[0], fy - target[1])
-                    maximum = max(maximum, error)
-                    target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
-                                       / (dt * dot(brake_gradients[i], responses[i][2]))))
-                    brake_error = max(brake_error, abs(brake - target_brake))
-            if suspension is not None:
-                target_forces = normal_load_solution(end_velocity, state[:3])
-                target_system = contact_system(end_velocity, state[:3])
-                normal_error, geometry_error = suspension_residuals(normal_forces, target_forces,
-                    suspension.gradients, target_system.gradients, dt)
-            if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
-                break
-            # 接触误差已小于力门槛时，仍会推动末姿态；几何未收敛也需联立细化接触力。
-            if shaft and sweep >= 8 and (maximum >= .001 or geometry_error >= 1e-12):
-                correct_contacts(state)
-            if suspension is not None and sweep >= 8 and maximum < .001 and (normal_error >= normal_tolerance or geometry_error >= 1e-12):
-                correct_suspension(state, end_velocity)
-        else:
-            raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
+                if not game:
+                    raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
+        except ArithmeticError:
+            if not game:
+                raise
+        if game and not converged:
+            if best is not None:
+                (state, end_velocity, clutch, loss, gear_reaction, best_forces, best_modes,
+                 suspension, wheel_loads, contact_parameters, shared_branch, road_torques,
+                 active_limits, maximum, normal_error) = best
+                forces[:], modes[:] = best_forces, best_modes
+            else:
+                sweep = -1
+                state = tuple(value if math.isfinite(value) else 0. for value in initial)
+                end_velocity = tuple(value if math.isfinite(value) else 0. for value in velocity)
+                clutch = loss = gear_reaction = maximum = normal_error = 0.
+                forces[:] = [(0., 0., 0.)] * 4
+                modes[:] = ["airborne"] * 4
+                wheel_loads, road_torques = (0.,) * 4, (0.,) * 4
+                contact_parameters = ((0., 0., 0.),) * 4
+                if reference_suspension is not None:
+                    suspension = replace(reference_suspension, gradients=((0.,) * 6,) * 4,
+                                         alignment=(None,) * 4, touching=(False,) * 4)
+    safe_coast = game and sweep == -1
+    if safe_coast:
+        engine_torque = engine_drag = 0.
+        steering_torques = ((0., 0., 0.),) * 4
     normal_step = shared_suspension(suspension, end_velocity, state[:3], dt) if suspension is not None else None
-    gyro_torques = bearing_torques(axes, state[wheel_start:], wheel_inertia, state[:3]) if rotor else ((0., 0., 0.),) * 4
+    gyro_torques = bearing_torques(axes, state[wheel_start:], wheel_inertia, state[:3]) if rotor and not safe_coast else ((0., 0., 0.),) * 4
     wheels = []
     for i, frame in enumerate(frames):
         fx, fy, brake = forces[i]
@@ -951,13 +1074,19 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     engine_gyro = cross(tuple(engine_inertia * state[3] * value for value in engine_axis), state[:3])
     engine_body = tuple((clutch + engine_drag * engine_speed - engine_torque) * engine_axis[a] + engine_gyro[a] for a in range(3))
     differential_slips = tuple(dot(g, state) for g in differential)
-    limited_torques = (joint_differential_torques(shared_map, state, shared_branch, active_limits) if prepared_native
-                      else differential_torques(state, branches[shared_branch][0], differential, damping, active_limits))
+    if safe_coast:
+        limited_torques = (0.,) * 3
+    elif prepared_native:
+        limited_torques = joint_differential_torques(shared_map, state, shared_branch, active_limits)
+    else:
+        limited_torques = differential_torques(state, branches[shared_branch][0], differential, damping, active_limits)
     shaft_speed = (state[4] - dot(shaft_axis, state[:3])) if shaft else None
     shaft_gyro = cross(tuple(shaft_inertia * state[4] * value for value in shaft_axis), state[:3]) if shaft else (0.,) * 3
     shaft_body = tuple((gear_reaction - clutch) * shaft_axis[a] + shaft_gyro[a] for a in range(3)) if shaft else (0.,) * 3
     drive_torque = ratio * ((gear_reaction if shaft else clutch) - loss)
     downstream_speeds = tuple(dot(g, state) if j else 0. for j, g in zip(inertias, gradients))
+    if safe_coast:
+        downstream_speeds = tuple(old if j else 0. for j, old in zip(inertias, downstream_omega))
     inertia_torques = tuple(j * (new - old) / dt for j, new, old in
                            zip(inertias, downstream_speeds, downstream_omega))
     downstream_wheels = tuple(-sum(torque * g[i + wheel_start] for torque, g in zip(inertia_torques, gradients))
@@ -972,6 +1101,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                         for i, weight in enumerate(config.drive_weights))
     if downstream:
         wheel_drives = tuple(wheel_drives[i] + downstream_wheels[i] for i in range(4))
+    if safe_coast:
+        engine_body = shaft_body = downstream_body = (0., 0., 0.)
+        wheel_drives = (0.,) * 4
     return DrivetrainStep(tuple(wheels), end_velocity, state[:3], state[3], engine_speed, drive_torque,
         clutch, clutch_slip, loss, gear_speed, engine_body, dt * engine_torque * engine_speed,
         dt * engine_drag * engine_speed**2, dt * clutch * clutch_slip, dt * loss * gear_speed, sweep + 1,

@@ -461,9 +461,6 @@ def brief(panel, progress, event):
         rec_title = '历史成绩' if not club and event.id not in progress.budget_records else '个人最佳'
         label(rec_title, rx+rw, 676, 14, theme.DARK_SUB, right=True)
         label(f'{medal} · {record["seconds"]:.2f} s', rx+rw, 714, 21, theme.STEEL_TEXT, bold=True, right=True)
-    else:
-        label('赛前提示', rx+rw, 676, 14, theme.DARK_SUB, right=True)
-        label('可原车或调校发车', rx+rw, 714, 17, theme.DARK_SUB, right=True)
 
     available = progress.available(event)
     button('返回赛事', left, 868, 156, 54, 'board', role='footer')
@@ -583,17 +580,14 @@ def pause(panel, progress, event):
     fill(left+10, 114, 4, 42, theme.AMBER, 2)
     label(f'正在比赛  /  {event.name}', x, 146, 15, theme.DARK_SUB)
     label('比赛已暂停', x, 206, 42, WHITE, bold=True)
-    label('当前进度已保留', x, 248, 18, theme.DARK_SUB)
     for index, (name, command) in enumerate((('继续驾驶', 'resume'), ('重新开始', 'retry'), ('退出本场', 'board'))):
-        item = button(name, x, 316+index*90, inner, 68, command,
+        item = button(name, x, 286+index*96, inner, 68, command,
                       role='primary' if index == 0 else 'secondary', primary=index == 0)
         if index == 0:
             item['text_pos'] = (16*unit, -7*unit)
             ic = atelier.picture(item, panel.loader, 'atelier/icon-steering.png',
                                  (-74*unit, -46*unit, -14*unit, 14*unit), color=theme.INK)
             panel.frames.append(ic)
-    fill(x, 620, inner, 1.2, (0.24, 0.29, 0.38, 0.85), 0)
-    label('重新开始将从起点发车。\n未完成本场不会获得星级或积分。', x, 668, 18, theme.DARK_SUB, wrap=inner)
     strip_w = min(360, width-left-wide-40)
     image('atelier/panel-obsidian.png', width-left-strip_w-9, 736, strip_w+18, 100)
     fill(width-left-strip_w+10, 758, 4, 56, theme.AMBER, 2)

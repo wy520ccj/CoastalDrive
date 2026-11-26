@@ -7,7 +7,7 @@ from panda3d.core import Filename, PTALVecBase3f, Shader, Texture, Vec3
 from simplepbr.envmap import EnvMap
 
 CANOPY_SHADOW_SPAN = 320
-CANOPY_SHADOW_LEAD = 80
+CANOPY_SHADOW_LEAD = 45
 DAYLIGHT_SH_SCALE = 1.2
 DAYLIGHT_SUN_SCALE = 1.6
 
@@ -111,10 +111,13 @@ vec4 expressway_albedo() {
 }
 float kcd_roughness() {
     vec2 p = kcd_uv();
+    float mip_footprint = length(fwidth(v_texcoord));
+    float filter_amount = smoothstep(.08, .70, mip_footprint);
     float gloss = mix(mix(texture(pasture_gloss,p*.25).r,
                          texture(dry_gloss,p*.25).r,ground_dry_weight()),
                       texture(forest_gloss,p*.25).r,forest_weight());
-    return clamp(1.0-gloss,.08,1.0);
+    float roughness = clamp(1.0-gloss,.08,1.0);
+    return mix(roughness, max(roughness, .92), filter_amount);
 }
 vec3 kcd_normal(vec3 geometric_normal,vec3 position) {
     vec3 n = normalize(geometric_normal);
@@ -124,13 +127,15 @@ vec3 kcd_normal(vec3 geometric_normal,vec3 position) {
     vec3 b = cross(dy,n)*ux.y + cross(n,dx)*uy.y;
     float magnitude = max(dot(t,t),dot(b,b));
     if (magnitude < 1e-16) return n;
+    float mip_footprint = length(fwidth(v_texcoord));
+    float detail_filter = 1.0 - smoothstep(.08, .70, mip_footprint);
     vec2 p = kcd_uv()*.25;
     float w = forest_weight();
     vec3 detail = mix(mix(texture(pasture_normal,p).rgb,
                          texture(dry_normal,p).rgb,ground_dry_weight()),
                       texture(forest_normal,p).rgb,w)*2.-1.;
-    detail.xy *= mix(1.30,1.10,w)*mix(1.,.3,city_lawn_weight());
-    detail.z *= sqrt(magnitude);
+    detail.xy *= mix(1.15,0.98,w)*mix(1.,.3,city_lawn_weight())*detail_filter;
+    detail.z = max(detail.z, .01)*sqrt(magnitude);
     return normalize(mat3(t,b,n)*detail);
 }
 '''
@@ -320,7 +325,7 @@ def sun_color(parameters):
 
 def source_sun(scene, position, parameters, *, intensity=.8):
     direction = Vec3(*(float(v) for v in parameters['lighting']['SunVector'].split(',')))
-    offset = -direction * 156.25
+    offset = -direction * 360.0
     sun = scene.sun_path
     sun.setPos(offset)
     sun.lookAt(0, 0, 0)
@@ -329,11 +334,15 @@ def source_sun(scene, position, parameters, *, intensity=.8):
     current_origin = scene.render.getShaderInput('local_origin_y')
     if current_origin.getValueType() == current_origin.MInvalid or current_origin.getVector().x != origin:
         scene.render.setShaderInput('local_origin_y', origin)
-    heading = math.radians(scene.base.session.current.player.heading)
+    # 跟车相机就绪后使用已平滑的相机朝向，避免未插值物理朝向跳动令前置阴影中心剧烈摆动。
+    chase = scene.base.chase_camera
+    heading = math.radians(chase.heading if chase.position is not None else scene.base.session.current.player.heading)
     center = position + Vec3(-math.sin(heading), math.cos(heading), 0) * CANOPY_SHADOW_LEAD
     light_position = inverse.xform(center + offset + Vec3(0, origin, 0))
     lens, resolution = sun.node().getLens(), sun.node().getShadowBufferSize()
-    for axis, step in ((0, lens.getFilmSize().x / resolution.x), (2, lens.getFilmSize().y / resolution.y)):
+    # 仅光平面 XY 按阴影纹素对齐，深度轴保持连续，消除 0.5m 阶跃跳变导致的阴影呼吸闪烁。
+    for axis, step in ((0, lens.getFilmSize().x / resolution.x),
+                       (2, lens.getFilmSize().y / resolution.y)):
         light_position[axis] = round(light_position[axis] / step) * step
     sun.setPos(sun.getQuat().xform(light_position) - Vec3(0, origin, 0))
     # 原探针与本项目晴空/相机的曝光口径不同；按正常驾驶的中性地表平衡直射光。

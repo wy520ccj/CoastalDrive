@@ -214,6 +214,8 @@ class WorkshopVehicle:
         self.buffer.setActive(True)
         for buffer in self.pipeline._filtermgr.buffers:
             buffer.setActive(True)
+        if not self.base.taskMgr.hasTaskNamed('workshop-pbr-update'):
+            self.base.taskMgr.add(self.update_task)
 
     def orbit(self, step):
         self.studio_angle = (self.studio_angle+step) % 360
@@ -284,6 +286,7 @@ class WorkshopVehicle:
             self.buffer.setActive(False)
             for buffer in self.pipeline._filtermgr.buffers:
                 buffer.setActive(False)
+            self.base.taskMgr.remove(self.update_task)
 
     def close(self):
         if self.buffer is not None:

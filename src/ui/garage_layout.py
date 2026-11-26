@@ -165,7 +165,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         label('海岸车库  /  我的车辆', rx, 112, 13.5, GRAY)
         label(f'★ {progress.stars} / 18', rx + rw, 112, 13.5, theme.AMBER, bold=True, right=True)
         label('选择车辆', rx, 152, 30, WHITE, bold=True)
-        label(f'已解锁 {count} / {len(cars)} 辆，点击预览实车效果。', rx, 182, 14.5, GRAY)
+        label(f'已解锁 {count} / {len(cars)} 辆', rx, 182, 14.5, GRAY)
 
         selected = next(i for i, item in enumerate(cars) if item.design_id == preview.design_id)
         first = min(max(0, selected-1), max(0, len(cars)-4))
@@ -234,7 +234,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         label('海岸车库  /  车身颜色', rx, 112, 13.5, GRAY)
         label(f'★ {progress.stars} / 18', rx + rw, 112, 13.5, theme.AMBER, bold=True, right=True)
         label('车身涂装', rx, 152, 30, WHITE, bold=True)
-        label(f'{car.name}  ·  实时预览落日车漆反光。', rx, 182, 14.5, GRAY)
+        label(car.name, rx, 182, 14.5, GRAY)
 
         card_h, card_gap = 82., 10.
         for index, skin in enumerate(SKINS):
@@ -268,35 +268,28 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         p_ic = atelier.picture(save_btn, panel.loader, 'atelier/icon-paint.png',
                                (-84*unit, -60*unit, -12*unit, 12*unit), color=INK)
         panel.frames.append(p_ic)
-        button('恢复原漆', rx+save_w+12, cta_y, reset_w, cta_h, 'garage-tab', 'paint',
+        button('恢复原漆', rx+save_w+12, cta_y, reset_w, cta_h, 'garage-reset-paint', None,
                role='footer',
                tex_idle='atelier/btn-ghost.png', tex_focus='atelier/btn-ghost-hover.png')
 
-    # ── 底部通宽拉丝黑曜石序号进度条 + 右下角斜切角标（与首页 1:1 统一）──
+    # ── 底部通宽拉丝黑曜石操作提示条 ──
     image('atelier/footer-surface.png', 0, foot_y, width, 941-foot_y)
-    image('atelier/footer-corner-tag.png', width - 178, foot_y + 38, 178, 45)
-    label('海岸车库 · S1', width - 24, foot_y + 68, 13.5, GRAY, right=True)
-    step_active = 0 if tab == 'cars' else 1
-    steps = (('1', '选择车辆'), ('2', '车身涂装'), ('3', '海岸试驾'))
-    step_span = 260. if aspect > 1.5 else 200.
-    start_sx = width/2 - step_span - 60
     sy = foot_y + 42
-    for si, (num, s_label) in enumerate(steps):
-        cx = start_sx + si * step_span
-        is_on = si == step_active
-        image('atelier/step-active.png' if is_on else 'atelier/step-idle.png', cx-16, sy-16, 32, 32)
-        label(num, cx, sy+7, 15, INK if is_on else GRAY, bold=True, center=True)
-        label(s_label, cx+26, sy+7, 16, theme.AMBER if is_on else GRAY, bold=is_on)
-        if si < 2:
-            fill(cx+112, sy-0.5, step_span-144, 1.2, (0.24, 0.28, 0.36, 0.9), 0)
 
     message = notice or progress.notice
     if message:
         line = panel.vehicle_view.base.fit_lines(message, (width*0.32)*unit, 14*unit, max_lines=1)
         label(line+('…' if line != message else ''), 34, sy+7, 14, theme.AMBER, bold=True)
     else:
-        label('← → 换车或调视角   Enter 确认   Esc 返回', 34, sy+7, 14, GRAY)
-    panel.select(panel.primary)
+        label('↑ ↓ 选车   ← → 移动/转视角   Enter 确认   Esc 返回', 34, sy+7, 14, GRAY)
+    initial = panel.primary
+    if panel.buttons[initial]['state'] == DGG.DISABLED:
+        initial = next(
+            (i for i, b in enumerate(panel.buttons)
+             if b['state'] != DGG.DISABLED and panel.garage_roles.get(i) in ('category-active', 'category')),
+            next((i for i, b in enumerate(panel.buttons) if b['state'] != DGG.DISABLED), 0),
+        )
+    panel.select(initial)
 
 
 def style(panel):

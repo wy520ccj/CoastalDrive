@@ -24,15 +24,13 @@ def location(app):
 
 
 def pause(cards, app):
-    left, wide, fill, text, button = canvas(cards, app, 'pause', '已暂停', location(app), 0,
-                                            panel_limit=462, footer=False)
+    left, wide, _fill, text, button = canvas(cards, app, 'pause', '已暂停', location(app), 0,
+                                             panel_limit=462, footer=False)
     cards.summary_values = {}
     unit = 2/941
     x, inner, width = left+28, wide-56, app.getAspectRatio()*941
-    text('当前进度已保留', x, 274, 21, WHITE, bold=True)
-    text('按 Esc 继续驾驶，返回当前画面。', x, 310, 16, theme.DARK_SUB)
-    for index, title, y in ((0, '继续驾驶', 360), (2, '声音设置', 458),
-                             (3, '重新开始', 556), (4, '结束驾驶', 654)):
+    for index, title, y in ((0, '继续驾驶', 290), (2, '声音设置', 392),
+                             (3, '重新开始', 494), (4, '结束驾驶', 596)):
         item = button(index, title, x, y, inner, 72)
         item['text_font'], item['text_scale'] = app.ui_font, 24*unit
         if index in (0, 2):
@@ -46,8 +44,6 @@ def pause(cards, app):
         else:
             item['text_align'], item['text_pos'] = TextNode.ALeft, ((-inner/2+24)*unit, -9*unit)
         text('›', x+inner-34, y+46, 28, theme.INK if index == 0 else theme.DARK_SUB)
-    fill(x, 744, inner, 1.2, (0.24, 0.29, 0.38, 0.85), 0)
-    text('重新开始将从起点发车。', x, 778, 16, theme.DARK_SUB)
     button(1, '专家试验台', width-left-350, 878, 180, 44)
     button(5, '返回首页', width-left-150, 878, 150, 44)
     text('↑ ↓ 选择    Enter 确认    Esc 继续', left, 908, 17, theme.DARK_SUB)
@@ -104,7 +100,7 @@ def result(cards, app, note):
         else:
             lines.extend(message for message in (race.save_error, race.score_notice if not race.save_error else '',
                                                 race.ghost_notice) if message)
-        message = '\n'.join(lines) or '成绩已记录，可重新挑战。'
+        message = '\n'.join(lines)
     else:
         if track == 'endless':
             text('本次行驶距离', x, 338, 17, theme.DARK_SUB)
@@ -116,11 +112,12 @@ def result(cards, app, note):
             text('碰撞次数', x, 530, 19, theme.DARK_SUB)
             text(f'{highway.collisions} 次', x+inner, 530, 24, WHITE, bold=True, right=True)
         else:
-            values['hero'] = text('下次再出发', x, 392, 40, WHITE, bold=True)
+            values['hero'] = text('驾驶结束', x, 392, 40, WHITE, bold=True)
             text('滨海环路 · 自由驾驶', x, 452, 20, theme.DARK_SUB)
-        message = highway.reason if mode == GameMode.DISTANCE_CHALLENGE else '自由驾驶不记录圈速。\n可以重新出发，或返回首页换一辆车。'
-    fill(x-1, 577, inner+2, 140, (0.24, 0.29, 0.38, 0.72), 7)
-    fill(x, 578, inner, 138, (0.055, 0.070, 0.098, 0.86), 6)
+        message = highway.reason if mode == GameMode.DISTANCE_CHALLENGE else ''
+    if message:
+        fill(x-1, 577, inner+2, 140, (0.24, 0.29, 0.38, 0.72), 7)
+        fill(x, 578, inner, 138, (0.055, 0.070, 0.098, 0.86), 6)
     values['notice'] = text(app.fit_lines(message, (inner-28)*unit, 17*unit), x+14, 610, 17, WHITE)
     item = button(0, '重新出发' if mode == GameMode.FREE_DRIVE else '重新挑战', x, 742, inner, 56)
     item['text_font'], item['text_scale'] = app.ui_font, 23*unit
@@ -134,12 +131,12 @@ def result(cards, app, note):
     text('↑ ↓ 选择    Enter 确认', left, 908, 17, theme.DARK_SUB)
     right = left+wide+18
     available = width-left-right
-    cards.frames.append(atelier.picture(
-        cards.content, app.loader, 'atelier/panel-obsidian.png',
-        _box(app, right-10, 652, available+20, 188)))
-    fill(right+10, 676, 4, 24, theme.AMBER, 2)
     values['sectors'] = ()
     if timed and race.splits:
+        cards.frames.append(atelier.picture(
+            cards.content, app.loader, 'atelier/panel-obsidian.png',
+            _box(app, right-10, 652, available+20, 188)))
+        fill(right+10, 676, 4, 24, theme.AMBER, 2)
         text('分段用时', right+26, 696, 20, WHITE, bold=True)
         text('本段 / 秒 · 比出发时最佳（负值更快）', right+26, 724, 15, theme.DARK_SUB)
         columns = result_columns(race)
@@ -154,9 +151,12 @@ def result(cards, app, note):
             color = theme.PINE if delta.startswith('-') else theme.AMBER if delta.startswith('+') else theme.DARK_SUB
             sector_labels.append(text(delta, cx+4, 813, 15, color, bold=True))
         values['sectors'] = tuple(sector_labels)
-    else:
+    elif mode == GameMode.DISTANCE_CHALLENGE:
+        cards.frames.append(atelier.picture(
+            cards.content, app.loader, 'atelier/panel-obsidian.png',
+            _box(app, right-10, 652, available+20, 188)))
+        fill(right+10, 676, 4, 24, theme.AMBER, 2)
         text('驾驶概要', right+26, 696, 20, WHITE, bold=True)
-        summary = '无碰撞目标 5.00 公里 · 倒车可调姿' if mode == GameMode.DISTANCE_CHALLENGE else '随时按 Esc 可切换电台或进入专家试验台'
-        text(summary, right+26, 740, 17, theme.DARK_SUB)
+        text('无碰撞目标 5.00 公里 · 倒车可调姿', right+26, 740, 17, theme.DARK_SUB)
     cards.garage_quiet = {1, 2}
     style(cards, app.panel_selection)

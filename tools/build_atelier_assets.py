@@ -1,5 +1,6 @@
 """生成落日海岸工坊（Sunset Atelier）高质感拉丝材质、毛玻璃控件、写实模式缩略图与图标贴图。"""
 
+import math
 import random
 from pathlib import Path
 
@@ -546,6 +547,103 @@ def make_controls():
     ImageDraw.Draw(topbar).line((0, th - 2, tw, th - 2), fill=(255, 255, 255, 16), width=1)
     ImageDraw.Draw(topbar).line((0, th - 1, tw, th - 1), fill=(72, 84, 108, 220), width=1)
     topbar.save(OUT / "bar-top.png")
+
+    make_road_car()
+
+
+def make_road_car():
+    """生成 4x 超采样侧视流线型小跑车透明图标（160x80，朝右行驶 + 前灯柔光锥 + 清晰轮毂）。"""
+    scale = 4
+    w, h = 160 * scale, 80 * scale
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+
+    # 1. 前车灯柔和光锥（自车头灯向右侧平滑渐隐）
+    cone = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    cdraw = ImageDraw.Draw(cone)
+    cdraw.polygon([(496, 174), (636, 134), (636, 240), (496, 194)], fill=(255, 238, 186, 165))
+    cone = cone.filter(ImageFilter.GaussianBlur(radius=11))
+    c_alpha = cone.getchannel("A")
+    apx = c_alpha.load()
+    for y in range(h):
+        for x in range(w):
+            if x < 492:
+                apx[x, y] = 0
+            else:
+                t = max(0.0, min(1.0, (x - 492) / (w - 492)))
+                fade = (1.0 - t) ** 1.55
+                apx[x, y] = round(apx[x, y] * fade)
+    cone.putalpha(c_alpha)
+    canvas.alpha_composite(cone)
+
+    # 2. 车底接地投影
+    shadow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).ellipse((42, 234, 520, 266), fill=(4, 6, 10, 175))
+    canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(radius=9)))
+
+    # 3. 低趴轿跑剪影与暖琥珀金属渐变涂装
+    body_pts = [
+        (46, 206), (40, 180), (46, 152), (56, 138), (90, 138),
+        (132, 120), (176, 92), (226, 86), (282, 92), (354, 132),
+        (426, 138), (482, 152), (510, 168), (516, 188), (508, 208),
+        (466, 212), (92, 212),
+    ]
+    bmask = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(bmask).polygon(body_pts, fill=255)
+    bgrad = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    bgd = ImageDraw.Draw(bgrad)
+    y_top, y_bot = 86, 214
+    for y in range(y_top, y_bot + 1):
+        t = (y - y_top) / max(1, y_bot - y_top)
+        cr = round(255 * (1 - t) + 220 * t)
+        cg = round(206 * (1 - t) + 126 * t)
+        cb = round(106 * (1 - t) + 34 * t)
+        bgd.line((36, y, 522, y), fill=(cr, cg, cb, 255))
+    body_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    body_layer.paste(bgrad, (0, 0), bmask)
+
+    bd = ImageDraw.Draw(body_layer)
+    bd.line([(178, 95), (226, 89), (280, 95), (352, 135), (426, 141), (480, 155)],
+            fill=(255, 244, 212, 210), width=4)
+    bd.line([(74, 162), (206, 154), (376, 154), (486, 168)], fill=(255, 232, 174, 145), width=3)
+    bd.polygon([(46, 198), (510, 200), (504, 214), (54, 214)], fill=(22, 27, 36, 255))
+
+    # 深色侧窗玻璃座舱与柔光反射
+    glass_pts = [(134, 134), (178, 100), (272, 99), (336, 134)]
+    bd.polygon(glass_pts, fill=(18, 24, 34, 248))
+    bd.line([(236, 99), (242, 134)], fill=(42, 48, 60, 255), width=6)
+    bd.polygon([(186, 104), (218, 104), (204, 130), (172, 130)], fill=(190, 220, 248, 34))
+    bd.line(glass_pts + [glass_pts[0]], fill=(44, 52, 66, 220), width=3)
+
+    # 尾灯与前大灯发光细节
+    bd.rounded_rectangle((43, 158, 68, 174), radius=4, fill=(255, 86, 56, 255))
+    bd.polygon([(484, 160), (510, 170), (512, 184), (482, 178)], fill=(255, 250, 232, 255))
+
+    canvas.alpha_composite(body_layer)
+
+    # 4. 紧凑轮拱与高对比五辐轮毂
+    for cx in (146, 412):
+        cy = 212
+        r_arch = 43
+        r_tire = 36
+        r_rim = 22
+        r_hub = 7
+        wd = ImageDraw.Draw(canvas)
+        wd.ellipse((cx - r_arch, cy - r_arch, cx + r_arch, cy + r_arch), fill=(10, 13, 19, 255))
+        wd.arc((cx - r_arch, cy - r_arch, cx + r_arch, cy + r_arch), 192, 348, fill=(255, 218, 148, 170), width=3)
+        wd.ellipse((cx - r_tire, cy - r_tire, cx + r_tire, cy + r_tire), fill=(18, 22, 30, 255),
+                   outline=(52, 60, 74, 255), width=4)
+        wd.ellipse((cx - r_rim, cy - r_rim, cx + r_rim, cy + r_rim), fill=(26, 32, 42, 255),
+                   outline=(206, 218, 236, 255), width=4)
+        wd.arc((cx - 17, cy - 17, cx + 17, cy + 17), 20, 72, fill=(246, 170, 54, 230), width=6)
+        for k in range(5):
+            ang = math.radians(k * 72 - 18)
+            x1 = cx + round(math.cos(ang) * (r_rim - 3))
+            y1 = cy + round(math.sin(ang) * (r_rim - 3))
+            wd.line((cx, cy, x1, y1), fill=(196, 210, 228, 255), width=4)
+        wd.ellipse((cx - r_hub, cy - r_hub, cx + r_hub, cy + r_hub), fill=(235, 242, 252, 255),
+                   outline=(80, 92, 112, 255), width=2)
+
+    canvas.resize((160, 80), Image.Resampling.LANCZOS).save(OUT / "icon-road-car.png")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ from panda3d.core import Vec3
 from controls import KeyboardController
 from race import BestTimes
 from session import Phase, Session
-from session_clock import PRESENTATION_DELAY
+from session_clock import PRESENTATION_DELAY, presentation_time
 from simulation import FIXED_DT, interpolate, shift_snapshot
 from snapshot_wire import decode_snapshots, encode_snapshots
 from traffic import Road
@@ -101,6 +101,7 @@ def _output(session):
                   session.race.snapshot, session.highway.snapshot, session.notice,
                   session.simulation.collision_count, session.simulation.rebases,
                   session.simulation.traffic_cycles, session.simulation.initialisation_ticks)
+        backlog = session.stepper.backlog_time
     else:
         if clock.error is not None:
             raise clock.error
@@ -114,10 +115,11 @@ def _output(session):
             clock.impacts.clear()
             segments = clock.segments
             status = clock.status
+            backlog = clock.published_backlog
     phase, countdown, dropped, race, highway, notice, collisions, rebases, cycles, initial = status
-    backlog = max(0., perf_counter()-timeline_origin-current.time) if phase == Phase.DRIVING else 0.
     return SessionOutput(history, timeline_origin, dropped_epoch, previous, current, impacts, phase, countdown,
-                         dropped, race, highway, notice, segments, collisions, rebases, cycles, initial,backlog)
+                         dropped, race, highway, notice, segments, collisions, rebases, cycles, initial,
+                         backlog if phase == Phase.DRIVING else 0.)
 
 
 def _metadata(session, *, include_ghost=True):
@@ -248,11 +250,17 @@ def _serve(connection, camera, input_word, seed, options, worker_loop):
 class SimulationView:
     """只读道路描述和完成步统计；无Bullet对象、推进方法或另一套车辆状态。"""
 
+    road = None
+
     def diagnostics(self):
         return self.worker_statistics
 
 
 class SessionProcess:
+    on_wait = None
+    displayed_time = 0.
+    display_sample = None
+
     def __init__(self, seed=0, *, track='coastal', road_shape='straight', driving_mode,
                  vehicle_config=None, scores=None, abs_enabled=None, tcs_enabled=None,
                  esc_enabled=None, physics_workers=0, independent_clock=True, on_wait=None):
@@ -352,6 +360,8 @@ class SessionProcess:
         if self.output is None or (output.current.contact_epoch != self.current.contact_epoch
                                   or output.phase != self.phase or output.current.tick < self.current.tick):
             self.history.clear()
+            self.displayed_time = output.current.time
+            self.display_sample = None
         for state in output.history:
             if not self.history or state.tick > self.history[-1].tick:
                 self.history.append(state)
@@ -391,14 +401,16 @@ class SessionProcess:
         if not self.pending_frame and self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
             self.connection.send(('frame', ()))
             self.pending_frame = True
-            # 领取本次请求的完成步，再按原显示时间插值，保留低帧率下的及时交接。
-            self._finish_frame()
-        elif self.pending_frame:
-            requested_at = perf_counter() if sampled_at is None else sampled_at
-            display_time = requested_at-self.output.timeline_origin-(self.output.dropped_time-self.output.dropped_epoch)-PRESENTATION_DELAY
-            # 上帧请求仍在途且历史已耗尽时，也必须领取完成步，避免停在旧轨迹末端。
-            if display_time > self.history[-1].time:
+        if self.pending_frame:
+            if self.connection.poll() or self.phase == Phase.COUNTDOWN:
                 self._finish_frame()
+            else:
+                requested_at = perf_counter() if sampled_at is None else sampled_at
+                display_time = requested_at-self.output.timeline_origin-(self.output.dropped_time-self.output.dropped_epoch)-PRESENTATION_DELAY
+                # 历史已耗尽或尚未覆盖当帧显示时刻时同步领取完成步，避免停在旧轨迹末端；
+                # 历史仍覆盖当帧显示时刻时保持异步预取，不阻塞渲染主线程。
+                if display_time > self.history[-1].time:
+                    self._finish_frame()
         if not self.process.is_alive():
             self._finish_frame()
             raise RuntimeError('独立会话进程意外退出')
@@ -409,6 +421,10 @@ class SessionProcess:
         output = self.output
         sampled_at = perf_counter() if sampled_at is None else sampled_at
         display_time = sampled_at-output.timeline_origin-(output.dropped_time-output.dropped_epoch)-PRESENTATION_DELAY
+        display_time = presentation_time(display_time, sampled_at, self.display_sample, self.displayed_time,
+                                         self.history[0].time, output.current.time)
+        self.displayed_time = display_time
+        self.display_sample = sampled_at
         state = self.history[-1]
         if display_time <= self.history[0].time:
             state = self.history[0]
@@ -419,7 +435,7 @@ class SessionProcess:
                     break
         if state.origin_y != output.current.origin_y:
             state = shift_snapshot(state,output.current.origin_y)
-        state = replace(state,time=min(output.current.time,max(self.history[0].time,display_time)))
+        state = replace(state,time=display_time)
         impacts = tuple(self.received_impacts)
         self.received_impacts.clear()
         return replace(state, impacts=impacts, contacts=output.current.contacts)

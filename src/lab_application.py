@@ -465,16 +465,26 @@ class VehicleLab(DirectObject):
         self.notice.setText(basis)
         self.record_menu.hide()
 
-    def open_engineering(self):
+    def _pick_file(self, title, filetypes):
         import tkinter as tk
         from tkinter import filedialog
 
+        was_playing = self.playing
+        self.playing = False
         dialog = tk.Tk()
         dialog.withdraw()
         try:
-            path = filedialog.askopenfilename(title="导入完整车辆工程模型", filetypes=[("车辆工程JSON", "*.json")])
+            dialog.attributes("-topmost", True)
+            dialog.lift()
+            path = filedialog.askopenfilename(parent=dialog, title=title, filetypes=filetypes)
         finally:
             dialog.destroy()
+        if not path:
+            self.playing = was_playing
+        return path
+
+    def open_engineering(self):
+        path = self._pick_file("导入完整车辆工程模型", [("车辆工程JSON", "*.json")])
         if path:
             self.import_engineering(path)
 
@@ -504,15 +514,7 @@ class VehicleLab(DirectObject):
             self.show_error("悬架台架载入失败，原配置未更改", error)
 
     def open_suspension_bench(self):
-        import tkinter as tk
-        from tkinter import filedialog
-
-        dialog = tk.Tk()
-        dialog.withdraw()
-        try:
-            path = filedialog.askopenfilename(title="导入悬架部件台架数据", filetypes=[("悬架台架JSON", "*.json")])
-        finally:
-            dialog.destroy()
+        path = self._pick_file("导入悬架部件台架数据", [("悬架台架JSON", "*.json")])
         if path:
             self.import_suspension_bench(path)
 
@@ -980,16 +982,8 @@ class VehicleLab(DirectObject):
             self.show_error("尚无已导出报告，请先导出CSV和报告。")
 
     def open_record(self):
-        import tkinter
-        from tkinter import filedialog
-
         self.record_menu.hide()
-        dialog = tkinter.Tk()
-        dialog.withdraw()
-        try:
-            path = filedialog.askopenfilename(title="选择实验记录", filetypes=[("实验记录", "experiment.json")])
-        finally:
-            dialog.destroy()
+        path = self._pick_file("选择实验记录", [("实验记录", "experiment.json")])
         if path:
             self.import_record(Path(path).parent)
 

@@ -1,7 +1,10 @@
 """全程高速表现；消费现有道路采样与分段，不管理物理或streaming。"""
 
 import math
+from functools import lru_cache
+from weakref import WeakKeyDictionary
 
+import numpy as np
 from panda3d.core import GeomVertexReader, GeomVertexWriter, LODNode, Vec3, Vec4
 
 import curve_mesh
@@ -11,11 +14,13 @@ from environment.expressway import WHITE, smooth
 from environment.expressway_signs import SIGN_MODELS, kilometer_face
 from environment.expressway_vegetation import (
     TERRAIN_COLUMNS,
-    cover_color,
     understory,
     vegetation_steps,
 )
+from highway_curve import HighwayCurve
 from highway_segments import SEGMENT_LENGTH, segment, surface_meshes
+
+_TERRAIN_XYZ_BY_CURVE = WeakKeyDictionary()
 
 
 def anchor(curve, index):
@@ -82,9 +87,165 @@ def ground_height(d, s, road_z, seed):
     return base * (1-ramp) + 7.0 * ramp
 
 
+def _row_ground_params(s, seed):
+    phase = seed % 19 * .3
+    zone, local = district(s, seed)
+    bridge_ramp = (1 - smooth(6, 28, abs(local - 820))) if zone in (1, 3) else 0
+    left_height = 13 + 7 * math.sin(s / 470 + phase) + 3 * math.sin(s / 139)
+    s_sin11 = s * .11
+    edge = 74 + 5 * math.sin(s / 63 + phase) + 3 * math.sin(s / 23)
+    urban = city_weight(s, seed)
+    if urban:
+        shore = 340 + 18 * math.sin(s / 220 + phase) + 9 * math.sin(s / 61)
+        shift = _city_shift(s, seed)
+    else:
+        shore = shift = 0.0
+    return bridge_ramp, left_height, s_sin11, edge, urban, shore, shift
+
+
+def _fast_ground_height(d, params, road_z):
+    width = abs(d)
+    if width < 19:
+        return -.32 + math.sin((width - 8.5) / 10.5 * math.pi) * .22
+    if width <= 35:
+        return -.32
+    bridge_ramp, left_height, s_sin11, edge, urban, shore, shift = params
+    ramp = bridge_ramp * smooth(35, 54, width) * (1 - smooth(56, 115, width))
+    if d < 0:
+        hill = smooth(35, 76, width) * left_height + smooth(76, 120, width) * 12
+        detail = smooth(35, 44, width) * (1 - smooth(108, 120, width))
+        base = -.32 + hill + detail * (.55 * math.sin(s_sin11 + d * .3))
+        return max(base, -.32 + ramp * 7.4)
+    base = -.32 - smooth(35, edge, width) * (road_z + 4.4)
+    if urban:
+        upper = max(.85, road_z - 1.5)
+        deck = upper + (.85 - upper) * smooth(155 + shift, 225 + shift, width)
+        terrace = -.32 * (1 - smooth(35, 61.5 + shift, width)) + (deck - road_z) * smooth(35, 61.5 + shift, width)
+        coast = smooth(shore - 28, shore + 22, width)
+        mainland = terrace * (1 - coast) - (road_z + 4.4) * coast
+        base = base * (1 - urban) + mainland * urban
+    return base * (1 - ramp) + 7.0 * ramp
+
+
+def _smooth_arr(a, b, value):
+    t = np.clip((value - a) / (b - a), 0.0, 1.0)
+    return t * t * (3.0 - 2.0 * t)
+
+
+def _fast_ground_height_arr(d, params, road_z):
+    width = np.abs(d)
+    bridge_ramp, left_height, s_sin11, edge, urban, shore, shift = params
+    ramp = bridge_ramp * _smooth_arr(35.0, 54.0, width) * (1.0 - _smooth_arr(56.0, 115.0, width))
+    # 左侧路堑山坡
+    hill = _smooth_arr(35.0, 76.0, width) * left_height + _smooth_arr(76.0, 120.0, width) * 12.0
+    detail = _smooth_arr(35.0, 44.0, width) * (1.0 - _smooth_arr(108.0, 120.0, width))
+    left_val = np.maximum(-0.32 + hill + detail * (0.55 * np.sin(s_sin11 + d * 0.3)), -0.32 + ramp * 7.4)
+    # 右侧海湾与城市大陆
+    right_base = -0.32 - _smooth_arr(35.0, edge, width) * (road_z + 4.4)
+    if urban:
+        upper = max(0.85, road_z - 1.5)
+        deck = upper + (0.85 - upper) * _smooth_arr(155.0 + shift, 225.0 + shift, width)
+        t_w = _smooth_arr(35.0, 61.5 + shift, width)
+        terrace = -0.32 * (1.0 - t_w) + (deck - road_z) * t_w
+        coast = _smooth_arr(shore - 28.0, shore + 22.0, width)
+        mainland = terrace * (1.0 - coast) - (road_z + 4.4) * coast
+        right_base = right_base * (1.0 - urban) + mainland * urban
+    right_val = right_base * (1.0 - ramp) + 7.0 * ramp
+    out = np.where(d < 0.0, left_val, right_val)
+    inner = -0.32 + np.sin((width - 8.5) / 10.5 * math.pi) * 0.22
+    out = np.where(width <= 35.0, -0.32, out)
+    return np.where(width < 19.0, inner, out)
+
+
+@lru_cache(maxsize=256)
+def _cached_highway_terrain_z(seed_key, height_key, base_height, d, s, terrain_seed):
+    # 仅复用纯由道路参数决定的基准高程，不持有 curve 实例引用。
+    index = math.floor(s / 1000)
+    t = (s - index * 1000) / 1000
+    from highway_segments import _mix
+
+    bits = _mix(seed_key ^ _mix(index))
+    hill = -1 if bits & 2 else 1
+    b = 64 * t ** 3 * (1 - t) ** 3
+    road_z = base_height + hill * height_key * b
+    return road_z + ground_height(d, s, road_z, terrain_seed)
+
+
+def _row_params_2d(s_col, seed):
+    rows = len(s_col)
+    phase = seed % 19 * .3
+    s_flat = s_col[:, 0]
+    bridge_ramp = np.empty(rows, dtype=np.float64)
+    urban_arr = np.empty(rows, dtype=np.float64)
+    shore_arr = np.zeros(rows, dtype=np.float64)
+    shift_arr = np.zeros(rows, dtype=np.float64)
+    for idx_r, sv in enumerate(s_flat):
+        zone, loc = district(float(sv), seed)
+        bridge_ramp[idx_r] = (1.0 - smooth(6, 28, abs(loc - 820))) if zone in (1, 3) else 0.0
+        u_val = city_weight(float(sv), seed)
+        urban_arr[idx_r] = u_val
+        if u_val:
+            shore_arr[idx_r] = 340 + 18 * math.sin(sv / 220 + phase) + 9 * math.sin(sv / 61)
+            shift_arr[idx_r] = _city_shift(float(sv), seed)
+    left_h = 13.0 + 7.0 * np.sin(s_col / 470.0 + phase) + 3.0 * np.sin(s_col / 139.0)
+    edge = 74.0 + 5.0 * np.sin(s_col / 63.0 + phase) + 3.0 * np.sin(s_col / 23.0)
+    return (bridge_ramp[:, None], left_h, s_col * 0.11, edge,
+            urban_arr[:, None], shore_arr[:, None], shift_arr[:, None])
+
+
+def _height_2d(d_mat, params, road_z):
+    w_mat = np.abs(d_mat)
+    br, lh, ss11, ed, ur, sh, sf = params
+    ramp = br * _smooth_arr(35.0, 54.0, w_mat) * (1.0 - _smooth_arr(56.0, 115.0, w_mat))
+    hill = _smooth_arr(35.0, 76.0, w_mat) * lh + _smooth_arr(76.0, 120.0, w_mat) * 12.0
+    detail = _smooth_arr(35.0, 44.0, w_mat) * (1.0 - _smooth_arr(108.0, 120.0, w_mat))
+    left_v = np.maximum(-0.32 + hill + detail * (0.55 * np.sin(ss11 + d_mat * 0.3)), -0.32 + ramp * 7.4)
+    right_base = -0.32 - _smooth_arr(35.0, ed, w_mat) * (road_z + 4.4)
+    if np.any(ur):
+        upper = np.maximum(0.85, road_z - 1.5)
+        deck = upper + (0.85 - upper) * _smooth_arr(155.0 + sf, 225.0 + sf, w_mat)
+        t_w = _smooth_arr(35.0, 61.5 + sf, w_mat)
+        terrace = -0.32 * (1.0 - t_w) + (deck - road_z) * t_w
+        coast = _smooth_arr(sh - 28.0, sh + 22.0, w_mat)
+        mainland = terrace * (1.0 - coast) - (road_z + 4.4) * coast
+        right_base = right_base * (1.0 - ur) + mainland * ur
+    right_v = right_base * (1.0 - ramp) + 7.0 * ramp
+    out = np.where(d_mat < 0.0, left_v, right_v)
+    inner = -0.32 + np.sin((w_mat - 8.5) / 10.5 * math.pi) * 0.22
+    out = np.where(w_mat <= 35.0, -0.32, out)
+    return np.where(w_mat < 19.0, inner, out)
+
+
+def _curve_cols_2d(curve, start, total_rows, offset):
+    samples = [curve.sample(float(start + row * 5 + offset)) for row in range(total_rows)]
+    cx = np.array([c.x for c in samples], dtype=np.float64)[:, None]
+    cy = np.array([c.y for c in samples], dtype=np.float64)[:, None]
+    cz = np.array([c.z for c in samples], dtype=np.float64)[:, None]
+    h = np.radians(np.array([c.heading for c in samples], dtype=np.float64))[:, None]
+    return cx, cy, cz, np.cos(h), np.sin(h)
+
+
 def terrain_point(curve, d, s, seed):
+    if type(curve) is HighwayCurve:
+        cache = _TERRAIN_XYZ_BY_CURVE.get(curve)
+        if cache is None:
+            cache = {}
+            _TERRAIN_XYZ_BY_CURVE[curve] = cache
+        key = (d, s, seed)
+        xyz = cache.get(key)
+        if xyz is None:
+            p = sample(curve, s, d)
+            z = _cached_highway_terrain_z(curve.seed, curve.height, curve.base_height, d, s, seed)
+            xyz = (p.x, p.y, z)
+            if len(cache) >= 512:
+                cache.clear()
+            cache[key] = xyz
+        return Vec3(*xyz)
     p = sample(curve, s, d)
-    p.z += ground_height(d, s, p.z, seed)
+    if curve is not None and hasattr(curve, 'base_height') and hasattr(curve, 'advance'):
+        p.z = _cached_highway_terrain_z(curve.seed, curve.height, curve.base_height, d, s, seed)
+    else:
+        p.z += ground_height(d, s, p.z, seed)
     return p
 
 
@@ -139,7 +300,7 @@ def positions(index, seed, curve=None):
     return [(model, sign_lateral(model, d, s, seed), s, heading) for model, d, s, heading in items]
 
 
-def detail_group(root, curve, index, name="expressway-detail-distance", distance=700):
+def detail_group(root, curve, index, name="expressway-detail-distance", distance=780):
     """近景资产按显示距离绘制，原物理segment的存活窗口不变。"""
     lod = LODNode(name)
     lod.setCenter(sample(curve,index*200+100)-Vec3(*anchor(curve,index)))
@@ -176,6 +337,16 @@ def rail_shadow_coordinate(curve, distance, lateral, height=0):
     return lateral, reach
 
 
+def _set_rail_shadow_fast(node, coordinates, faces):
+    from environment.surface_mesh import rail_shadow_format
+
+    data = node.node().modifyGeom(0).modifyVertexData()
+    data.setFormat(rail_shadow_format(data.getFormat()))
+    flat_idx = np.asarray(faces, dtype=np.intp).reshape(-1)
+    shadow_arr = np.asarray(coordinates, dtype='<f4')[flat_idx]
+    data.modifyArray(1).modifyHandle().setData(shadow_arr.tobytes())
+
+
 def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
     from environment.surface_mesh import flatten_steps, set_rail_shadow_coordinates
     from scene import make_box, make_mesh
@@ -188,18 +359,47 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
         p.z += z
         return p
 
-    def strip(name, left, right, z, color, first, last):
-        rows = [first]
-        rows.extend(s for s in range(math.floor(first / 5) * 5 + 5, math.ceil(last), 5) if s < last)
-        rows.append(last)
-        vertices = [tuple(point(d, s, z)) for s in rows for d in (left, right)]
-        faces = [(r * 2, r * 2 + 1, r * 2 + 3) for r in range(len(rows) - 1)]
-        faces += [(r * 2, r * 2 + 3, r * 2 + 2) for r in range(len(rows) - 1)]
+    def strip_batch(name, left, right, z, color, spans):
+        vertices, faces, coordinates = [], [], []
+        for first, last in spans:
+            rows = [first]
+            rows.extend(s for s in range(math.floor(first / 5) * 5 + 5, math.ceil(last), 5) if s < last)
+            rows.append(last)
+            base = len(vertices)
+            for s in rows:
+                pose = curve.sample(s) if curve else None
+                if pose is not None:
+                    h_rad = math.radians(pose.heading)
+                    rx, ry = math.cos(h_rad), math.sin(h_rad)
+                    px, py, pz = pose.x - origin.x, pose.y - origin.y, pose.z - origin.z + z
+                    g_tan = math.tan(math.radians(pose.grade))
+                    # 复用单次道路采样同步计算两侧顶点与护栏投影坐标。
+                    sx, sy = (.44, .60)
+                    if isinstance(curve, CareerCourse) and curve.course_id in ('coast-club', 'coast-final'):
+                        _, sh_left = rail_shadow_coordinate(curve, s, left, z)
+                        _, sh_right = rail_shadow_coordinate(curve, s, right, z)
+                    else:
+                        fwd = -sx * math.sin(h_rad) + sy * math.cos(h_rad)
+                        crs = sx * math.cos(h_rad) + sy * math.sin(h_rad)
+                        den = 1 + g_tan * fwd
+                        reach = max(0, .8 - z) * crs / den if den > 1e-5 else 0.0
+                        sh_left = sh_right = reach
+                    vertices.append((px + left * rx, py + left * ry, pz))
+                    vertices.append((px + right * rx, py + right * ry, pz))
+                    coordinates.append((left, sh_left))
+                    coordinates.append((right, sh_right))
+                else:
+                    for d in (left, right):
+                        vertices.append(tuple(point(d, s, z)))
+                        coordinates.append(rail_shadow_coordinate(curve, s, d, z))
+            for r in range(len(rows) - 1):
+                a = base + r * 2
+                faces.extend(((a, a + 1, a + 3), (a, a + 3, a + 2)))
         node = make_mesh(name, vertices, faces, Vec4(*color))
-        coordinates = [rail_shadow_coordinate(curve, s, d, z) for s in rows for d in (left, right)]
-        set_rail_shadow_coordinates(node, coordinates, faces)
+        _set_rail_shadow_fast(node, coordinates, faces)
         node.setMaterial(kit["surface-material"])
         node.setShader(kit["road-shadow-shader"])
+        node.setDepthOffset(1)
         node.reparentTo(root)
         return node
 
@@ -234,41 +434,47 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
                 shadow, uv = surface_inputs[vertex]
                 coordinates.append(shadow)
                 road_uv.append(uv)
-                if len(coordinates) % 8 == 0:
+                if len(coordinates) % 64 == 0:
                     yield 'surface-coordinates'
-            set_rail_shadow_coordinates(node, coordinates, faces)
+            _set_rail_shadow_fast(node, coordinates, faces)
             node.setTexture(kit["aggregate"])
             node.setShader(kit["road-shadow-shader"])
             if name == 'road':
                 data = node.node().modifyGeom(0).modifyVertexData()
-                writer = GeomVertexWriter(data, 'texcoord')
-                for face in faces:
-                    for number in face:
-                        writer.addData2f(*road_uv[number])
+                flat_idx = np.asarray(faces, dtype=np.intp).reshape(-1)
+                uv_arr = np.asarray(road_uv, dtype='<f4')[flat_idx]
+                arr0 = data.modifyArray(0).modifyHandle()
+                dtype0 = np.dtype([('p', '<f4', 3), ('n', '<f4', 3), ('c', 'u1', 4), ('uv', '<f4', 2)])
+                buf = np.frombuffer(arr0.getData(), dtype=dtype0).copy()
+                buf['uv'] = uv_arr
+                arr0.setData(buf.tobytes())
                 node.setTexture(kit['road-albedo'])
                 node.setShader(kit['road-asphalt-shader'])
                 node.setShaderInput('asphalt_normals', kit['road-normal'])
                 node.setShaderInput('asphalt_roughness', kit['road-roughness'])
         yield "surface"
-    for s in range(start, start + 200, 8):
-        for d in (-2.25, 2.25):
-            strip("white-lane-dash", d - .07, d + .07, .035, WHITE, s, s + 4)
-        yield "markings"
+    for d in (-2.25, 2.25):
+        dashes = [(s, s + 4) for s in range(start, start + 200, 8)]
+        for offset in range(0, len(dashes), 8):
+            strip_batch("white-lane-dash", d - .07, d + .07, .035, WHITE, dashes[offset:offset + 8])
+            yield "markings"
     for side in (-1, 1):
         d = side * 6.56
-        strip("edge-line", d - .075, d + .075, .04,
-              (.88, .62, .13, 1) if side < 0 else WHITE, start, start + 200)
+        strip_batch("edge-line", d - .075, d + .075, .04,
+                    (.88, .62, .13, 1) if side < 0 else WHITE, ((start, start + 200),))
         d = side * 7.68
-        strip("drain-channel", d - .18, d + .18, .021, (.29, .31, .29, 1), start, start + 200)
-        for s in range(start, start + 200, 4):
-            d = side * 6.99
-            strip("shoulder-rumble", d - .14, d + .14, .029, (.24, .26, .24, 1), s, s + .25)
+        strip_batch("drain-channel", d - .18, d + .18, .021, (.29, .31, .29, 1), ((start, start + 200),))
+        rumbles = [(s, s + .25) for s in range(start, start + 200, 4)]
+        d = side * 6.99
+        for offset in range(0, len(rumbles), 25):
+            strip_batch("shoulder-rumble", d - .14, d + .14, .029, (.24, .26, .24, 1), rumbles[offset:offset + 25])
             yield "markings"
     details = detail_group(root, curve, index)
     details.setShader(kit["detail-shader"], 1)
     signs = detail_group(root, curve, index, "expressway-sign-distance", 1200)
     signs.setShader(kit["distance-shader"], 1)
     cells = {}
+    drain_local_cache = {}
 
     def detail_parent(s):
         # 原生合批限制在20m小块，避免整段草木的不可打断unify长帧。
@@ -292,27 +498,41 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
             # 排水盖也处于连续护栏遮蔽中，不能随实时阴影范围跳变。
             projections = {}
             for path in node.findAllMatches("**/+GeomNode"):
-                # 展开的三角形反复引用同一角点；每个局部角点只投影一次，原坐标不变。
-                local_coordinates = {}
+                # 展开的三角形反复引用同一角点；缓存模板局部索引并按刚体变换复用投影。
+                mat = path.getMat(root)
                 for geom_index in range(path.node().getNumGeoms()):
-                    reader = GeomVertexReader(path.node().getGeom(geom_index).getVertexData(), "vertex")
-                    coordinates = []
-                    while not reader.isAtEnd():
-                        local = tuple(reader.getData3f())
-                        if local not in local_coordinates:
-                            world = root.getRelativePoint(path, local) + origin
-                            key = world.x, world.y
-                            if key not in projections:
-                                distance, lateral = curve.project(tuple(world)) if curve else (world.y, world.x)
-                                road_z = curve.sample(distance).z if curve else 0
-                                projections[key] = distance, lateral, road_z
-                            distance, lateral, road_z = projections[key]
-                            local_coordinates[local] = rail_shadow_coordinate(curve, distance, lateral, world.z-road_z)
-                        coordinates.append(local_coordinates[local])
-                    set_rail_shadow_coordinates(path, coordinates, geom_index=geom_index)
-                    # 每组格栅36个顶点完成后交还预算，避免整盖累计成一帧长操作。
-                    yield "drain-shadow"
+                    vdata = path.node().getGeom(geom_index).getVertexData()
+                    key_id = int(vdata.this)
+                    cached_locals = drain_local_cache.get(key_id)
+                    if cached_locals is None:
+                        reader = GeomVertexReader(vdata, "vertex")
+                        unique_pts = []
+                        index_map = {}
+                        inverse = []
+                        while not reader.isAtEnd():
+                            local = tuple(reader.getData3f())
+                            pt_idx = index_map.get(local)
+                            if pt_idx is None:
+                                pt_idx = len(unique_pts)
+                                unique_pts.append(local)
+                                index_map[local] = pt_idx
+                            inverse.append(pt_idx)
+                        cached_locals = (unique_pts, inverse)
+                        drain_local_cache[key_id] = cached_locals
+                    unique_pts, inverse = cached_locals
+                    coord_table = []
+                    for local in unique_pts:
+                        world = mat.xformPoint(Vec3(*local)) + origin
+                        key = world.x, world.y
+                        if key not in projections:
+                            distance, lateral = curve.project(tuple(world)) if curve else (world.y, world.x)
+                            road_z = curve.sample(distance).z if curve else 0
+                            projections[key] = distance, lateral, road_z
+                        distance, lateral, road_z = projections[key]
+                        coord_table.append(rail_shadow_coordinate(curve, distance, lateral, world.z-road_z))
+                    set_rail_shadow_coordinates(path, [coord_table[i] for i in inverse], geom_index=geom_index)
             node.setShader(kit["road-shadow-shader"], 2)
+            yield "drain-shadow"
         if model == "kilometer":
             kilometer_face(node, s, kit["kilometer-base"], kit["sign-digits"])
         if model == "soundwall" and pose:
@@ -327,12 +547,14 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
                 abutment.setH(pose.heading if pose else 0)
         yield "facilities"
     # 物理树的位置、高程和绝对朝向严格沿用streamed_road。
-    for number, (d, local, scale, heading) in enumerate(segment(seed, index).trees):
+    seg_trees = segment(seed, index).trees
+    for number, (d, local, scale, heading) in enumerate(seg_trees):
         tree = kit[f"tree-{(index + number) % 2}"].copyTo(detail_parent(start + local))
         tree.setPos(point(d, start + local, -.32 + .05 * scale))
         tree.setScale(scale)
         tree.setH(heading)
-        yield "trees"
+        if number % 2 == 1 or number == len(seg_trees) - 1:
+            yield "trees"
     road_batch = root.attachNewNode("road-batch")
     for child in list(root.getChildren()):
         if child != road_batch and not isinstance(child.node(), LODNode):
@@ -346,8 +568,9 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
         for child in tuple(cell.getChildren()):
             if child != batch and child.find('**/+LODNode').isEmpty() and not isinstance(child.node(), LODNode):
                 child.reparentTo(batch)
-        batch.clearModelNodes()
-        batch.flattenStrong()
+        if batch.getNumChildren():
+            batch.clearModelNodes()
+            yield from flatten_steps(batch)
         yield "detail-batch"
     signs.clearModelNodes()
     signs.flattenStrong()
@@ -372,12 +595,18 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
             vertices, faces, normals, colors = coastal
         else:
             vertices, faces = curve_mesh.surfaces(curve,index)['ground']
-            normals = []
+            accumulated = [Vec3(0, 0, 0) for _ in vertices]
             for a, b, c in faces:
                 normal = (Vec3(*vertices[b])-Vec3(*vertices[a])).cross(Vec3(*vertices[c])-Vec3(*vertices[a])).normalized()
-                normals.extend((normal,normal,normal))
+                accumulated[a] += normal
+                accumulated[b] += normal
+                accumulated[c] += normal
+            normals = [tuple(n.normalized()) if n.lengthSquared() > 0 else (0., 0., 1.) for n in accumulated]
             colors = [(.24, .34, .08, 0)]*len(vertices)
-        uv = [(p[0]+origin.x, p[1]+origin.y) for p in vertices]
+        uv = []
+        for p in vertices:
+            distance, lateral = curve.project((p[0]+origin.x, p[1]+origin.y))
+            uv.append((lateral, distance))
         node = surface_mesh('course-landscape', vertices, faces, normals, colors, uv)
         node.setTexture(kit['ground'])
         node.setShader(kit['route-terrain-shader'], 1)
@@ -394,35 +623,90 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
         cross = sorted(side * d for d in widths)
         urban_mesh = side > 0 and any(city_weight(start+local, seed) for local in (0, 100, 200))
         width = len(cross)+(3 if urban_mesh else 0)
-        vertices, normals, colors, uv = [], [], [], []
-        for local in range(0, 201, 5):
-            s = start + local
-            shift = _city_shift(s, seed)
-            row_cross = sorted((*cross, 61.5+shift, 155+shift, 225+shift)) if urban_mesh else cross
-            # 只跳过原算法必然不影响本行的群落，顶点颜色与原顺序保持一致。
-            row_beds = [bed for bed in beds if abs(s-bed[1]) <= bed[2]*1.8]
-            for d in row_cross:
-                p = terrain_point(curve, d, s, seed)
-                dx = terrain_point(curve, d + .1, s, seed) - terrain_point(curve, d - .1, s, seed)
-                dy = terrain_point(curve, d, s + .1, seed) - terrain_point(curve, d, s - .1, seed)
-                normal = dx.cross(dy).normalized()
-                vertices.append(tuple(p - origin))
-                normals.append(normal)
-                variation = .5 + .2 * math.sin(d * .27 + s * .017) + .17 * math.sin(d * .61 - s * .031)
-                base = (.12 + .20 * variation, .22 + .17 * variation, .042 + .058 * variation)
-                colors.append((*cover_color(d,s,base,row_beds),
-                               smooth(.03, .19, 1 - normal.z) if side < 0 else 0))
-                # 有限局部UV保持远里程精度；5/3m周期在600m处同时重复。
-                uv.append((d, start % 600 + local))
-            yield "terrain-row"
-        faces = []
-        for row in range(40):
-            for col in range(width - 1):
-                a = row * width + col
-                faces.extend(((a, a + 1, a + width + 1), (a, a + width + 1, a + width)))
+        total_rows = 41
+        total_verts = total_rows * width
+        s_vec = np.arange(start, start + 201, 5, dtype=np.float64)[:, None]
+        if urban_mesh:
+            cross_base = np.asarray(cross, dtype=np.float64)
+            d_2d = np.empty((total_rows, width), dtype=np.float64)
+            for row_index in range(total_rows):
+                shift = _city_shift(start + row_index * 5, seed)
+                d_2d[row_index] = np.sort(
+                    np.concatenate((cross_base, (61.5 + shift, 155.0 + shift, 225.0 + shift)))
+                )
+        else:
+            d_2d = np.broadcast_to(np.asarray(cross, dtype=np.float64)[None, :], (total_rows, width))
+
+        p0 = _row_params_2d(s_vec, seed)
+        pm = _row_params_2d(s_vec - 0.1, seed)
+        pp = _row_params_2d(s_vec + 0.1, seed)
+        yield "terrain-row"
+        if curve is not None:
+            cx0, cy0, cz0, rx0, ry0 = _curve_cols_2d(curve, start, total_rows, 0.0)
+            cxm, cym, czm, rxm, rym = _curve_cols_2d(curve, start, total_rows, -0.1)
+            cxp, cyp, czp, rxp, ryp = _curve_cols_2d(curve, start, total_rows, 0.1)
+            px = cx0 + d_2d * rx0
+            py = cy0 + d_2d * ry0
+            pz = cz0 + _height_2d(d_2d, p0, cz0)
+            dx_x, dx_y = 0.2 * rx0, 0.2 * ry0
+            dx_z = _height_2d(d_2d + 0.1, p0, cz0) - _height_2d(d_2d - 0.1, p0, cz0)
+            dy_x = (cxp + d_2d * rxp) - (cxm + d_2d * rxm)
+            dy_y = (cyp + d_2d * ryp) - (cym + d_2d * rym)
+            dy_z = (czp + _height_2d(d_2d, pp, czp)) - (czm + _height_2d(d_2d, pm, czm))
+        else:
+            zeros = np.zeros((total_rows, 1), dtype=np.float64)
+            px = d_2d
+            py = np.broadcast_to(s_vec, (total_rows, width))
+            pz = _height_2d(d_2d, p0, zeros)
+            dx_x, dx_y = 0.2, 0.0
+            dx_z = _height_2d(d_2d + 0.1, p0, zeros) - _height_2d(d_2d - 0.1, p0, zeros)
+            dy_x, dy_y = 0.0, 0.2
+            dy_z = _height_2d(d_2d, pp, zeros) - _height_2d(d_2d, pm, zeros)
+        nx = dx_y * dy_z - dx_z * dy_y
+        ny = dx_z * dy_x - dx_x * dy_z
+        nz = dx_x * dy_y - dx_y * dy_x
+        n_len = np.sqrt(nx * nx + ny * ny + nz * nz)
+        safe_len = np.where(n_len > 1e-12, n_len, 1.0)
+        nx /= safe_len
+        ny /= safe_len
+        nz /= safe_len
+        yield "terrain-row"
+        variation = 0.5 + 0.2 * np.sin(d_2d * 0.27 + s_vec * 0.017) + 0.17 * np.sin(d_2d * 0.61 - s_vec * 0.031)
+        base_r = 0.12 + 0.20 * variation
+        base_g = 0.22 + 0.17 * variation
+        base_b = 0.042 + 0.058 * variation
+        shade = np.zeros((total_rows, width), dtype=np.float64)
+        for bx, by, br in beds:
+            row_mask = np.abs(s_vec[:, 0] - by) <= br * 1.8
+            if not np.any(row_mask):
+                continue
+            dist = ((d_2d[row_mask] - bx) / br) ** 2 + ((s_vec[row_mask] - by) / (br * 1.8)) ** 2
+            shade[row_mask] = np.maximum(shade[row_mask], np.maximum(0.0, 1.0 - dist) ** 2 * 0.55)
+        inv_shade = 1.0 - shade
+        vertices_arr = np.stack((px - origin.x, py - origin.y, pz - origin.z), axis=-1).astype(np.float32)
+        normals_arr = np.stack((nx, ny, nz), axis=-1).astype(np.float32)
+        alpha_arr = _smooth_arr(0.03, 0.19, 1.0 - nz) if side < 0 else np.zeros((total_rows, width), dtype=np.float64)
+        colors_arr = np.stack((base_r * inv_shade + 0.17 * shade,
+                               base_g * inv_shade + 0.22 * shade,
+                               base_b * inv_shade + 0.075 * shade,
+                               alpha_arr), axis=-1)
+        uv_arr = np.stack((d_2d, np.broadcast_to(s_vec - start + (start % 600), (total_rows, width))), axis=-1).astype(np.float32)
+        r_idx = np.arange(40, dtype='<u4')[:, None] * width + np.arange(width - 1, dtype='<u4')[None, :]
+        tri1 = np.stack((r_idx, r_idx + 1, r_idx + width + 1), axis=-1).reshape(-1, 3)
+        tri2 = np.stack((r_idx, r_idx + width + 1, r_idx + width), axis=-1).reshape(-1, 3)
+        faces = np.empty((40 * (width - 1) * 2, 3), dtype='<u4')
+        faces[0::2] = tri1
+        faces[1::2] = tri2
         from environment.surface_mesh import surface_mesh
 
-        node = surface_mesh("route-landscape", vertices, faces, normals, colors, uv)
+        node = surface_mesh(
+            "route-landscape",
+            vertices_arr.reshape(total_verts, 3),
+            faces,
+            normals_arr.reshape(total_verts, 3),
+            colors_arr.reshape(total_verts, 4),
+            uv_arr.reshape(total_verts, 2),
+        )
         node.setTexture(kit["ground"])
         node.setShader(kit["route-terrain-shader"], 1)
         node.setShaderInput("expressway_rock", kit["rock"])
@@ -442,7 +726,7 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
     for local in range(0, 201, 5):
         s = start + local
         for d in (48, 120, 300, 650):
-            p = sample(curve, s) + Vec3(d, 0, 0)
+            p = sample(curve, s, d)
             p.z = -3
             water_vertices.append(tuple(p - origin))
     for row in range(40):

@@ -95,7 +95,7 @@ class TrafficVehicle(Vehicle):
         self.dynamics = DynamicsState(
             air_relative_velocity=air_velocity,
             aerodynamic_force_vector=air_force,
-            aerodynamic_power=sum((air_force[0] * velocity.x, air_force[1] * velocity.y, air_force[2] * velocity.z)),
+            aerodynamic_power=air_force[0] * velocity.x + air_force[1] * velocity.y + air_force[2] * velocity.z,
         )
         return iter(())
 
@@ -131,18 +131,19 @@ class TrafficVehicle(Vehicle):
     def snapshot(self, *, include_wheels=True, active=True, generation=0, signal=0, hazards=False):
         pose = self._chassis.getTransform()
         position = pose.getPos()
+        quat = pose.getQuat()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
         wheels = ()
         if include_wheels:
             poses = []
-            for wheel in self._vehicle.getWheels():
+            for wheel in self._wheels:
                 matrix = wheel.getWorldTransform()
                 orientation = Quat()
                 orientation.setFromMatrix(matrix.getUpper3())
                 poses.append(WheelState(tuple(matrix.getRow3(3)), tuple(orientation)))
             wheels = tuple(poses)
-        return CarState(tuple(position), hpr.x, velocity.dot(pose.getQuat().getForward()),
+        return CarState(tuple(position), hpr.x, velocity.dot(quat.getForward()),
             pitch=hpr.y, roll=hpr.z, wheels=wheels, steering=self.steering.angle,
             throttle=self._drive_pedal, brake=self._brake_pedal,
             rpm=self.powertrain.rpm, gear=self.powertrain.gear,
@@ -150,4 +151,4 @@ class TrafficVehicle(Vehicle):
             surface='asphalt' if self.on_asphalt(position.x, position.y) else 'grass',
             dynamics=self.dynamics, traction_state=self.traction.state, stability_state=self.stability.state,
             active=active, generation=generation, signal=signal, hazards=hazards,
-            velocity=tuple(velocity), orientation=tuple(pose.getQuat()))
+            velocity=tuple(velocity), orientation=tuple(quat))

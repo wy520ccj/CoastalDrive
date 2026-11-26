@@ -264,6 +264,10 @@ class CareerPanel:
                     and self.buttons[self.primary]['state'] != DGG.DISABLED):
                 self.select(self.primary)
                 return
+            if (self.page == 'garage' and vx > 0
+                    and self.garage_roles.get(self.selected) in ('category', 'category-active')):
+                self.action('garage-orbit', 25)
+                return
             current, candidates = self.buttons[self.selected], []
             for index, button in enumerate(self.buttons):
                 dx, dz = button.getX()-current.getX(), button.getZ()-current.getZ()
@@ -272,6 +276,8 @@ class CareerPanel:
                     candidates.append((ahead+across*3., index))
             if candidates:
                 self.select(min(candidates)[1])
+            elif self.page == 'garage' and vx != 0:
+                self.action('garage-orbit', 25 * vx)
             return
         if key in ('arrow_left', 'arrow_up', 'a', 'w'):
             self.select(self.selected-1)

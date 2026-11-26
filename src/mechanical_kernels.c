@@ -4,6 +4,7 @@
 #include <math.h>
 #include <limits.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 #include <float.h>
 
@@ -2488,8 +2489,78 @@ static int callback_force_values(void *context,double fx,double fy,int jacobian,
     CallbackForce *data=context;
     return rolling_root_evaluate(jacobian ? data->jacobian : data->residual,fx,fy,values,jacobian ? 4 : 2);
 }
+static void clamp_tire_force(double force[2],double grip) {
+    if(!(grip>0.)||!isfinite(grip)||!isfinite(force[0])||!isfinite(force[1])) {
+        force[0]=force[1]=0.;return;
+    }
+    double norm=hypot_two(force[0],force[1]);
+    if(norm>grip) {
+        double scale=nextafter(grip/norm,0.);
+        force[0]*=scale;force[1]*=scale;
+        while(hypot_two(force[0],force[1])>grip) {
+            force[0]=nextafter(force[0],0.);force[1]=nextafter(force[1],0.);
+        }
+    }
+}
+static int recover_numeric_error(void) {
+    if(native_solve_error) {
+        PyObject *type=native_solve_error->type;
+        if(native_solve_error->exception || (type && type!=PyExc_ArithmeticError && type!=PyExc_ZeroDivisionError))return 0;
+        native_solve_error->type=NULL;
+        return 1;
+    }
+    if(!PyErr_Occurred())return 1;
+    if(!PyErr_ExceptionMatches(PyExc_ArithmeticError))return 0;
+    PyErr_Clear();return 1;
+}
+static int bounded_force_newton(ForceEvaluation evaluate,void *context,double grip,double tolerance,
+    double force[2],double *final_error) {
+    double best[2]={0.},error=DBL_MAX,residual[2];
+    clamp_tire_force(force,grip);
+    if(!evaluate(context,force[0],force[1],0,residual)) {
+        if(!recover_numeric_error())return 0;
+        force[0]=force[1]=0.;
+        if(!evaluate(context,0.,0.,0,residual)) {
+            if(!recover_numeric_error())return 0;
+            *final_error=error;return 1;
+        }
+    }
+    double norm=hypot_two(residual[0],residual[1]);
+    if(isfinite(norm)){memcpy(best,force,sizeof(best));error=norm;}
+    for(int iteration=0;iteration<20 && error>=tolerance;++iteration) {
+        double matrix[4];
+        if(!evaluate(context,force[0],force[1],1,matrix)) {
+            if(!recover_numeric_error())return 0;
+            break;
+        }
+        double determinant=matrix[0]*matrix[3]-matrix[1]*matrix[2];
+        double scale=fmax(1.,fabs(matrix[0]*matrix[3])+fabs(matrix[1]*matrix[2]));
+        if(!isfinite(determinant)||fabs(determinant)<=1e-12*scale)break;
+        double dx=(matrix[3]*residual[0]-matrix[1]*residual[1])/determinant;
+        double dy=(matrix[0]*residual[1]-matrix[2]*residual[0])/determinant;
+        if(!isfinite(dx)||!isfinite(dy))break;
+        int accepted=0;
+        for(int attempt=0;attempt<12;++attempt) {
+            double candidate[2]={force[0]-ldexp(dx,-attempt),force[1]-ldexp(dy,-attempt)},next[2];
+            clamp_tire_force(candidate,grip);
+            if(candidate[0]==force[0]&&candidate[1]==force[1])break;
+            if(!evaluate(context,candidate[0],candidate[1],0,next)) {
+                if(!recover_numeric_error())return 0;
+                continue;
+            }
+            norm=hypot_two(next[0],next[1]);
+            if(isfinite(norm)&&norm<error) {
+                memcpy(force,candidate,sizeof(candidate));memcpy(best,candidate,sizeof(candidate));
+                memcpy(residual,next,sizeof(next));error=norm;accepted=1;break;
+            }
+        }
+        if(!accepted)break;
+    }
+    memcpy(force,best,sizeof(best));*final_error=error;return 1;
+}
 static int rolling_root_values(ForceEvaluation evaluate,void *context,double grip,double tolerance,
-    double force[2],PyObject *hypot_function,double *final_error) {
+    double force[2],PyObject *hypot_function,double *final_error,int game) {
+    if(game)return bounded_force_newton(evaluate,context,grip,tolerance,force,final_error);
     double error=0.;
     for (int i = 0; i < 2; ++i) {
         double limited = force[i] < grip ? force[i] : grip;
@@ -2529,15 +2600,16 @@ static PyObject *rolling_force_solution(PyObject *self,PyObject *args) {
     CallbackForce context;
     PyObject *initial,*hypot_function;
     double grip,tolerance,force[2],error;
-    if (!PyArg_ParseTuple(args,"OOddOO",&context.residual,&context.jacobian,&grip,&tolerance,&initial,&hypot_function)) return NULL;
-    if (!vector(initial,force,2) || !rolling_root_values(callback_force_values,&context,grip,tolerance,force,hypot_function,&error)) return NULL;
+    int game=0;
+    if (!PyArg_ParseTuple(args,"OOddOO|p",&context.residual,&context.jacobian,&grip,&tolerance,&initial,&hypot_function,&game)) return NULL;
+    if (!vector(initial,force,2) || !rolling_root_values(callback_force_values,&context,grip,tolerance,force,hypot_function,&error,game)) return NULL;
     return Py_BuildValue("(ddd)",force[0],force[1],error);
 }
 
 /* 本次轮端方程的固定输入；暖分区仍逐次写回原list。 */
 typedef struct {
     WheelMap *map;
-    int wheel,rolling;
+    int wheel,rolling,game;
     double base[9],velocity[3],active[3],tangent[3],axle[3],moment_x[3],moment_y[3];
     double radius,previous[2],parameters[3],hardware[5],lateral_bias;
     PyObject *warm_branches,*warm_modes,*hypot;
@@ -2589,6 +2661,7 @@ static int wheel_force_values(void *context,double fx,double fy,int jacobian,dou
     return 1;
 }
 static int wheel_newton_values(WheelForce *data,double tolerance,double force[2],double *final_error) {
+    if(data->game)return bounded_force_newton(wheel_force_values,data,data->parameters[0],tolerance,force,final_error);
     double error=0.;
     for (int iteration=0;iteration<20;++iteration) {
         double residual[2],matrix[4];
@@ -2631,11 +2704,13 @@ static PyObject *wheel_force_result(WheelForce *context,double tolerance,double 
         }
         double rhs_x=slopes[0]*patch[0],rhs_y=slopes[1]*patch[1];
         double determinant=matrix[0]*matrix[3]-matrix[1]*matrix[2];
-        if (determinant==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"轮胎初值切线行列式为零"); return NULL; }
-        force[0]=(matrix[3]*rhs_x-matrix[1]*rhs_y)/determinant;
-        force[1]=(matrix[0]*rhs_y-matrix[2]*rhs_x)/determinant;
+        if (determinant==0.&&!context->game) { PyErr_SetString(PyExc_ZeroDivisionError,"轮胎初值切线行列式为零"); return NULL; }
+        if(!context->game||(isfinite(determinant)&&fabs(determinant)>1e-12)) {
+            force[0]=(matrix[3]*rhs_x-matrix[1]*rhs_y)/determinant;
+            force[1]=(matrix[0]*rhs_y-matrix[2]*rhs_x)/determinant;
+        }
     }
-    int solved=context->rolling ? rolling_root_values(wheel_force_values,context,context->parameters[0],tolerance,force,context->hypot,&error)
+    int solved=context->rolling ? rolling_root_values(wheel_force_values,context,context->parameters[0],tolerance,force,context->hypot,&error,context->game)
                                : wheel_newton_values(context,tolerance,force,&error);
     if (!solved) return NULL;
     if (!wheel_force_state(context,force[0],force[1],state,end_velocity,&brake,&selected,&mode)) return NULL;
@@ -2666,10 +2741,10 @@ static PyObject *loaded_wheel_force_solution(PyObject *self,PyObject *args) {
     PyObject *active,*moment_x,*moment_y,*previous,*parameters,*hardware,*initial;
     double tolerance,force[2],angular[9],normal[9],gyro[3],road[4];
     int predict;
-    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOOOOOOOO" "pdOpO|d",&coefficients,&context.wheel,
+    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOOOOOOOO" "pdOpO|dp",&coefficients,&context.wheel,
         &forces,&velocity,&normal_forces,&normal_responses,&gradients,&gyro_object,&road_object,&active,
         &context.warm_branches,&context.warm_modes,&moment_x,&moment_y,&previous,&parameters,&hardware,
-        &context.rolling,&tolerance,&initial,&predict,&context.hypot,&context.lateral_bias)) return NULL;
+        &context.rolling,&tolerance,&initial,&predict,&context.hypot,&context.lateral_bias,&context.game)) return NULL;
     context.map=PyCapsule_GetPointer(coefficients,wheel_map_name);
     if (!context.map) return NULL;
     if (context.wheel<0 || context.wheel>=4) { PyErr_SetString(PyExc_IndexError,"轮端索引越界"); return NULL; }

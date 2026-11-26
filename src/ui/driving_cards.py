@@ -79,7 +79,7 @@ class DrivingCards:
         rounded_panel(self.content, 'cards-title-bar', (-1.50, -1.490, .665, .745), theme.AMBER, .004)
         self.text(title, -1.465, .675, .070, theme.WHITE)
         self.text(subtitle, -1.50, .576, .035, theme.DARK_SUB)
-        self.text('↑ ↓ ← → 选择   ·   Enter 确认   ·   Esc 返回', -1.50, -.845, .029, theme.DARK_SUB)
+        self.text('↑ ↓ ← → 选择   ·   Enter 确认   ·   Esc 返回', -1.50, -.930, .028, theme.DARK_SUB)
         self.card_borders = {}
         self.resize(app.getAspectRatio())
 
@@ -196,7 +196,8 @@ class DrivingCards:
             self.text(description, x-.44, z-.050, .030, theme.DARK_SUB)
             self.text(target, x-.44, z-.155, .029, theme.STEEL_TEXT)
         self.text('路线示意 · 前三项无车流，上限180秒；碰撞 / 越界 / 复位结束挑战', -1.50, -.63, .030, theme.DARK_SUB)
-        self.button(6, 1.13, -.83, .86, .10, compact=True)
+        self.button(6, 1.13, -.77, .86, .10, compact=True)
+        self.summary_order = (0, 1, 2, 3, 4, 5, 6)
         self.select(app.panel_selection)
 
     def highway(self, app):
@@ -216,8 +217,8 @@ class DrivingCards:
             self.button(index, x, -.37, 1.00, .29)
             self.text(title, x-.44, -.39, .035, theme.STEEL_TEXT)
             self.text(description, x-.44, -.47, .025, theme.DARK_SUB)
-        self.text('选中上方道路 / 车流时，左右键调整；驾驶课题使用各自固定场地。', -1.50, -.63, .030, theme.DARK_SUB)
-        self.button(7, 1.13, -.83, .86, .10, compact=True)
+        self.text('选定道路或车流后可用 ← → 切换', -1.50, -.63, .030, theme.DARK_SUB)
+        self.button(7, 1.13, -.77, .86, .10, compact=True)
         self.select(app.panel_selection)
 
     def lesson(self, app, *, braking, fast):
@@ -264,10 +265,11 @@ class DrivingCards:
         for z, label, color in zip((.19, .03, -.13), medals, (theme.AMBER, theme.SILVER, theme.BRONZE), strict=True):
             self.text(label, .66, z, .054, color)
         self.text(rule, -1.50, -.37, .034, theme.DARK_SUB)
-        self.button(0, -.96, -.82, 1.08, .12, primary=True, compact=True)
-        self.button(2, .30, -.82, 1.28, .12, compact=True)
+        self.button(0, -.96, -.77, 1.08, .12, primary=True, compact=True)
+        self.button(2, .30, -.77, 1.28, .12, compact=True)
         self.button(1, -.77, -.55, 1.46, .10, compact=True)
-        self.button(3, 1.25, -.82, .50, .12, compact=True)
+        self.button(3, 1.25, -.77, .50, .12, compact=True)
+        self.summary_order = (1, 0, 2, 3)
         self.select(app.panel_selection)
 
     def practice_result(self, app, result):
@@ -284,15 +286,16 @@ class DrivingCards:
             rounded_panel(self.content, 'practice-gate-bar', (x-.43, x-.420, z-.10, z+.10), color, .003)
             self.text(f'第 {index+1} 门', x-.37, z+.075, .048, theme.WHITE)
             self.text('通过' if passed else '漏门' if reached else '未到达', x+.12, z+.075, .044, color)
-            self.text(f'车身余量 {result.clearances[index]:+.2f}m' if reached else '继续练习，尝试跑到这里',
+            self.text(f'车身余量 {result.clearances[index]:+.2f}m' if reached else '未到达该门',
                       x-.37, z-.07, .038, theme.DARK_SUB)
         if not result.succeeded:
             self.text(app.fit_lines(result.reason, 2.8, .032), -1.50, -.47, .032, theme.AMBER)
         for index, x, label in ((0, -1.13, '重新练习'), (3, -.37, '改装前轮'),
                                 (1, .40, '返回工坊'), (2, 1.17, '主菜单')):
             self.buttons[index]['text'] = label
-            self.button(index, x, -.82, .70, .12, primary=index == 0, compact=True)
+            self.button(index, x, -.77, .70, .12, primary=index == 0, compact=True)
             self.buttons[index]['text_scale'] = .046
+        self.summary_order = (0, 3, 1, 2)
         self.select(app.panel_selection)
 
     def overtake(self, app, route):
@@ -316,6 +319,7 @@ class DrivingCards:
         self.text(f'超车达标后，仍须在{route.seconds:g}秒内安全到终点。'+
                   '\n从后方接近并整车领先10米才计数；贴身/碰撞/越界/逆向/复位结束。',
                   -1.50, -.40, .034, theme.DARK_SUB)
-        self.button(0, -.94, -.82, 1.12, .12, primary=True, compact=True)
-        self.button(1, 1.01, -.82, 1.00, .12, compact=True)
+        self.button(0, -.94, -.77, 1.12, .12, primary=True, compact=True)
+        self.button(1, 1.01, -.77, 1.00, .12, compact=True)
+        self.summary_order = (0, 1)
         self.select(app.panel_selection)

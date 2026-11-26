@@ -56,12 +56,33 @@ def lab_asphalt_shader():
     fragment = fragment.replace('(texture2D(p3d_TextureBaseColor, v_texcoord) + p3d_TexAlphaOnly)',
                                 'asphalt_color()')
     fragment = fragment.replace('p3d_Material.roughness * metal_rough.g',
-                                'max(0.55, texture2D(asphalt_roughness, v_texcoord).r)')
+                                'asphalt_roughness_value()')
     fragment = fragment.replace('normalize(v_view_tbn * normalmap)',
                                 'asphalt_normal(v_view_tbn[2], v_view_position)')
     fragment = fragment.replace('normalize(v_world_tbn * normalmap)',
                                 'asphalt_normal(v_world_tbn[2], v_world_position)')
     return Shader.make(Shader.SLGLSL, vertex, fragment)
+
+
+@lru_cache(maxsize=1)
+def city_asphalt_shader():
+    """街区柏油路面使用同源实拍沥青并接入高速远景雾化与 1050m 裁剪。"""
+    from simplepbr._shaderutils import _load_shader_str
+
+    defines = {'MAX_LIGHTS': 1, 'ENABLE_SHADOWS': True, 'USE_330': True}
+    vertex = _load_shader_str('simplepbr.vert', defines.copy())
+    fragment = _load_shader_str('simplepbr.frag', defines.copy())
+    detail = Path(shader_path('asphalt-material.glsl').toOsSpecific()).read_text(encoding='utf-8')
+    fragment = fragment.replace('void main() {', detail+'\nvoid main() {')
+    fragment = fragment.replace('(texture2D(p3d_TextureBaseColor, v_texcoord) + p3d_TexAlphaOnly)',
+                                'asphalt_color()')
+    fragment = fragment.replace('p3d_Material.roughness * metal_rough.g',
+                                'asphalt_roughness_value()')
+    fragment = fragment.replace('normalize(v_view_tbn * normalmap)',
+                                'asphalt_normal(v_view_tbn[2], v_view_position)')
+    fragment = fragment.replace('normalize(v_world_tbn * normalmap)',
+                                'asphalt_normal(v_world_tbn[2], v_world_position)')
+    return Shader.make(Shader.SLGLSL, vertex, add_distance_haze(add_shadow_transition(fragment)))
 
 
 @lru_cache(maxsize=1)
@@ -185,7 +206,7 @@ def road_shadow_shader(*, asphalt=False):
         fragment = fragment.replace('(texture2D(p3d_TextureBaseColor, v_texcoord) + p3d_TexAlphaOnly)',
                                     'asphalt_color()')
         fragment = fragment.replace('p3d_Material.roughness * metal_rough.g',
-            'max(0.55, texture2D(asphalt_roughness, v_texcoord).r)')
+            'asphalt_roughness_value()')
         fragment = fragment.replace('normalize(v_view_tbn * normalmap)',
             'asphalt_normal(v_view_tbn[2], v_view_position)')
         fragment = fragment.replace('normalize(v_world_tbn * normalmap)',
@@ -217,13 +238,20 @@ def distance_shader(*, details=False):
     vertex = _load_shader_str("simplepbr.vert", defines.copy())
     fragment = add_distance_haze(add_shadow_transition(_load_shader_str("simplepbr.frag", defines.copy())))
     if details:
-        # 固定屏幕覆盖图样不随时间随机抖动，保持不透明深度和原材质照明。
-        fade = """
-    float coverage = 1.0 - smoothstep(430.0, 560.0,
-                                     length(v_world_position - camera_world_position));
-    expressway_dither(coverage);
-"""
-        fragment = fragment.replace("void main() {", "void main() {\n" + fade)
+        # 780m 分组裁剪前在 560-680m 平滑并入同一天空辐亮度，绝不打棋盘孔洞。
+        target = "o_color = vec4(expressway_haze(color.rgb, v_world_position), color.a);"
+        replacement = (
+            "vec3 expressway_detail_dir = v_world_position - camera_world_position;\n"
+            "    float expressway_detail_fade = smoothstep(560.0, 680.0, length(expressway_detail_dir));\n"
+            "    vec3 expressway_detail_color = expressway_haze(color.rgb, v_world_position);\n"
+            "    if (expressway_detail_fade > 0.0) {\n"
+            "        expressway_detail_color = mix(expressway_detail_color, "
+            "expressway_sky_radiance(expressway_detail_dir), expressway_detail_fade);\n"
+            "    }\n"
+            "    o_color = vec4(expressway_detail_color, color.a);"
+        )
+        assert target in fragment
+        fragment = fragment.replace(target, replacement)
     return Shader.make(Shader.SLGLSL, vertex, fragment)
 
 

@@ -7,7 +7,7 @@ from threading import Event, Thread, get_ident
 import pytest
 
 from impact_events import ImpactEvent
-from session import Phase, Session
+from session import FixedStepper, Phase, Session
 from session_clock import PRESENTATION_DELAY, SessionClock
 from simulation import FIXED_DT, Control
 
@@ -84,7 +84,7 @@ class StallingController:
         return Control(throttle=.2)
 
 
-def test_real_clock_computes_all_pending_steps_after_a_200ms_stall():
+def test_real_clock_catches_up_without_dropping_time_after_a_200ms_stall():
     session = Session(track='test', independent_clock=True)
     controller = StallingController()
     try:
@@ -103,10 +103,28 @@ def test_real_clock_computes_all_pending_steps_after_a_200ms_stall():
                 break
             time.sleep(.005)
         assert completed >= .4
-        assert session.stepper.dropped_time == 0
+        with clock.output_lock:
+            assert clock.published_dropped == 0.
+            assert clock.status[2] == 0.
+        assert session.stepper.dropped_time == 0.
         assert lag < .025
     finally:
         session.close()
+
+
+def test_fixed_stepper_preserves_backlog_across_batches_without_dropping_time():
+    stepper = FixedStepper()
+    ticks = []
+    assert stepper.advance(10.5 * FIXED_DT, lambda: ticks.append(1), max_steps=3) == 3
+    assert len(ticks) == 3
+    assert stepper.dropped_time == 0.
+    assert stepper.backlog_time == pytest.approx(7 * FIXED_DT)
+    assert stepper.remainder == pytest.approx(7.5 * FIXED_DT)
+    while stepper.backlog_time > 0:
+        stepper.advance(0., lambda: ticks.append(1), max_steps=3)
+    assert len(ticks) == 10
+    assert stepper.dropped_time == 0.
+    assert stepper.remainder == pytest.approx(.5 * FIXED_DT)
 
 
 def await_ticks(session, target):

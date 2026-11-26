@@ -424,6 +424,11 @@ static int triangle_face_result(double start[3],double end[3],double vertices[3]
     }
     subtract(start,vertices[0],relative);
     double distance = dot(normal,relative) - dot(normal,offset) - margin, speed = dot(normal,velocity);
+    if (speed >= 0. && distance > 1e-9) {
+        if (fraction_bound) *fraction_bound = INFINITY;
+        *finished = 1;
+        return 1;
+    }
     if (speed < 0. && distance >= 0.) {
         double fraction = -distance / speed;
         if (fraction_bound) *fraction_bound=fraction;
@@ -868,8 +873,8 @@ static PyObject *triangle_support_coefficients(PyObject *self, PyObject *args) {
 failed:
     triangle_packet_free(packet); return NULL;
 }
-static int triangle_packet_possible(const double center[3], const double base_half[3],
-                                    double start[3], double end[3], double padding[3]) {
+static int triangle_packet_possible_entry(const double center[3], const double base_half[3],
+                                          double start[3], double end[3], double padding[3], double *entry_out) {
     double half[3], local_start[3], local_end[3], entry, exit_time, sign;
     int axis;
     for (int i = 0; i < 3; ++i) {
@@ -877,19 +882,32 @@ static int triangle_packet_possible(const double center[3], const double base_ha
         local_start[i] = start[i] - center[i];
         local_end[i] = end[i] - center[i];
     }
-    return box_interval_values(local_start, local_end, half, &entry, &exit_time, &axis, &sign)
-        && !(entry > 1. || exit_time < 0.);
+    if (!box_interval_values(local_start, local_end, half, &entry, &exit_time, &axis, &sign)
+        || entry > 1. || exit_time < 0.) return 0;
+    if (entry_out) *entry_out = entry > 1e-9 ? entry - 1e-9 : 0.;
+    return 1;
+}
+static int triangle_packet_possible(const double center[3], const double base_half[3],
+                                    double start[3], double end[3], double padding[3]) {
+    return triangle_packet_possible_entry(center, base_half, start, end, padding, NULL);
+}
+static void triangle_packet_collect_entries(TrianglePacket *packet, double start[3], double end[3], double padding[3],
+                                            PreparedTriangle **result, double *entries, Py_ssize_t *count) {
+    if (!triangle_packet_possible_entry(packet->center, packet->half, start, end, padding, NULL)) return;
+    for (Py_ssize_t i = 0; i < packet->child_count; ++i)
+        triangle_packet_collect_entries(packet->children[i], start, end, padding, result, entries, count);
+    for (Py_ssize_t i = 0; i < packet->triangle_count; ++i) {
+        PreparedTriangle *triangle = &packet->triangles[i];
+        double entry = 0.;
+        if (triangle_packet_possible_entry(triangle->center, triangle->half, start, end, padding, &entry)) {
+            if (entries) entries[*count] = entry;
+            result[(*count)++] = triangle;
+        }
+    }
 }
 static void triangle_packet_collect(TrianglePacket *packet, double start[3], double end[3], double padding[3],
                                     PreparedTriangle **result, Py_ssize_t *count) {
-    if (!triangle_packet_possible(packet->center, packet->half, start, end, padding)) return;
-    for (Py_ssize_t i = 0; i < packet->child_count; ++i)
-        triangle_packet_collect(packet->children[i], start, end, padding, result, count);
-    for (Py_ssize_t i = 0; i < packet->triangle_count; ++i) {
-        PreparedTriangle *triangle = &packet->triangles[i];
-        if (triangle_packet_possible(triangle->center, triangle->half, start, end, padding))
-            result[(*count)++] = triangle;
-    }
+    triangle_packet_collect_entries(packet, start, end, padding, result, NULL, count);
 }
 
 /* 候选窗口一次筛选并复用原顶点/法线/边界；不重新计算同一不可变三角面。 */
@@ -1004,15 +1022,16 @@ static int lazy_packet_face_ceiling(LazyFaceCeiling *ctx);
 static int triangle_query_values(TrianglePacket *packet,double start[3],double end[3],double padding[3],
     double margin,double axis[3],double radius,double width,double shoulder,double crown,PyObject *coordinates,
     SurfaceEntry *result,int blend_faces,LazyFaceCeiling *lazy_ctx) {
-    PreparedTriangle *small_candidates[32]; double small_bounds[32];
+    PreparedTriangle *small_candidates[32]; double small_bounds[32], small_entries[32];
     PreparedTriangle **candidates=packet->total<=32 ? small_candidates : PyMem_RawMalloc(packet->total*sizeof(*candidates));
     double *bounds=packet->total<=32 ? small_bounds : PyMem_RawMalloc(packet->total*sizeof(*bounds));
-    if (!candidates || !bounds) {
-        if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
+    double *entries=packet->total<=32 ? small_entries : PyMem_RawMalloc(packet->total*sizeof(*entries));
+    if (!candidates || !bounds || !entries) {
+        if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); PyMem_RawFree(entries); }
         PyErr_NoMemory(); return 0;
     }
     Py_ssize_t count=0;
-    triangle_packet_collect(packet,start,end,padding,candidates,&count);
+    triangle_packet_collect_entries(packet,start,end,padding,candidates,entries,&count);
     SurfaceEntry best={0},second={0}; FaceSupport support_cache={0}; double ceiling=1.;
     PreparedTriangle *best_face=NULL,*second_face=NULL;
     for (Py_ssize_t k=0;k<count;++k) {
@@ -1028,6 +1047,8 @@ static int triangle_query_values(TrianglePacket *packet,double start[3],double e
             } else if(distinct && (!second_face || hit.fraction<second.fraction)){
                 second=hit;second_face=prepared;
             }
+        } else if (entries[k] > bounds[k]) {
+            bounds[k] = entries[k];
         }
     }
     double edge_ceiling=ceiling;
@@ -1051,11 +1072,11 @@ static int triangle_query_values(TrianglePacket *packet,double start[3],double e
             if (ceiling<edge_ceiling) edge_ceiling=ceiling;
         }
     }
-    if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
+    if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); PyMem_RawFree(entries); }
     if(blend_faces && best.face && second_face)joint_blend_faces(&best,&second,best_face,second_face);
     *result=best; return 1;
 failed:
-    if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
+    if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); PyMem_RawFree(entries); }
     return 0;
 }
 
@@ -1471,10 +1492,10 @@ static PyObject *cylinder_box_entry_call(PyObject *self,PyObject *args) {
 /* 仅在当前网格真要进入边 GJK 时，才扫描后续网格的解析面首命中作为保守上界。 */
 static int lazy_packet_face_ceiling(LazyFaceCeiling *ctx) {
     SurfacePacket *packet=(SurfacePacket *)ctx->packet;
-    double best=INFINITY,zero[3]={0.};
+    double best=ctx->face_ceiling,zero[3]={0.};
     for (Py_ssize_t j=ctx->part_index+1;j<packet->count;++j) {
         SurfacePart *part=&packet->parts[j];
-        if (part->kind!=2) continue;
+        if (part->kind!=2 || part->triangles->total==0) continue;
         double offset[3],local_start[3],local_end[3],local_axis[3],terms[3];
         for (int a=0;a<3;++a) {
             for (int b=0;b<3;++b) terms[b]=part->axes[a][b]*ctx->origin[b];
@@ -1488,7 +1509,7 @@ static int lazy_packet_face_ceiling(LazyFaceCeiling *ctx) {
             double center=part->triangles->center[i],half=part->triangles->half[i];
             a[i]=local_start[i]-center;b[i]=local_end[i]-center;bounds[i]=half+envelope;
         }
-        if(!box_interval_values(a,b,bounds,&near,&far,&normal_axis,&sign)||near>1.||far<0.)continue;
+        if(!box_interval_values(a,b,bounds,&near,&far,&normal_axis,&sign)||near>1.||far<0.||near>=best)continue;
         transform_values(ctx->axis,part->axes,zero,0,local_axis);
         double padding[3],frac=INFINITY;
         for (int ai=0;ai<3;++ai) {
@@ -2054,6 +2075,7 @@ static int joint_surface_values(SurfacePacket *packet,double start[3],double end
     SurfaceEntry best={0}; double ceiling=INFINITY,zero[3]={0.};
     for (Py_ssize_t k=0;k<packet->count;++k) {
         SurfacePart *part=&packet->parts[k]; SurfaceEntry hit={0};
+        if (part->kind==2 && part->triangles->total==0) continue;
         double offset[3],local_start[3],local_end[3],local_axis[3],terms[3];
         for (int a=0;a<3;++a) {
             for (int b=0;b<3;++b) terms[b]=part->axes[a][b]*origin[b];
@@ -2070,7 +2092,7 @@ static int joint_surface_values(SurfacePacket *packet,double start[3],double end
                 double half=part->kind==2?part->triangles->half[i]:part->half[i];
                 a[i]=local_start[i]-center;b[i]=local_end[i]-center;bounds[i]=half+envelope;
             }
-            if(!box_interval_values(a,b,bounds,&near,&far,&normal_axis,&sign)||near>1.||far<0.)continue;
+            if(!box_interval_values(a,b,bounds,&near,&far,&normal_axis,&sign)||near>1.||far<0.||near>=ceiling)continue;
         }
         transform_values(axis,part->axes,zero,0,local_axis);
         if (part->kind==2) {

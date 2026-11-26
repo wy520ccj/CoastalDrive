@@ -42,7 +42,74 @@ public:
     const char* getName() const override { return "OriginalHullPoints"; }
 };
 static const char* capname="coastal.hull-cast";
+static const char* api_capname="CoastalDrive.convex_cast_api.v1";
 static void destroy(PyObject* obj) { delete (Points*)PyCapsule_GetPointer(obj,capname); }
+
+typedef struct {
+    int (*cast_points)(const void* wheel_ptr, const void* target_ptr,
+                       const double from_pose[7], const double to_pose[7],
+                       const double body_pose[7], const double shape_pose[7],
+                       float ceiling, float* fraction_out, float normal_out[3], float point_out[3]);
+    void (*hull_bounds)(const void* target_ptr, const double body_pose[7],
+                        const double shape_pose[7], double low_out[3], double high_out[3]);
+    const char* capsule_name;
+} ConvexCastApi;
+
+static void hull_bounds_native(const void* target_ptr, const double body_pose[7],
+                               const double shape_pose[7], double low_out[3], double high_out[3]) {
+    const Points* B = (const Points*)target_ptr;
+    btTransform bp(btQuaternion((btScalar)body_pose[4], (btScalar)body_pose[5], (btScalar)body_pose[6], (btScalar)body_pose[3]),
+                   btVector3((btScalar)body_pose[0], (btScalar)body_pose[1], (btScalar)body_pose[2]));
+    btTransform cp(btQuaternion((btScalar)shape_pose[4], (btScalar)shape_pose[5], (btScalar)shape_pose[6], (btScalar)shape_pose[3]),
+                   btVector3((btScalar)shape_pose[0], (btScalar)shape_pose[1], (btScalar)shape_pose[2]));
+    btTransform other = bp * cp;
+    double margin = (double)B->getMargin() + 1e-4;
+    for (int a = 0; a < 3; ++a) { low_out[a] = 1e30; high_out[a] = -1e30; }
+    for (const btVector3& pt : B->points) {
+        btVector3 w = other * pt;
+        double coords[3] = { (double)w.x(), (double)w.y(), (double)w.z() };
+        for (int a = 0; a < 3; ++a) {
+            if (coords[a] - margin < low_out[a]) low_out[a] = coords[a] - margin;
+            if (coords[a] + margin > high_out[a]) high_out[a] = coords[a] + margin;
+        }
+    }
+}
+
+static int cast_points_native(const void* wheel_ptr, const void* target_ptr,
+                              const double from_pose[7], const double to_pose[7],
+                              const double body_pose[7], const double shape_pose[7],
+                              float ceiling, float* fraction_out, float normal_out[3], float point_out[3]) {
+    const Points* A = (const Points*)wheel_ptr;
+    const Points* B = (const Points*)target_ptr;
+    btTransform from(btQuaternion((btScalar)from_pose[4], (btScalar)from_pose[5], (btScalar)from_pose[6], (btScalar)from_pose[3]),
+                     btVector3((btScalar)from_pose[0], (btScalar)from_pose[1], (btScalar)from_pose[2]));
+    btTransform to(btQuaternion((btScalar)to_pose[4], (btScalar)to_pose[5], (btScalar)to_pose[6], (btScalar)to_pose[3]),
+                   btVector3((btScalar)to_pose[0], (btScalar)to_pose[1], (btScalar)to_pose[2]));
+    btTransform bp(btQuaternion((btScalar)body_pose[4], (btScalar)body_pose[5], (btScalar)body_pose[6], (btScalar)body_pose[3]),
+                   btVector3((btScalar)body_pose[0], (btScalar)body_pose[1], (btScalar)body_pose[2]));
+    btTransform cp(btQuaternion((btScalar)shape_pose[4], (btScalar)shape_pose[5], (btScalar)shape_pose[6], (btScalar)shape_pose[3]),
+                   btVector3((btScalar)shape_pose[0], (btScalar)shape_pose[1], (btScalar)shape_pose[2]));
+    btTransform other = bp * cp;
+    btVoronoiSimplexSolver simplex;
+    btGjkEpaPenetrationDepthSolver penetration;
+    btContinuousConvexCollision caster(A, B, &simplex, &penetration);
+    btConvexCast::CastResult result;
+    result.m_fraction = ceiling;
+    result.m_allowedPenetration = 0.f;
+    bool hit = caster.calcTimeOfImpact(from, to, other, other, result);
+    if (!hit || result.m_normal.length2() <= .0001f || result.m_fraction >= ceiling)
+        return 0;
+    result.m_normal.normalize();
+    *fraction_out = result.m_fraction;
+    normal_out[0] = result.m_normal.x();
+    normal_out[1] = result.m_normal.y();
+    normal_out[2] = result.m_normal.z();
+    point_out[0] = result.m_hitPoint.x();
+    point_out[1] = result.m_hitPoint.y();
+    point_out[2] = result.m_hitPoint.z();
+    return 1;
+}
+static ConvexCastApi convex_cast_api = { cast_points_native, hull_bounds_native, "coastal.hull-cast" };
 static bool values(PyObject* obj,double* out,int count) {
     PyObject* seq=PySequence_Fast(obj,"向量须为序列"); if(!seq)return false;
     if(PySequence_Fast_GET_SIZE(seq)!=count) { Py_DECREF(seq);PyErr_SetString(PyExc_ValueError,"向量维数不一致");return false; }
@@ -95,4 +162,10 @@ static PyObject* cast(PyObject*,PyObject* args) {
 static PyObject* support(PyObject*,PyObject* args){PyObject* cap,*direction;if(!PyArg_ParseTuple(args,"OO",&cap,&direction))return nullptr;Points*shape=(Points*)PyCapsule_GetPointer(cap,capname);if(!shape)return nullptr;double v[3];if(!values(direction,v,3))return nullptr;auto p=shape->localGetSupportingVertexWithoutMargin(btVector3(v[0],v[1],v[2]));return Py_BuildValue("(fff)",p.x(),p.y(),p.z());}
 static PyMethodDef methods[]={{"hull",hull,METH_VARARGS,nullptr},{"cast",cast,METH_VARARGS,nullptr},{"support",support,METH_VARARGS,nullptr},{nullptr}};
 static PyModuleDef module={PyModuleDef_HEAD_INIT,"convex_cast_kernels",nullptr,-1,methods};
-PyMODINIT_FUNC PyInit_convex_cast_kernels(void){return PyModule_Create(&module);}
+PyMODINIT_FUNC PyInit_convex_cast_kernels(void){
+    PyObject* mod=PyModule_Create(&module);
+    if(!mod)return nullptr;
+    PyObject* api=PyCapsule_New(&convex_cast_api,api_capname,nullptr);
+    if(!api || PyModule_AddObject(mod,"_convex_cast_api",api)<0){Py_XDECREF(api);Py_DECREF(mod);return nullptr;}
+    return mod;
+}

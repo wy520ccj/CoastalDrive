@@ -75,3 +75,31 @@ def test_ready_session_receives_current_focus_when_loading_had_no_window_event()
     task = SimpleNamespace(frame=1, done="done")
     assert CoastalDrive._advance_workspace(app, task) == "done"
     assert session.phase == Phase.COUNTDOWN and observed == [False, "hidden"]
+
+
+def test_advance_workspace_resumes_paused_session_via_authority():
+    observed = []
+
+    class FakeSession:
+        def __init__(self):
+            self.phase = Phase.PAUSED
+
+        def resume(self):
+            observed.append("resume")
+            self.phase = Phase.COUNTDOWN
+
+        def focus_changed(self, focused):
+            observed.append(("focus", focused))
+
+    session = FakeSession()
+    properties = SimpleNamespace(getForeground=lambda: True, getMinimized=lambda: False)
+    app = SimpleNamespace(workspace="game", _workspace_steps=iter(()), smoke=False, road_retest_return=None,
+        career_active=False, budget_active=False,
+        session=session, win=SimpleNamespace(getProperties=lambda: properties),
+        workspace_loading=SimpleNamespace(resize=lambda: None, hide=lambda: observed.append("hidden")),
+        setup_controls=lambda: None, taskMgr=SimpleNamespace(add=lambda *args: None),
+        update=lambda task: None, refresh_panel=lambda: None)
+    task = SimpleNamespace(frame=1, done="done")
+    assert CoastalDrive._advance_workspace(app, task) == "done"
+    assert session.phase == Phase.COUNTDOWN
+    assert observed == ["resume", ("focus", True), "hidden"]

@@ -11,7 +11,7 @@ def _box(app, x, y, w, h):
 
 
 def audio(cards, app, station):
-    margin, width, fill, text, button = canvas(cards, app, 'audio', '声音设置', '三个通道独立调节 · 立即保存', 7)
+    margin, width, fill, text, button = canvas(cards, app, 'audio', '声音设置', '音量与车载电台', 7)
     left, right = margin+30, margin+width-30
     cards.frames.append(atelier.picture(
         cards.content, app.loader, 'atelier/icon-speaker.png',
@@ -49,7 +49,7 @@ def audio(cards, app, station):
 
 
 def assists(cards, app):
-    margin, width, fill, text, button = canvas(cards, app, 'assists', '驾驶辅助', '下次起步时应用', 3)
+    margin, width, _fill, text, button = canvas(cards, app, 'assists', '驾驶辅助', '下次起步时应用', 3)
     left, right = margin+30, margin+width-30
     cards.frames.append(atelier.picture(
         cards.content, app.loader, 'atelier/icon-shield.png',
@@ -66,8 +66,6 @@ def assists(cards, app):
         text(title, left+118, y+4, 22, WHITE, bold=True)
         text(description, left+118, y+38, 15.5, theme.DARK_SUB)
         button(index, '开启' if enabled else '关闭', right-138, y-14, 130, 50, toggle=enabled)
-    fill(left, 754, width-60, 1.2, (0.24, 0.29, 0.38, 0.85), 0)
-    text('点击开关切换状态，Esc 返回。', left, 796, 16, theme.DARK_SUB)
     if app.driving_mode_settings.notice:
         text(app.fit_lines(app.driving_mode_settings.notice, (width-60)*2/941, 16*2/941, 1), left, 846, 16, theme.AMBER)
     style(cards, app.panel_selection)

@@ -2,12 +2,12 @@
 
 import math
 
-from panda3d.core import FadeLODNode, GeomVertexWriter, LODNode, Vec3, Vec4
+from panda3d.core import BitMask32, FadeLODNode, GeomVertexWriter, LODNode, Vec3, Vec4
 
 
 def city_steps(root, index, seed, curve, kit):
     from environment.expressway_buildings import SPECS, BuildingMesh, _bind_surface
-    from environment.expressway_materials import lab_asphalt_shader
+    from environment.expressway_materials import city_asphalt_shader
     from environment.expressway_route import _city_shift, anchor, city_weight, terrain_point
     from scene import make_mesh
 
@@ -28,8 +28,11 @@ def city_steps(root, index, seed, curve, kit):
 
     def plant(template, parent, position, height, heading):
         node = template.copyTo(parent)
+        # 仅恢复全相机隐藏的模板节点，不覆盖主相机/阴影相机独立遮罩（如阴影代理）。
+        main_mask, shadow_mask = BitMask32.bit(0), BitMask32.bit(28)
         for child in (node, *node.findAllMatches('**')):
-            child.show()
+            if child.isHidden(main_mask) and child.isHidden(shadow_mask):
+                child.show()
         low, high = node.getTightBounds(node)
         scale = height/(high.z-low.z)
         node.setScale(scale)
@@ -53,7 +56,7 @@ def city_steps(root, index, seed, curve, kit):
         node = make_mesh(name, vertices, faces, Vec4(*color))
         if name in ('city-local-street', 'city-cross-street'):
             node.setTexture(kit['road-albedo'])
-            node.setShader(lab_asphalt_shader())
+            node.setShader(city_asphalt_shader())
             node.setShaderInput('asphalt_normals', kit['road-normal'])
             node.setShaderInput('asphalt_roughness', kit['road-roughness'])
         elif name in ('city-footpath', 'city-cross-footpath', 'city-entrance-path', 'city-courtyard-path'):
@@ -62,6 +65,8 @@ def city_steps(root, index, seed, curve, kit):
                 for vertex_index in face:
                     writer.setData2f(*uv[vertex_index])
             _bind_surface(node, 'paving')
+        elif name == 'city-street-dash':
+            node.setDepthOffset(1)
         node.reparentTo(group)
 
     for road in (65, 155):

@@ -55,12 +55,13 @@ class WheelStep:
 
 def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, dt,
                   config=CAR, deformation=(0.0, 0.0), force_tolerance=.001, rolling_contact=None,
-                  force_initial=(0.0, 0.0), rolling_radius=None):
+                  force_initial=(0.0, 0.0), rolling_radius=None, *, game_solver_tolerance=False):
     """同时求解接地力、轮速和干式制动反力；车体由调用方施加同一冲量。"""
     radius = config.wheel_radius if rolling_radius is None else rolling_radius
     inertia = config.wheel_inertia
     m = mobility
     grip = tire_grip(load, mu, config)
+    force_limit = grip if game_solver_tolerance else None
     cx, cy = tire_stiffness(load, config)
 
     def state(fx, fy):
@@ -121,8 +122,8 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
         return (1 - target[0][0], -target[0][1], -target[1][0], 1 - target[1][1])
 
     if config.tire_compliance:
-        fx, fy, error = _solve_force(residual, tolerance=force_tolerance, initial=force_initial,
-                                    jacobian=compliant_jacobian)
+        fx, fy, error = _solve_force(residual, tolerance=.1 if game_solver_tolerance else force_tolerance,
+                                    initial=force_initial, jacobian=compliant_jacobian, grip=force_limit)
         values = state(fx, fy)
         _target, elastic, rate, patch, kappa, alpha, mode = compliant_state(fx, fy, values)
         if load == 0:
@@ -142,15 +143,15 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
             return ((values[1] - radius * values[0]) / (dt * (m.xx + radius**2 / inertia)),
                     values[2] / (dt * m.yy))
 
-        fx, fy, error = _solve_force(sticking_residual)
+        fx, fy, error = _solve_force(sticking_residual, tolerance=.1, grip=grip) if game_solver_tolerance else _solve_force(sticking_residual)
         # 静摩擦只在摩擦圆内成立；所需力超出预算时进入实际滑动曲线。
-        if math.hypot(fx, fy) <= grip:
+        if math.hypot(fx, fy) <= grip and (not game_solver_tolerance or error < .1):
             values = state(fx, fy)
             return WheelStep(
                 values[0], values[0] + values[3], values[1], values[2], values[3],
                 values[4], values[5], fx, fy, values[6], error, "sticking",
             )
-    fx, fy, error = _solve_force(residual)
+    fx, fy, error = _solve_force(residual, tolerance=.1, grip=grip) if game_solver_tolerance else _solve_force(residual)
     values = state(fx, fy)
     return WheelStep(
         values[0], values[0] + values[3], values[1], values[2], values[3],
@@ -158,8 +159,19 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
     )
 
 
-def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
-    """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
+def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None, *, grip=None):
+    """给定游戏摩擦圆时沿用原生有界牛顿，默认保留严格求根。"""
+    if grip is not None:
+        if jacobian is None:
+            def jacobian(fx, fy):
+                epsilon = .01
+                px, py = residual(fx + epsilon, fy)
+                nx, ny = residual(fx - epsilon, fy)
+                a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+                px, py = residual(fx, fy + epsilon)
+                nx, ny = residual(fx, fy - epsilon)
+                return a, (px - nx) / (2 * epsilon), c, (py - ny) / (2 * epsilon)
+        return _solve_rolling_force(residual, jacobian, grip, tolerance, initial, game_solver_tolerance=True)
     fx, fy = initial
     epsilon = 0.01
     for _ in range(20):
@@ -190,6 +202,7 @@ def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
     raise ArithmeticError(f"轮胎隐式积分超过20次迭代：残差 {error:.6g} N")
 
 
-def _solve_rolling_force(residual, jacobian, grip, tolerance=.001, initial=(0.0, 0.0)):
+def _solve_rolling_force(residual, jacobian, grip, tolerance=.001, initial=(0.0, 0.0), *, game_solver_tolerance=False):
     """滚动曲线按摩擦力界括根；横向消元后用Schur导数解纵向同一隐式方程。"""
-    return rolling_force_solution(residual, jacobian, grip, tolerance, initial, math.hypot)
+    game_option = (True,) if game_solver_tolerance else ()
+    return rolling_force_solution(residual, jacobian, grip, tolerance, initial, math.hypot, *game_option)

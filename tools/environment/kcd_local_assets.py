@@ -366,10 +366,8 @@ def load_ferns(output, shader, grasses):
             name = base + 'ferns_' + variant
             if material_name.encode() not in package.read(name + '.cgf'):
                 raise ValueError('原蕨的材质引用已改变：' + name)
-            root = NodePath(FadeLODNode('kcd-fern-' + variant))
-            root.node().setFadeTime(.45)
-            root.node().setFadeStateOverride(10)
-            switches = ((65, 0), (130, 65), (185, 130)) if variant == 'large_a' else ((65, 0), (185, 65))
+            root = NodePath(LODNode('kcd-fern-' + variant))
+            switches = ((50, 0), (95, 50), (140, 95)) if variant == 'large_a' else ((55, 0), (140, 55))
             for level, switch in enumerate(switches):
                 member = name + ('' if level == 0 else '_lod'+str(level)) + '.cgfm'
                 mesh = cached_mesh(package.read(member), output, visible_materials={0})
@@ -407,7 +405,7 @@ def load_shrubs(output, shader):
             part = model('kcd-hawthorn-' + variant, mesh, texture, shader)
             part.setShaderInput('root_anchor', 0.)
             lod = NodePath(LODNode('kcd-hawthorn-' + variant + '-distance'))
-            lod.node().addSwitch(220, 0)
+            lod.node().addSwitch(260, 0)
             part.reparentTo(lod)
             lod.setTag('source-height', str(max(mesh['points'][i][2] for face in mesh['faces'] for i in face)))
             result.append(lod)
@@ -433,7 +431,7 @@ def load_young_oaks(output, shader, atlas):
             part = model('kcd-young-oak-' + variant, mesh, texture, shader)
             part.setShaderInput('root_anchor', 0.)
             root = NodePath(LODNode('kcd-young-oak-' + variant + '-distance'))
-            root.node().addSwitch(240, 0)
+            root.node().addSwitch(320, 0)
             part.reparentTo(root)
             height = max(mesh['points'][i][2] for face in mesh['faces'] for i in face)
             root.setTag('source-height', str(height))

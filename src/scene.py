@@ -17,7 +17,6 @@ from panda3d.core import (
     GeomTriangles,
     GeomVertexData,
     GeomVertexFormat,
-    GeomVertexWriter,
     GraphicsEngine,
     Mat4,
     Material,
@@ -157,22 +156,39 @@ def make_mesh(
     triangles: list[tuple[int, int, int]],
     color: Vec4,
 ) -> NodePath:
+    import numpy as np
+
     format = GeomVertexFormat.getV3n3c4t2()
     data = GeomVertexData(name, format, Geom.UHStatic)
-    vertex_writer = GeomVertexWriter(data, "vertex")
-    normal_writer = GeomVertexWriter(data, "normal")
-    color_writer = GeomVertexWriter(data, "color")
-    uv_writer = GeomVertexWriter(data, "texcoord")
     primitive = GeomTriangles(Geom.UHStatic)
-    for index, triangle in enumerate(triangles):
-        a, b, c = [Vec3(*vertices[i]) for i in triangle]
-        normal = (b - a).cross(c - a).normalized()
-        for point in (a, b, c):
-            vertex_writer.addData3f(*point)
-            normal_writer.addData3f(*normal)
-            color_writer.addData4f(*color)
-            uv_writer.addData2f(point.x / 2.5, point.y / 2.5)
-        primitive.addVertices(index * 3, index * 3 + 1, index * 3 + 2)
+    count = len(triangles)
+    if count:
+        pts = np.asarray(vertices, dtype=np.float32)
+        tris = np.asarray(triangles, dtype=np.intp)
+        tri_pts = pts[tris]
+        face_normals = np.cross(tri_pts[:, 1] - tri_pts[:, 0], tri_pts[:, 2] - tri_pts[:, 0])
+        lengths = np.linalg.norm(face_normals, axis=1, keepdims=True)
+        safe = lengths > 1e-12
+        face_normals = np.where(safe, face_normals / np.where(safe, lengths, 1.0), 0.0)
+        vertex_count = count * 3
+        dtype = np.dtype([('p', '<f4', 3), ('n', '<f4', 3), ('c', 'u1', 4), ('uv', '<f4', 2)])
+        packed = np.empty(vertex_count, dtype=dtype)
+        flat_pts = tri_pts.reshape(vertex_count, 3)
+        packed['p'] = flat_pts
+        packed['n'] = np.repeat(face_normals, 3, axis=0)
+        packed['c'] = np.rint(
+            np.clip(np.asarray((color.x, color.y, color.z, color.w), dtype=np.float64), 0.0, 1.0) * 255.0
+        ).astype(np.uint8)
+        packed['uv'] = flat_pts[:, :2] / np.float32(2.5)
+        data.setNumRows(vertex_count)
+        data.modifyArray(0).modifyHandle().setData(packed.tobytes())
+        if vertex_count <= 65535:
+            primitive.setIndexType(Geom.NTUint16)
+            indices = np.arange(vertex_count, dtype='<u2')
+        else:
+            primitive.setIndexType(Geom.NTUint32)
+            indices = np.arange(vertex_count, dtype='<u4')
+        primitive.modifyVertices().modifyHandle().setData(indices.tobytes())
     geom = Geom(data)
     geom.addPrimitive(primitive)
     node = GeomNode(name)
@@ -700,18 +716,20 @@ class Scene:
         for side in (-1, 1):
             edge = side * (ROAD_WIDTH / 2 - 0.18)
             vertices, triangles = strip_mesh(edge - 0.07, edge + 0.07, 0.025, 0.025)
-            make_mesh("white-edge", vertices, triangles, Vec4(0.91, 0.91, 0.82, 1)).reparentTo(
-                self.render
-            )
+            edge_node = make_mesh("white-edge", vertices, triangles, Vec4(0.91, 0.91, 0.82, 1))
+            edge_node.setDepthOffset(1)
+            edge_node.reparentTo(self.render)
         for distance in range(0, int(map_length()), 10):
             points = [point_at(distance), point_at(distance + 3)]
-            make_ribbon(
+            dash_node = make_ribbon(
                 "centre-dash",
                 [Vec3(p.x, p.y, p.z + 0.025) for p in points],
                 0.16,
                 Vec4(0.97, 0.78, 0.27, 1),
                 None,
-            ).reparentTo(self.render)
+            )
+            dash_node.setDepthOffset(1)
+            dash_node.reparentTo(self.render)
             for side in (-1, 1):
                 p = points[0]
                 marker = make_box("reflector", (0.04, 0.18, 0.14), Vec4(0.97, 0.86, 0.5, 1))
@@ -730,9 +748,9 @@ class Scene:
                     offset_point(q, low, 0.02),
                 ]
                 color = Vec4(0.75, 0.19, 0.10, 1) if i % 2 else Vec4(0.83, 0.80, 0.67, 1)
-                make_mesh("curb-paint", vertices, [(0, 1, 2), (0, 2, 3)], color).reparentTo(
-                    self.render
-                )
+                curb_node = make_mesh("curb-paint", vertices, [(0, 1, 2), (0, 2, 3)], color)
+                curb_node.setDepthOffset(1)
+                curb_node.reparentTo(self.render)
 
     def add_environment(self):
         for number, (prop, z) in enumerate(self.base.session.simulation.props):
@@ -786,7 +804,9 @@ class Scene:
             curve = simulation.stream.curve
             global_y = state.player.position[1] + state.origin_y
             distance = curve.project((state.player.position[0], global_y))[0] if curve else global_y
-            self.sync_segments(budget_ms=3, distance=distance)
+            # 常规帧分配 3.2ms、邻近待建放宽至 5.0ms，确保高速行进时前方 1000m+ 始终提前备妥。
+            stream_budget = 5.0 if self.segment_work["near_pending"] else 3.2
+            self.sync_segments(budget_ms=stream_budget, distance=distance)
             if self.ocean is not None:
                 if self._career_backdrop is not None:
                     self.ocean.setY(-state.origin_y)

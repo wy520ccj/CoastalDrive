@@ -270,16 +270,20 @@ def test_scoped_woodland_preserves_consumed_inputs_and_reduces_tree_states(tmp_p
 @pytest.mark.skipif(not INSTALL.is_dir(), reason='需要本机原树核对相邻实际树冠的林地覆盖')
 def test_neighboring_woodland_segments_share_coverage_and_release_removed_crowns(tmp_path):
     import numpy as np
-    from panda3d.core import NodePath
+    from panda3d.core import NodePath, Vec4
 
     from environment.expressway_materials import foliage_shader
+    from scene import make_mesh
 
     trees, _, _ = load_local(tmp_path, foliage_shader(), distance_lods=True, tree_letters='a')
     profile = LocalVegetation(tmp_path)
+    assert not hasattr(profile, 'forest_canopies')
+    kit = {'local-kcd-trees': trees * 5}
     first, second = NodePath('first-segment'), NodePath('second-segment')
-    a, b = trees[0].copyTo(first), trees[0].copyTo(second)
-    a.setPos(-20, 196, 0)
-    b.setPos(-20, 4, 0)
+    for segment_node in (first, second):
+        ground = make_mesh('route-landscape', [(-80, 0, 0), (80, 0, 0), (80, 200, 0), (-80, 200, 0)],
+                           [(0, 1, 2), (0, 2, 3)], Vec4(1))
+        ground.reparentTo(segment_node)
 
     def samples(path):
         texture, bounds = path.getPythonTag('woodland-coverage')
@@ -287,20 +291,21 @@ def test_neighboring_woodland_segments_share_coverage_and_release_removed_crowns
         return {(round(bounds[0] + (col + .5) * 2), round(bounds[1] + (row + .5) * 2)): int(value)
                 for row, line in enumerate(pixels) for col, value in enumerate(line)}
 
-    list(profile.surface_weights(first, 0, None))
-    alone = samples(first)
-    list(profile.surface_weights(second, 1, None))
-    left, right = samples(first), samples(second)
-    shared = left.keys() & right.keys()
+    list(profile.surface_weights(first, 0, None, seed=0, kit=kit))
+    frozen_tag = first.getPythonTag('woodland-coverage')
+    left_before = samples(first)
+    list(profile.surface_weights(second, 1, None, seed=0, kit=kit))
+    left_after, right = samples(first), samples(second)
+    # 挂入后旧路段林冠覆盖纹理完全冻结，构建或卸载邻段不会回头篡改已可见路段。
+    assert first.getPythonTag('woodland-coverage') == frozen_tag
+    assert left_after == left_before
+    shared = left_after.keys() & right.keys()
     assert len(shared) > 20
-    assert max(abs(left[key] - right[key]) for key in shared) <= 1
-    assert max(left[key] - alone[key] for key in left) > 10
-    first.removeNode()
-    list(profile.surface_weights(second, 1, None))
-    remaining = samples(second)
-    assert set(profile.forest_canopies) == {1}
-    assert max(right[key] - remaining[key] for key in right) > 10
+    assert max(abs(left_after[key] - right[key]) for key in shared) <= 1
+    assert max(left_after[key] for key in shared) > 10
     second.removeNode()
+    assert first.getPythonTag('woodland-coverage') == frozen_tag
+    first.removeNode()
 
 
 def test_local_woodland_raster_matches_dense_reference():

@@ -31,17 +31,9 @@ def set_text(widget, value):
 
 def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
     """输入说明只表达已有模式行为。"""
-    direction = " · Q 倒挡 / E 前进挡（选挡后W加油）" if mode == DrivingMode.SIMULATION else ""
-    brake = "只刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
-    electronics = ""
-    if abs_label is not None:
-        electronics = f" · ABS{abs_label}"
-    if tcs_label is not None:
-        electronics += f" TCS{tcs_label}"
-    if esc_label is not None:
-        electronics += f" ESC{esc_label}"
-    return (f"驾驶输入：{mode.label}{direction}{electronics}\n"
-            f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   G 幽灵   Esc 暂停")
+    shift = "  Q/E 换挡" if mode == DrivingMode.SIMULATION else ""
+    brake = "刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
+    return f"W/↑ 油门  S/↓ {brake}  A/D 转向{shift}  R 复位  C 视角  N 切台  Esc 暂停"
 
 
 class DrivingHUD:
@@ -84,14 +76,16 @@ class DrivingHUD:
         self.goal = OnscreenText(parent=self.status_frame, text="", font=body_font,
             fg=theme.AMBER, pos=(.055, -.535), scale=.031, align=TextNode.ALeft, mayChange=True, **shadow_cfg)
         self.goal.hide()
-        self.notice_frame = DirectFrame(parent=self.root, frameColor=(0.045, 0.062, 0.088, 0.72),
+        self.notice_frame = DirectFrame(parent=self.root, frameColor=(0, 0, 0, 0),
                                         frameSize=(0, 0.88, -0.18, 0), pos=(-1.70, 0, 0.50))
-        DirectFrame(parent=self.notice_frame, frameColor=theme.AMBER,
-                    frameSize=(0.012, 0.020, -0.075, -0.018))
+        self.notice_accent = DirectFrame(parent=self.notice_frame, frameColor=theme.AMBER,
+                                         frameSize=(0.012, 0.020, -0.075, -0.018))
+        self.notice_accent.hide()
         self.status_notice = OnscreenText(
             parent=self.notice_frame, text="", font=body_font, fg=theme.WHITE,
             pos=(0.038, -0.050), scale=0.033, align=TextNode.ALeft, mayChange=True, **shadow_cfg
         )
+        self.status_notice.hide()
         # 提示一次排版即可；逐字测量每个增长前缀会让切台后的驾驶帧卡顿。
         self.status_notice.textNode.setWordwrap(0.80 / 0.033)
         # 三个固定电台标签在加载HUD时生成几何；切台只切换可见性。
@@ -133,11 +127,12 @@ class DrivingHUD:
         self.rpm_segments = [DirectFrame(parent=self.speed_frame, frameColor=(0.12, 0.16, 0.22, 0.50),
                                         frameSize=(-0.89 + i * 0.039, -0.86 + i * 0.039, 0.033, 0.064))
                              for i in range(21)]
-        self.help_frame = DirectFrame(parent=self.root, frameColor=(0.045, 0.062, 0.088, 0.46),
-                                      frameSize=(-0.75, 0.75, -0.045, 0.045), pos=(0, 0, -0.94))
+        self.help_frame = DirectFrame(parent=self.root, frameColor=(0, 0, 0, 0),
+                                      frameSize=(-0.75, 0.75, -0.026, 0.026), pos=(0, 0, -0.956))
         self.help = OnscreenText(parent=self.help_frame,
-                                text="W / ↑ 油门    S / ↓ 刹车·倒车    A D 转向    R 复位    C 视角    N 切台    M 音乐    Esc 暂停",
-                                font=body_font, fg=soft_fg, pos=(0, 0.009), scale=0.027, mayChange=True, **shadow_cfg)
+                                text="W/↑ 油门  S/↓ 刹车·倒车  A/D 转向  R 复位  C 视角  N 切台  Esc 暂停",
+                                font=body_font, fg=(0.82, 0.86, 0.92, 0.72), pos=(0, -0.008), scale=0.023,
+                                mayChange=True, **shadow_cfg)
         self.career = CareerDrivingHUD(self.root, body_font, number_font, career_action)
         self.coastal = CoastalDrivingHUD(self.root, body_font, number_font, self.career.regular)
         self._career_active = False
@@ -237,7 +232,8 @@ class DrivingHUD:
             set_text(self.status, f"{highway.elapsed:07.2f} s")
             distance = f"{highway.distance:.0f} / {highway.target:.0f} m" if highway.challenge else f"{highway.distance / 1000:.2f} km"
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")
-            message = "无碰撞行驶中" if highway.collisions == 0 else f"碰撞 {highway.collisions} 次"
+            message = "" if (not highway.challenge and highway.collisions == 0) else (
+                "无碰撞行驶中" if highway.collisions == 0 else f"碰撞 {highway.collisions} 次")
             if highway.career is not None:
                 result = highway.career
                 event = EVENT_BY_ID[result.event_id]
@@ -293,20 +289,31 @@ class DrivingHUD:
                 message += " · "+race.ghost_notice
         else:
             set_text(self.mode, "滨海自由驾驶")
-            set_text(self.status, "COASTAL CRUISE")
-            self.status.setScale(0.054)
+            set_text(self.status, f"{max(0.0, state.time):06.1f} s")
             set_text(self.detail, f"距终点 {max(0, HIGHWAY_LENGTH - state.player.position[1]):.0f} m"
                      if track == "highway" else "自由巡航")
-            message = "享受海岸之旅"
-        if track == "endless" or race.mode == GameMode.TIME_TRIAL:
-            self.status.setScale(0.071)
+            message = ""
+        self.status.setScale(0.071)
         value = " · ".join(item for item in (countdown, '自动试车' if automatic else '', notice, message) if item)
         if value != self._notice_source:
             self._notice_source = value
             self.status_notice.setText(value)
             wrapped = self.status_notice.textNode.getWordwrappedText()
             self._notice_lines = wrapped.count("\n") + 1
-        height = max(0.09, 0.046 * (self._notice_lines + (self._radio_station is not None)) + 0.025)
+        self._sync_notice_frame()
+
+    def _sync_notice_frame(self):
+        has_content = bool(self._notice_source) or (self._radio_station is not None)
+        if not has_content:
+            self.notice_frame["frameColor"] = (0, 0, 0, 0)
+            self.notice_accent.hide()
+            self.status_notice.hide()
+            return
+        self.notice_frame["frameColor"] = (0.045, 0.062, 0.088, 0.72)
+        self.notice_accent.show()
+        self.status_notice.show() if self._notice_source else self.status_notice.hide()
+        lines = self._notice_lines if self._notice_source else 0
+        height = max(0.09, 0.046 * (lines + (self._radio_station is not None)) + 0.025)
         if height != self._notice_height:
             self.notice_frame["frameSize"] = (0, 0.88, -height, 0)
             self._notice_height = height
@@ -318,6 +325,7 @@ class DrivingHUD:
         for i, label in enumerate(self.radio_labels):
             label.show() if i == station else label.hide()
         self.status_notice.setPos(0.035, -0.096 if station is not None else -0.050)
+        self._sync_notice_frame()
 
     def resize(self, aspect):
         if aspect == self._aspect:

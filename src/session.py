@@ -53,14 +53,14 @@ class FixedStepper:
         self.remainder = 0.0
         self.dropped_time = 0.0
 
-    def advance(self, elapsed, tick):
+    def advance(self, elapsed, tick, *, max_steps=8):
         if not math.isfinite(elapsed) or elapsed < 0:
             raise ValueError("Frame time must be finite and nonnegative")
         self.remainder += elapsed
         available = int((self.remainder + 1e-12) / FIXED_DT)
-        count = min(available, 8)
+        count = min(available, max_steps)
         for _ in range(count):
-            # 每批最多八拍只用于交还执行机会；未完成时间留到下一批真实计算，不能删掉。
+            # 每批限制步数只用于交还执行机会；未完成时间留到下一批真实计算，不能删掉。
             self.remainder = max(0.0, self.remainder - FIXED_DT)
             tick()
         return count

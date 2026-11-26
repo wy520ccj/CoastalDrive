@@ -19,20 +19,22 @@ void main() {
     vec3 first=texture(wave_normals,p/64.+sea_time*vec2(.003,.001)).rgb*2.-1.;
     vec3 second=texture(wave_normals,vec2(-p.y,p.x)/28.+sea_time*vec2(-.002,.003)).rgb*2.-1.;
     vec3 normal=normalize(vec3(first.xy+vec2(second.y,-second.x)*.42,first.z));
-    vec3 view=normalize(camera_world_position-world);
+    vec3 to_camera=camera_world_position-world;
+    float cam_dist=length(to_camera);
+    vec3 view=to_camera/max(cam_dist,.0001);
     float nv=max(dot(normal,view),.001);
     vec3 sky=textureLod(filtered_env_map,reflect(-view,normal),.35).rgb;
     float fresnel=.02+.98*pow(1.-nv,5.);
     vec3 color=vec3(.009,.039,.068)*(1.-fresnel)+sky*fresnel*.35;
-    // 同方向太阳的GGX高光被真实浪面打散，倒影不跟随屏幕或固定世界条带。
+    // 同方向太阳的GGX高光被真实浪面打散；随视距温和展宽粗糙度以抑制中远距亚像素频闪火点。
     vec3 light=coastal_sun_direction;
     vec3 half_vector=normalize(view+light);
     float nl=max(dot(normal,light),0.);
     float nh=max(dot(normal,half_vector),0.);
     float vh=max(dot(view,half_vector),0.);
-    float roughness=.14+.18*(1.-length(first));
+    float roughness=min(.65,.18+.18*(1.-length(first))+smoothstep(45.,320.,cam_dist)*.22);
     float a2=pow(roughness,4.);
-    float d=a2/(3.141592654*pow(nh*nh*(a2-1.)+1.,2.));
+    float d=min(a2/(3.141592654*pow(nh*nh*(a2-1.)+1.,2.)),18.);
     float k=roughness*roughness*.5;
     float g=(nv/(nv*(1.-k)+k))*(nl/(nl*(1.-k)+k));
     float f=.02+.98*pow(1.-vh,5.);

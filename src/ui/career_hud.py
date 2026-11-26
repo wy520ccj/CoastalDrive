@@ -182,7 +182,7 @@ class CareerDrivingHUD:
         self.text(self.brake_key, brake)
         controls = 'Q 倒挡  E 前进' if driving_mode == DrivingMode.SIMULATION else '辅助驾驶'
         station_name = STATIONS[station].split(' · ', 1)[0] if station is not None else ''
-        self.text(self.secondary_keys, 'C 视角   R 复位   '+controls+(' · '+station_name if station_name else ''))
+        self.text(self.secondary_keys, 'C 视角  R 复位  N 电台  M 静音  '+controls+(' · '+station_name if station_name else ''))
         self.text(self.speed, f'{abs(player.speed)*3.6:03.0f}')
         self.text(self.gear, 'R' if player.gear < 0 else 'N' if player.gear == 0 else f'D{player.gear}')
         self.text(self.rpm, f'{player.rpm:.0f} rpm')

@@ -388,7 +388,7 @@ def build_page(panel, spec, draft, tab, notice):
         button('带入单项方案', left+642, 862, 190, 58, 'challenge-import', role='secondary')
     elif spec.id in TRIAL_POLICIES and app.budget_origin != 'chase':
         button('自动试车', left+642, 862, 190, 58, 'challenge-auto', role='secondary')
-    panel.challenge_readouts['notice'] = label('', left+24, 841, 17, ORANGE, wrap=width-2*left)
+    panel.challenge_readouts['notice'] = label('', left+24, 824, 15, ORANGE, wrap=width-2*left-48)
     start_btn = button('开始挑战', width-left-284, 862, 284, 58,
                        'challenge-start', role='primary', primary=True)
     start_btn['text_pos'] = (16*unit, -7*unit)
@@ -562,7 +562,7 @@ def result_page(panel, spec, status):
     if slalom is not None and slalom.clearances:
         label(f'通过 {slalom.gates}/6 门 · 最小余量 {min(slalom.clearances):.2f} m', left+24, 244, 19, theme.TEXT_SUB)
     if retry_hint:
-        label(retry_hint, left+24, 244, 19, theme.TEXT_SUB)
+        label(retry_hint, left+24, 232 if reference is not None else 244, 17 if reference is not None else 19, theme.TEXT_SUB)
     if result.valid and road.overtake is not None and reference is None and not app.budget_auto:
         label(f'安全超越 {road.overtake.passes} 辆', left+24, 244, 19, theme.TEXT_SUB)
     if reference is not None:
@@ -584,7 +584,8 @@ def result_page(panel, spec, status):
             time_text = f'{time_delta:+.1f}' if abs(time_delta) >= .05 else '0.0'
             oil_text = f'{oil_delta:+.{oil_precision}f}' if oil_delta else f'{0:.{oil_precision}f}'
             name = '较对照' if app.budget_auto else '较'+(status.reference_label or '最快完赛')
-            label(f'{name}  {time_text} s · {oil_text} L/100km', left+24, 244, 19, theme.TEXT_SUB)
+            ref_y, ref_size = (255, 16.5) if retry_hint else (244, 19)
+            label(f'{name}  {time_text} s · {oil_text} L/100km', left+24, ref_y, ref_size, theme.TEXT_SUB)
         elif spec.targets and not app.budget_auto and reference.build != result.build and not retry_hint:
             label(f'最快完赛对照  {reference.seconds:.1f} s · {reference.consumption:.1f} L/100km',
                   left+24, 244, 19, theme.TEXT_SUB)

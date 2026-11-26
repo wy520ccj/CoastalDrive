@@ -50,6 +50,7 @@ class Vehicle:
     ):
         self.config = config
         self.input_config = input_config
+        self.game_solver_tolerance = False
         self.hubs = wheel_hubs(config)
         self._world = world
         self.on_asphalt = on_asphalt
@@ -127,6 +128,7 @@ class Vehicle:
 
         self._chassis = chassis
         self._vehicle = vehicle
+        self._wheels = tuple(vehicle.getWheels())
         if self.config.unsprung_enabled:
             install_guides(self)
             observe_unsprung(self,0)
@@ -301,10 +303,19 @@ class Vehicle:
         return solve_drivetrain_stages(self.physics_stages(request, dt, tire_substeps=tire_substeps,
             angles=angles, accumulate=accumulate, static_shapes=static_shapes))
 
+    def damp_solver_step(self, dt):
+        factor = math.exp(-2. * dt)
+        linear = self._chassis.getLinearVelocity()
+        angular = self._chassis.getAngularVelocity()
+        self._chassis.setLinearVelocity(Vec3(*(v * factor if math.isfinite(v) else 0. for v in linear)))
+        self._chassis.setAngularVelocity(Vec3(*(v * factor if math.isfinite(v) else 0. for v in angular)))
+
     def physics_stages(self, request, dt, *, tire_substeps=None, angles=None, accumulate=False, static_shapes=None,
                        complete_tires=False):
         """从当前真实Bullet姿态读取接点，完成一个机械/世界共用的积分子步。"""
         drive_torque, engine_drag, pressures = request
+        # 游戏标志随机械请求传递，独立工作进程也读同一标志。
+        complete_tires = complete_tires and not self.game_solver_tolerance
         if self.config.unsprung_enabled:
             angles = wheel_angles(self.steering.angle,self.config) if angles is None else angles
             source = UnsprungAdvanceInput.read(self,pressures,angles,self._contact_tick+1,dt,accumulate,static_shapes)
@@ -325,15 +336,13 @@ class Vehicle:
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
         angles = wheel_angles(self.steering.angle, self.config) if angles is None else angles
-        position = pose.getPos()
-        road = self.on_asphalt(position.x, position.y)
         grade = self._road_grade(hpr.x)
         front_load, rear_load = (
             axle_loads(self._load_acceleration, grade, self.config) if grade is not None else (0.0, 0.0)
         )
         # 自定义轮胎独占切向受力；原生车辆只保留射线悬架和轮心位置。
         if self._native_action:
-            for index, wheel in enumerate(self._vehicle.getWheels()):
+            for index, wheel in enumerate(self._wheels):
                 wheel.setFrictionSlip(0)
                 self._vehicle.applyEngineForce(0, index)
                 self._vehicle.setBrake(0, index)
@@ -341,17 +350,19 @@ class Vehicle:
             contact.normal_load for contact in self._wheel_contacts
             if contact.in_contact and road_support(contact.contact_normal)
         )
-        horizontal = Vec3(velocity.x, velocity.y, 0)
-        horizontal_speed = horizontal.length()
         air_velocity, air_force = aerodynamic_load(tuple(velocity), tuple(self.wind), self.config)
         aero = math.sqrt(sum(x*x for x in air_force))
         self._chassis.applyCentralForce(Vec3(*air_force))
         rolling = 0.0
         wheel_rolling = self.config.finite_drivetrain and self.config.wheel_rolling_resistance
-        if not wheel_rolling and horizontal_speed > 0.01 and normal_load > 0:
+        horizontal_speed = math.hypot(velocity.x, velocity.y)
+        if not wheel_rolling and normal_load > 0 and horizontal_speed > 0.01:
+            position = pose.getPos()
+            road = self.on_asphalt(position.x, position.y)
             coefficient = self.config.rolling_coefficient if road else self.config.grass_rolling_coefficient
             rolling = coefficient * normal_load * min(horizontal_speed, 1)
-            self._chassis.applyCentralForce(-horizontal * (rolling / horizontal_speed))
+            scale = rolling / horizontal_speed
+            self._chassis.applyCentralForce(Vec3(-velocity.x * scale, -velocity.y * scale, 0.0))
         external_velocity = (
             self._chassis.getGravity() + self._chassis.getTotalForce() / self.config.mass
         ) * dt
@@ -366,21 +377,21 @@ class Vehicle:
             tire_contact_tick += 1
             if self.config.finite_drivetrain:
                 if not (complete_tires and tire_substeps==1):
-                    system = self.suspension.prepare(self._world, self._chassis, self._vehicle.getWheels(), static_shapes)
+                    system = self.suspension.prepare(self._world, self._chassis, self._wheels, static_shapes)
                     self._wheel_contacts = self.suspension.candidates(system, self.on_asphalt)
                 suspension = self.suspension, system, self.on_asphalt
             else:
                 self._wheel_contacts = self.suspension.advance(
-                    self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
+                    self._world, self._chassis, self._wheels, self.on_asphalt,
                     tire_contact_tick, dt, tuple(external_velocity), tuple(external_angular))
         if complete_tires and suspension is not None and tire_substeps==1:
             result = yield TireAdvanceInput.read(self._chassis,self.tires,self.powertrain,self.suspension,
                 system,self._wheel_contacts,angles,request,tire_contact_tick,dt,
                 tuple(external_velocity),tuple(external_angular),accumulate,
-                world_source=(self._world,self._chassis,self._vehicle.getWheels(),self.on_asphalt,static_shapes,self.suspension.envelope))
+                world_source=(self._world,self._chassis,self._wheels,self.on_asphalt,static_shapes,self.suspension.envelope))
             coupled_contacts = result.commit(self._chassis,self.tires,self.powertrain,self.suspension)
         else:
-            coupled_contacts = yield from self.tires.advance_stages(
+            stages = self.tires.advance_stages(
                 self._chassis, self._wheel_contacts, angles,
                 drive_torque, engine_drag, pressures, tire_contact_tick, dt,
                 tuple(external_velocity), tuple(external_angular),
@@ -388,6 +399,19 @@ class Vehicle:
                 suspension=suspension,
                 substeps=tire_substeps, accumulate=accumulate,
             )
+            if self.game_solver_tolerance and self.config.finite_drivetrain:
+                result = None
+                try:
+                    while True:
+                        inputs = stages.send(result)
+                        inputs.parameters["game_solver_tolerance"] = True
+                        result = yield inputs
+                        if result.sweeps == 0:
+                            self.damp_solver_step(inputs.values[-1])
+                except StopIteration as completed:
+                    coupled_contacts = completed.value
+            else:
+                coupled_contacts = yield from stages
         if suspension is not None:
             self._wheel_contacts = coupled_contacts
             if accumulate:

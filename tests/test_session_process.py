@@ -5,6 +5,7 @@ from collections import deque
 from types import SimpleNamespace
 
 import pytest
+from panda3d.core import Vec3
 
 from controls import ConstantController
 from driving_modes import DrivingMode
@@ -14,6 +15,28 @@ from session_clock import PRESENTATION_DELAY
 from session_process import SessionProcess
 from simulation import FIXED_DT, CarState, Control, Snapshot
 from vehicle_designs import vehicle_design
+
+
+def test_endless_camera_uses_authoritative_3d_sphere_sweep():
+    options = {'track': 'endless', 'road_shape': 'hills', 'driving_mode': DrivingMode.GAME,
+               'vehicle_config': vehicle_design('gr86-2022-premium-6mt').config}
+    local, remote = Session(17, **options), SessionProcess(17, **options)
+    try:
+        local.start(countdown=False)
+        remote.start(countdown=False)
+        remote.pause()
+        origin = remote.current.origin_y
+        pos = remote.current.player.position
+        anchor = Vec3(pos[0], pos[1], pos[2] + 1.4)
+        # 向下穿入路面/边坡，验证三维球扫沿射线拉近相机（Y 明显前移），而非仅在末端拉高 Z。
+        into_ground = Vec3(pos[0], pos[1] - 6.0, pos[2] - 3.0)
+        expected = tuple(local.camera_position(anchor, into_ground, origin))
+        actual = tuple(remote.camera_position(anchor, into_ground, origin))
+        assert actual == pytest.approx(expected, abs=1e-5)
+        assert actual[1] > into_ground[1] + 1.0
+    finally:
+        local.close()
+        remote.close()
 
 
 @pytest.mark.parametrize('pending',[False,True])

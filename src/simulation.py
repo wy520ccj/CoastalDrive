@@ -1,6 +1,7 @@
 """Fixed-step world, shared vehicles, traffic lifecycle and read-only snapshots."""
 
 import json
+import logging
 import math
 import random
 import time
@@ -61,6 +62,7 @@ __all__ = [
 
 # 实验场从局部原点创建，避免继承测试道路95m横向坐标的单精度位移量化。
 LAB_SPAWN = (0.,0.,SPAWN[2])
+_LOG = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -477,6 +479,7 @@ class Simulation:
             self._world, self.on_asphalt, self.spawn, wind=self.wind,
             config=self.config, input_config=self.input_config,
         )
+        self.player.game_solver_tolerance = self.input_config is GAME_INPUT
         if self.road.curve:
             p = self.road.sample(8, 1)
             self.player.reset(self.spawn, p.heading, p.grade)
@@ -798,6 +801,12 @@ class Simulation:
                 return True
         return False
 
+    def _recover_physics_substep(self, dt, error, vehicles=None):
+        _LOG.debug("游戏物理第 %d 拍子步使用刚体阻尼推进", self._tick, exc_info=error)
+        for vehicle in (self.player,) if vehicles is None else vehicles:
+            vehicle._chassis.clearForces()
+            vehicle.damp_solver_step(dt)
+
     def step(self, control: Control | VehicleCommand, dt=FIXED_DT, *, traffic_controls=None):
         if self.closed:
             raise RuntimeError("Simulation is closed")
@@ -837,7 +846,11 @@ class Simulation:
 
         # 车身撞击带来速度/姿态突变，单个8.33ms机械步会使接触活动集交替发散。
         # 真实碰撞后短时细分同一个120Hz拍；不改变输入采样、碰撞、物理方程或验收门槛。
-        if self._impact_events or (not self._collision_refinement_ticks and self._approaching_body_contact()):
+        game = self.input_config is GAME_INPUT
+        if game:
+            if self._impact_events:
+                self._collision_refinement_ticks = 16
+        elif self._impact_events or (not self._collision_refinement_ticks and self._approaching_body_contact()):
             self._collision_refinement_ticks = 120
         substeps = physical_substeps(self.config)
         # 弯坡折面上四轮支撑方向不同，细分真实机械步以解析接点变化。
@@ -847,11 +860,13 @@ class Simulation:
             if len(normals) > 1:
                 substeps = max(2, substeps)
         if self._collision_refinement_ticks and self.player.coupled_suspension and self.config.finite_drivetrain:
-            substeps = max(4, substeps)
+            refinement = 4 if not game or self._collision_refinement_ticks > 10 else 2
+            substeps = max(refinement, substeps)
             self._collision_refinement_ticks -= 1
         advance_world(self._world, cars, substeps=substeps, observe=observe,
                       static_cache=self._static_support_cache, packet_cache=self._static_support_packet,
-                      workers=self._physics_workers, material=(self.track,self.road.curve,self.origin_y),query_lock=self._query_lock)
+                      workers=self._physics_workers, material=(self.track,self.road.curve,self.origin_y),
+                      query_lock=self._query_lock, recover=self._recover_physics_substep if game else None)
         self.collision_count += len(traffic_contacts)
         self._tick += 1
         if self.stream:
