@@ -54,5 +54,5 @@
 ## 近期基线与验证索引
 
 - 阶段 0 本地拆分基线：在原 `15c321f5` 上按性能核心、视觉环境、预算挑战与第一季玩法、`LAB-M3` 试验台接入及文档归档整理为清晰本地提交（详见 `git log -n 6 --oneline`）。
-- 第一季 `r3` 独立候选与真实 T2 失败日志：`builds/season-20261118-r3/build-receipt.json`、`logs/season-20261118/final-candidate-T2-r3/summary.json`、`logs/season-20261118/final-candidate-T2-r3/pytest.log`。
+- 2026-11-26 工作区架构整理（基线 `b5a68cb2`）：将 12,517 份历史验收证据（`docs/evidence/`，~5.68 GB）、旧设计草图目录、~180 份已完成任务包、过时阶段评审文档、345 个零引用历史脚本、`src/phase0_app.py` 及本地旧构建/历史日志（`builds/*`、`logs/*` 非缓存项、过期 `build/` 子目录，合计 ~83 GB）统一归档至 `archive/2026-11-26/`（完整映射见本地 `moves.json`）；测试依赖的 21.8 MB 最小夹具沉淀至 `tests/data/fixtures/`，README 展示图移至 `docs/screenshots/`，本机运行缓存与活跃 SDK 原位保留。验证：`ruff check src tests tools` 0 错、0/17/23 三种子 headless 1200 步全通、夹具重定位非 UI 176 项与 UI 22 项均零路径错误通过（既有非路径失败如实留存：`test_local_kcd_drive.py` 2 项 GPU 脚本与异步加载假设、`test_virtual_driver_ui.py`/`test_workshop_journey_ui.py` 13 项历史接口差异）。
 - 下一步执行：由用户运行 `launchers/game-current.cmd` 实机体验阶段 4 性能优化后的常态驾驶与撞栏流畅度；确认后按需推进最显眼视觉硬伤（山体 UV 误平铺、木本阴影代理与近景融洽度）或下一阶段收口。

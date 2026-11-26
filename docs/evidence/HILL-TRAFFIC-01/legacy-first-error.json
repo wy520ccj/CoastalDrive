@@ -1,7 +1,0 @@
-{
-  "passed": false,
-  "command": "tools/overtake_legacy_check.py --output logs/validation/HILL-TRAFFIC-01-legacy.json",
-  "exception": "KeyError",
-  "key": "normal-final/summary.json",
-  "cause": "Windows归档清单键用反斜杠，读取时未归一；没有驾驶/规则结果"
-}

@@ -1,5 +1,0 @@
-Archive original/compressed SHA: 80 passed
-Source normalized LF manifest: 12 files
-Final ruff check src tests tools: passed
-Final git diff --check: passed (standard LF/CRLF notices only)
-Final normal/Double restored images: inspected, footer no overlap

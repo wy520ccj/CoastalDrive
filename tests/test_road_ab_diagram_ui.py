@@ -30,7 +30,7 @@ def test_graph_table_navigation_and_readonly_snapshot(app, tmp_path, kind):
         store.freeze(attempt(short=False, succeeded=False), config(2))
         store.observe(attempt(2, short=False, error=2.))
     else:
-        source = Path('docs/evidence')/('BRAKE-ROAD-AB-01/normal/player-braking-ab.json' if brakes else
+        source = Path('tests/data/fixtures')/('BRAKE-ROAD-AB-01/normal/player-braking-ab.json' if brakes else
                                        'PLAYER-ROAD-AB-01/normal/player-road-ab.json')
         path = tmp_path/'actual-ab.json'
         path.write_bytes(source.read_bytes())

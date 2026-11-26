@@ -22,7 +22,7 @@ def test_circle_section_matches_independent_box_edge_distance(y):
 
 
 def test_tilted_failed_query_has_real_witnesses_and_dominates_full_sphere_support_planes():
-    path = Path(__file__).resolve().parents[1]/"docs/evidence/SIM-UNSPRUNG-01/ride-braking/failed-query.json"
+    path = Path(__file__).resolve().parents[1]/"tests/data/fixtures/SIM-UNSPRUNG-01/ride-braking/failed-query.json"
     data = json.loads(path.read_text())
     center,axis = np.asarray(data["center"]),np.asarray(data["axis"])
     half = np.max(np.abs(data["vertices"]),axis=0)

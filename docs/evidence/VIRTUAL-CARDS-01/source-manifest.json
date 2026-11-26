@@ -1,6 +1,0 @@
-{
-  "src/ui/virtual_driver.py": "3de4c5127572f593246637c822b11458b980b81e5101e5bbe6bf3af851cfe98b",
-  "tests/test_virtual_driver_ui.py": "f581278e10567bab64cc824e4cf4b0201043c1e423bfefa79fe9d874a4581251",
-  "tools/virtual_cards_check.py": "fcce82935ec980c2754293968b6c5941ba5f74fad57b11d89542fba97e09e029",
-  "tools/road_review_check.py": "137eb556b4de29f912c363d2128af51ec70352b86240a102821ce78e59ce5fe5"
-}

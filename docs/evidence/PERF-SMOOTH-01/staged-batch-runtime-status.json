@@ -1,9 +1,0 @@
-{
-  "run": "staged-batches-900m",
-  "completed": false,
-  "reason": "窗口焦点丢失后进入暂停；实际UI确认暂停，恢复时总墙钟已超过183秒工具上限，TimeoutError。",
-  "partial_frames": 1328,
-  "foreground_frames": 1327,
-  "max_distance_m": 320.7669578007363,
-  "scope": "部分帧不得作为900m或单实例性能通过；恢复前后长暂停保留。"
-}

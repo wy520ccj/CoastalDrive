@@ -1,3 +1,0 @@
-* -text whitespace=trailing-space,space-before-tab,cr-at-eol
-*.log -whitespace
-*.txt -whitespace

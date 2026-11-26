@@ -171,7 +171,7 @@ def test_engineering_configuration_status_changes_with_vehicle(workbench):
     from pathlib import Path
 
     app = workbench
-    path = Path(__file__).resolve().parents[1]/"docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json"
+    path = Path(__file__).resolve().parents[1]/"tests/data/fixtures/SIM-UNSPRUNG-01/production/engineering-preview.json"
     app.import_engineering(path)
     assert app.engineered_config.unsprung_enabled
     assert app.configuration_note.getText() == "工程模型 · 独立轮心"
@@ -284,7 +284,7 @@ def test_reset_restores_all_fields_for_current_maneuver_and_preserves_engineerin
     app.pin_baseline()
     assert app.record.samples and app.baseline.samples and app.run_state is not None
     app.import_engineering(Path(__file__).resolve().parents[1]/
-        "docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json")
+        "tests/data/fixtures/SIM-UNSPRUNG-01/production/engineering-preview.json")
     app.maneuver_menu.set("单侧凸起 / 制动")
     config, metadata = app.engineered_config, app.parameter_metadata
     run, record, baseline = app.run_state, app.record, app.baseline

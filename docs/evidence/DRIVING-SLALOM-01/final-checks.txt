@@ -1,6 +1,0 @@
-Archive original SHA: 63/63 match
-Source normalized LF manifest: 17 files
-Raw pure-rule recheck: normal and Double 2585 steps each, all exact; physics_rerun=false
-Final 1280x720 and 1024x768 static layout: inspected; no clipped HUD
-Final ruff check src tests tools: passed
-Working tree git diff --check: passed

@@ -1,1 +1,0 @@
-{"passed": true, "full_context_equal": true, "milliseconds": {"old": 278.46539999973174, "new-cold": 207.832199999757, "new-warm": 59.51000000004569, "old-repeat": 207.10819999931118}, "cache": "CacheInfo(hits=87, misses=87, maxsize=128, currsize=87)"}

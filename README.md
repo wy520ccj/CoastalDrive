@@ -22,7 +22,7 @@
 
 适合想试玩驾驶原型、观察车辆参数影响，或阅读 Python/Panda3D 车辆仿真实现的人。[更完整的程序介绍](docs/overview.md)包含功能分区、十种试验工况、示例流程和当前开发方向。
 
-![当前开发版主菜单](docs/evidence/WORKSPACE-ART-02/menu.png)
+![当前开发版主菜单](docs/screenshots/menu.png)
 
 ## 驾驶游戏
 
@@ -35,7 +35,7 @@
 | 画面与声音 | 海岸环境、跟车相机、仪表与诊断信息、发动机/碰撞声音及可切换驾驶电台 |
 | 日常操作 | 暂停、失焦自动暂停、复位扶正、设置与成绩本地保存 |
 
-![安装版实际驾驶画面](docs/evidence/RELEASE-20261017/drive.png)
+![安装版实际驾驶画面](docs/screenshots/drive.png)
 
 ## 车辆动力学实验台
 
@@ -50,7 +50,7 @@
 
 例如，先运行100km/h、μ=1.1的直线制动并固定为A，再改μ=0.6运行B，比较两条速度曲线与模型停车距离；也可以修改质心高度，观察轮荷、车身运动及实际试驾的变化。[操作示例](docs/vehicle-design-loop.md)
 
-![安装版实际实验台](docs/evidence/RELEASE-20261017/lab.png)
+![安装版实际实验台](docs/screenshots/lab.png)
 
 ## 物理核心与当前完成度
 

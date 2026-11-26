@@ -65,7 +65,7 @@ def test_budget_bend_matches_design_profile_and_has_real_technical_corners():
     import json
     from pathlib import Path
 
-    profile = json.loads(Path('docs/design/challenge-courses-v2/bend-profile.json').read_text(encoding='utf-8-sig'))
+    profile = json.loads(Path('tests/data/fixtures/challenge-courses-v2/bend-profile.json').read_text(encoding='utf-8-sig'))
     assert COURSES['budget-bend'] == tuple(tuple(row) for row in profile['sections'])
     course = CareerCourse('budget-bend')
     assert course.length == profile['distance_m'] == 1800
@@ -79,7 +79,7 @@ def test_budget_ridge_has_designed_climb_undulations_and_downhill():
     import json
     from pathlib import Path
 
-    profile = json.loads(Path('docs/design/challenge-courses-v2/ridge-profile.json').read_text(encoding='utf-8'))
+    profile = json.loads(Path('tests/data/fixtures/challenge-courses-v2/ridge-profile.json').read_text(encoding='utf-8'))
     assert COURSES['budget-ridge'] == tuple(tuple(row) for row in profile['sections'])
     course = CareerCourse('budget-ridge')
     assert course.length == profile['distance_m'] == 1400
@@ -98,7 +98,7 @@ def test_budget_rough_ridge_preserves_dimensions_and_combines_waves_with_turning
     import json
     from pathlib import Path
 
-    profile = json.loads(Path('docs/design/challenge-courses-v2/ridge-rough-final-profile.json').read_text(encoding='utf-8'))
+    profile = json.loads(Path('tests/data/fixtures/challenge-courses-v2/ridge-rough-final-profile.json').read_text(encoding='utf-8'))
     assert COURSES['budget-ridge-rough'] == tuple(tuple(row) for row in profile['sections'])
     course = CareerCourse('budget-ridge-rough')
     assert course.length == 1400
@@ -123,7 +123,7 @@ def test_budget_valley_keeps_speed_rules_and_has_real_downhill_and_climb():
     from race import GameMode
     from sprint_routes import SPRINT_ROUTES
 
-    profile = json.loads(Path('docs/design/challenge-courses-v2/valley-profile.json').read_text(encoding='utf-8'))
+    profile = json.loads(Path('tests/data/fixtures/challenge-courses-v2/valley-profile.json').read_text(encoding='utf-8'))
     assert COURSES['budget-valley'] == tuple(tuple(row) for row in profile['sections'])
     course = CareerCourse('budget-valley')
     assert course.length == profile['distance_m'] == 1000
@@ -150,7 +150,7 @@ def test_continuous_rough_bend_matches_design_and_real_collision_surface(name, c
     import json
     from pathlib import Path
 
-    profile = json.loads((Path('docs/design/challenge-courses-v2') / name).read_text(encoding='utf-8'))
+    profile = json.loads((Path('tests/data/fixtures/challenge-courses-v2') / name).read_text(encoding='utf-8'))
     course = CareerCourse(course_id)
     assert COURSES[course_id] == tuple(tuple(row) for row in profile['sections'])
     assert course.length == profile['distance_m'] == 1400

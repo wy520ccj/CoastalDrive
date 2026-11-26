@@ -132,7 +132,7 @@ def test_practice_can_explicitly_save_to_the_shared_draft(app):
 
 
 def test_overview_history_and_menu_pause_keep_current_progress_and_legacy_bytes(app):
-    source = Path('docs/evidence/COASTAL-TOUR-01/normal/driving-tour.json')
+    source = Path('tests/data/fixtures/COASTAL-TOUR-01/normal/driving-tour.json')
     legacy_path = app.session.race.scores.path.with_name('driving-tour.json')
     legacy_path.parent.mkdir(parents=True, exist_ok=True)
     legacy_path.write_bytes(source.read_bytes())

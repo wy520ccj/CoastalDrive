@@ -1,0 +1,570 @@
+{
+  "schema": "continuous-double-reference-v1",
+  "sdk": {
+    "panda_version": "1.10.16",
+    "bullet_version": 285,
+    "math_scalar_bits": 64,
+    "files": {
+      "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+      "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+      "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+      "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+      "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+      "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+      "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+      "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+      "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+      "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+      "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+      "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+      "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+      "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+      "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+      "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+      "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+      "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+    }
+  },
+  "reference": {
+    "git_source": "9eb7bf9",
+    "module": "docs\\evidence\\PHYS-SHARED-ROUNDING-01\\production-before-mechanical_kernels.cp314-win_amd64.pyd",
+    "module_sha256": "6ca08643bc79e1f614eb8bfe263bb45dc338de95902878ecb276b212032d99a6",
+    "c_source": "docs\\evidence\\PHYS-SHARED-ROUNDING-01\\production-before.c",
+    "c_sha256": "3167acfd48603f844356c560a58bed24193a34882f491d38d474fd9acb357692"
+  },
+  "input_fixture": "docs/evidence/PHYS-PERF-01/structural-20261009/native-input-fixture",
+  "input_sha256": {
+    "hardware.pickle": "f3252d9e04e87cedca7803e5fc43ab41e104aa3285482c984a56014b4554d31d",
+    "geometry.pickle": "979c9b5019a62a161eb29dc1609ad4e9db5ed276c68b3b58678f874d641b4f8a",
+    "fixture.json": "55608babc028a60cab8b4d0998d4ebd4d4e9d4a93d10bd5fd1df0e08d97a7df6",
+    "input-6240.bin": "eb97b10ff3fd3563685af94e6e4d935d284bea86e302d1ed108d404732253b89",
+    "input-6241.bin": "2ccca69064b46eec0f7a530f14962ddddea78c42835650ceb068d74d6f395b9b",
+    "input-6242.bin": "c0d5f34979a64211f2fe81e575aa9a593d5572f6b71360550da88129c2a96c9a",
+    "input-6243.bin": "7ee9659a232c61c3ee93fcb35f04710192e1eb63756825d1e5e7156a32e2bd42",
+    "input-6244.bin": "6667007091439020950ba55e9f7317149f11bfbd7a04cca2e9ee0640c034c01d",
+    "input-6245.bin": "32ed360c038000aa0c73d4adf04e5868b4c547b3454acc993d13dd159d077c3f",
+    "input-6246.bin": "5cfad01d75c95f2128d61393ffabaee81e26d9513db191149ac35e9d6d8d7775",
+    "input-6247.bin": "80613c1737813bf4d4c7ece6d3a9e1a4b802790f05e304e75f1e172827cab30c",
+    "input-6248.bin": "30a119b98e0f6cfe7b5aa90d2a8516ec8314279ca3905d8696f0a6c2fdb8dda3",
+    "input-6249.bin": "d2bcfa506be566becd23edba195b42692ee7cea5adb4c1139a3d5a10fa71f809",
+    "input-6250.bin": "42cec97ad9e2866a952e406d5e557a702074dcef0e13c8f942c037586ba9789b",
+    "input-6251.bin": "2bda54706ea7e494cf67c9b0c9331d5f8536ab6d2796d86de8a13ddfeaccbbcd",
+    "input-6252.bin": "6528612c50fd619c4d2c4f4ceb5263f888460602d5ec5699994f14b0eb2bd79f",
+    "input-6253.bin": "1a88a4af013a98a0f38ecf074ec5f6417877b61235f40986fb7751d2dd9f4073",
+    "input-6254.bin": "28346a05ef0fef6c714f660013998e3a263b751ff825cf1ee26b016e20c1eadc",
+    "input-6255.bin": "d9ba837ce3029c0b44c54bf4a0c0b6208751795c4e4e07a3229b7a38ceece6f2",
+    "input-6256.bin": "1cc80320788b04463e0caeaf6d6b657da82726242972fc893d4f9e0222329a31",
+    "input-6257.bin": "c1aec6545101570fa64300321b54599843229f722c52e9b95dd3f2dccab10169",
+    "input-6258.bin": "b779f421e0bf3e56022a6f1560eb2f4263ae8367b5b090fa5437874067eb546d",
+    "input-6259.bin": "57f5e5cf3b4f74c89c071429e3e68d9651f7a8108ec605fba8adb11add0947b9",
+    "input-6260.bin": "457f3da0975a8af856aeadfa96dd1bbd08a249b594ce8eb182a9693a0db37ce5",
+    "input-6261.bin": "19e13ab96912acdf2b6e5139fefc3fe0027da25544a9e2fbe1d131fe20b01035",
+    "input-6262.bin": "364acd7e42e9de7706e529e6039a71c565fa437d5cfba957ed723bb0418fe2f2",
+    "input-6263.bin": "1a30d0ffc8390af9a11a3e74a70f5fdf4a2bce44dcf6413fe806bb504fd7620e",
+    "input-6264.bin": "a0285e076e1bfee9ad85a1c17653e57cc6fbb0b78fa52a648ef1b223c173af8d",
+    "input-6265.bin": "ab1338caad0abe4c80d44ee07aad08df0e18fc2a5063d3ad6adf53be512192b2",
+    "result-6240.bin": "89d1f5e9a283926222e3869e317185cd6ca25619ffbb244eeb460561cb28573a",
+    "result-6241.bin": "bfafc3717199c37a5eb7354b858aa63d48dd09b300516736e1df59eb71cfa429",
+    "result-6242.bin": "b4fc8879a44851323d9e5fe90bfb32902a1b11b226ed187344024b3233cfc2b7",
+    "result-6243.bin": "10c2a1863bf0fcf897bc60f3f52fab800dd999b0f37e739bc037a3a9fadad598",
+    "result-6244.bin": "c2b328289ce8bd0eff2ea49c3c1a777750cc167e8b98aa4a4f107a955ae1553e",
+    "result-6245.bin": "e109127b97d9e78b078855d6e8bd93aeb5f86776386809f1ec352765b12db5ed",
+    "result-6246.bin": "3f3429d7b0bcc0b1812747409ba1db114dc7a2bac17678b784ccb9d5b30214fc",
+    "result-6247.bin": "d183953d46c26b0ff39db024ea4f3ae5650c8b9910d0e97cfe9a09d9909989b7",
+    "result-6248.bin": "78dd28f203066bb35eeb216f65999384bd9a391c0a6748d0f66e1980a4a5e3bc",
+    "result-6249.bin": "f8491d9f9651fa5c0a9bdaef3e584200a64b2c43be40da1e2a9297ec4a9ade1e",
+    "result-6250.bin": "5eafe6cded3a58442b7f438ae1ea4f061c9e8a6b93313f98dcdf8c266448485e",
+    "result-6251.bin": "2ca84b941f2fdc5cdb58e28e6ef388bccb959a81c38edb1b1fe49f52e53da324",
+    "result-6252.bin": "787dc312a1e36f860aa5864faad7be044c442327ac397a867ff3075f0185becc",
+    "result-6253.bin": "cf889acd964ef2ad388f4bf3e5c38f44aa6c992e34561d98f03f104b7c03864c",
+    "result-6254.bin": "2c9bd66137ebcd0d718550fa0efcba39ca027d282c0150cf68f221273e348f97",
+    "result-6255.bin": "be73f869e009b90a917230f3e3724224ba7bf380e0a3051df2784cbf5672f0da",
+    "result-6256.bin": "cca513aef56ad7e723750c54416e8fc56934217a3457307b2f3b01f3ba2bcfb4",
+    "result-6257.bin": "8018c6cb1349d509dd0e8baffae54773ad1a3de65c552daf770bb4f6ceaef851",
+    "result-6258.bin": "f7139f0b9db5890c4c3f0bfad5d2121f05c925e75fc1b33143bae46261911306",
+    "result-6259.bin": "3fbcc40c8eacd3023ccdbd12d3371bd99733ecfb73e19e19c1dbf08aa34d5987",
+    "result-6260.bin": "8c4d59987e57456d84c3c9178e9d79a1df13c0ef7cf191c7b975d23e19bb7ad1",
+    "result-6261.bin": "97d6378305b958e4021b6ec6267ebcb9f7c50ffac1961c6cb0de2e3e16392d2f",
+    "result-6262.bin": "15a35b1cedf6a8c211a6f712812d499118bcdfc6364ef8b39cb31c8d3b7039e0",
+    "result-6263.bin": "755154903588efaaf45ec725415a3ade1118edc77439ec98d9973f9086e8878a",
+    "result-6264.bin": "ead3d8c2a4ce266e85d5e8d8d7f36c1188b9a77b2bd694f0fe4c9fc34a2741d5",
+    "result-6265.bin": "e74f26b92b66145fa8f884fc3b42c269e91857bc1846a297187e05ffe7901ba7"
+  },
+  "codec_sha256": "61c3ec7106f8d9ee91cb8a31f15dd99b308483c8ec97fa9322a7f48f4dd62dd1",
+  "effective_hardware": {
+    "mass": 1287.29514606,
+    "torque_curve": [
+      [
+        823.2415540646484,
+        122.53685784250386
+      ],
+      [
+        1231.0417377344493,
+        164.4840379145703
+      ],
+      [
+        1668.4862145067252,
+        176.88407722607195
+      ],
+      [
+        2068.8374386194937,
+        193.29840235478576
+      ],
+      [
+        2469.226261996392,
+        229.77478082814093
+      ],
+      [
+        2891.8485922174305,
+        240.35185971759876
+      ],
+      [
+        3299.610889605818,
+        246.5536302648195
+      ],
+      [
+        3700.0,
+        249.47050249297757
+      ],
+      [
+        4076.98956057375,
+        235.610219695557
+      ],
+      [
+        4796.111009464492,
+        235.24558242685222
+      ],
+      [
+        5319.723657332341,
+        237.06854284889602
+      ],
+      [
+        5619.948177150346,
+        238.89342360351972
+      ],
+      [
+        6010.894428183716,
+        242.905902048892
+      ],
+      [
+        6422.812471488669,
+        246.18910595685475
+      ],
+      [
+        6813.795479104194,
+        240.35185971759876
+      ],
+      [
+        7000.0,
+        231.9381865934627
+      ],
+      [
+        7500.0,
+        209.34562792824056
+      ]
+    ],
+    "gear_ratios": [
+      3.626,
+      2.189,
+      1.541,
+      1.213,
+      1.0,
+      0.767
+    ],
+    "final_drive": 4.1,
+    "drivetrain_efficiency": 0.88,
+    "idle_rpm": 900.0,
+    "shift_time": 0.28,
+    "torque_response": 0.12,
+    "engine_braking": 24.0,
+    "finite_drivetrain": true,
+    "native_tire_forces": false,
+    "front_drive_share": 0.0,
+    "differential_damping": [
+      0.0,
+      600.0,
+      0.0
+    ],
+    "differential_capacity": [
+      0.0,
+      2000.0,
+      0.0
+    ],
+    "axle_torque_bias_ratios": [
+      1.0,
+      2.5
+    ],
+    "engine_inertia": 0.2,
+    "engine_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "input_shaft_enabled": true,
+    "input_shaft_inertia": 0.0136625,
+    "input_shaft_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "synchronizer_capacity": 80.0,
+    "downstream_inertia_enabled": true,
+    "downstream_inertias": [
+      0.00871,
+      0.015,
+      0.005632
+    ],
+    "downstream_axes": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "engine_idle_response": 0.15,
+    "engine_idle_torque_limit": 65.0,
+    "engine_redline_rpm": 7500.0,
+    "clutch_capacity": 300.0,
+    "clutch_release_time": 0.08,
+    "clutch_engage_time": 0.16,
+    "clutch_launch_response": 0.3,
+    "max_speed": 44.44444444444444,
+    "reverse_speed": 6.111111111111111,
+    "reverse_force": 2200.0,
+    "reverse_gear_ratio": 3.438,
+    "game_speed_limits": false,
+    "brake_torque": 4966.104686805212,
+    "front_brake_share": 0.7,
+    "braking": {
+      "response_time": 0.025,
+      "abs_enabled": true,
+      "target_slip": 0.12,
+      "slip_hysteresis": 0.015,
+      "minimum_speed": 1.5,
+      "release_rate": 25.0,
+      "apply_rate": 5.0,
+      "slip_rate_gain": 30.0
+    },
+    "traction": {
+      "tcs_enabled": true,
+      "target_slip": 0.12,
+      "slip_hysteresis": 0.015,
+      "slip_speed": 1.0,
+      "prediction_time": 0.12,
+      "release_rate": 12.0,
+      "apply_rate": 1.5,
+      "slip_rate_gain": 12.0,
+      "brake_gain": 0.2,
+      "maximum_brake": 0.25
+    },
+    "stability": {
+      "esc_enabled": true,
+      "minimum_speed": 1.5,
+      "reference_response": 0.15,
+      "yaw_gain": 6.0,
+      "sideslip_gain": 6.0,
+      "yaw_threshold": 0.1,
+      "sideslip_threshold": 0.06,
+      "moment_threshold": 150.0,
+      "engine_cut_gain": 0.4,
+      "continuous_reference": true
+    },
+    "steering_degrees": 33.333333333333336,
+    "steering_rate": 50.0,
+    "steering_response": 7.0,
+    "steering_return": 10.0,
+    "wheel_radius": 0.3146,
+    "wheel_width": 0.215,
+    "wheel_shoulder_radius": 0.01,
+    "wheel_crown_height": 0.003,
+    "wheel_inertia": 1.11865004,
+    "tire_reference_load": 3157.09134571215,
+    "longitudinal_stiffness": 64364.75730299999,
+    "lateral_stiffness": 53637.297752499995,
+    "rear_lateral_stiffness": 53637.297752499995,
+    "tire_peak_load_exponent": 0.9,
+    "longitudinal_load_exponent": 0.9,
+    "lateral_load_exponent": 0.85,
+    "tire_compliance": true,
+    "wheel_rotor_transport": true,
+    "tire_contact_stiffness": 150000.0,
+    "tire_contact_damping": 1000.0,
+    "tire_aligning_enabled": false,
+    "tire_contact_half_length": 0.08,
+    "tire_shape": 1.9,
+    "tire_curvature": 0.97,
+    "slip_speed": 1.0,
+    "static_contact_speed": 0.25,
+    "tire_substeps": 2,
+    "suspension_si_enabled": true,
+    "suspension_coupled_enabled": true,
+    "unsprung_enabled": false,
+    "unsprung_masses": [
+      40.0,
+      40.0,
+      40.0,
+      40.0
+    ],
+    "tire_radial_stiffness": [
+      200000.0,
+      200000.0,
+      200000.0,
+      200000.0
+    ],
+    "tire_radial_damping": [
+      500.0,
+      500.0,
+      500.0,
+      500.0
+    ],
+    "suspension_antiroll_rates": [
+      6000.0,
+      4000.0
+    ],
+    "suspension_stop_rates": [
+      389207.844665603,
+      389207.844665603,
+      345146.57923176116,
+      345146.57923176116
+    ],
+    "suspension_spring_rates": [
+      38920.784466560304,
+      38920.784466560304,
+      34514.65792317611,
+      34514.65792317611
+    ],
+    "suspension_coil_enabled": false,
+    "suspension_spring_preloads": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "suspension_installation_curves": null,
+    "suspension_damper_curves": null,
+    "suspension_compression_damping": [
+      2550.6498034159586,
+      2550.6498034159586,
+      2261.8969954820764,
+      2261.8969954820764
+    ],
+    "suspension_extension_damping": [
+      4372.542520141644,
+      4372.542520141644,
+      3877.5377065407033,
+      3877.5377065407033
+    ],
+    "suspension_stiffness": 40.0,
+    "suspension_compression": 4.4,
+    "suspension_relaxation": 2.3,
+    "air_density": 1.225,
+    "drag_coefficient": 0.276,
+    "frontal_area": 1.9532100000000001,
+    "rolling_coefficient": 0.013591573224600747,
+    "grass_rolling_coefficient": 0.0764525993883792,
+    "wheel_rolling_resistance": true,
+    "rolling_transition_speed": 1.0,
+    "road_friction": 1.1,
+    "grass_friction": 0.45,
+    "wheelbase": 2.575,
+    "track_width": 1.52,
+    "axle_track_widths": [
+      1.52,
+      1.55
+    ],
+    "collision_half_width": 1.015,
+    "collision_half_length": 2.13256,
+    "collision_half_height": 0.59,
+    "centered_collision_support": true,
+    "body_center_height": 0.72,
+    "wheel_connection_height": 0.6286172308363899,
+    "center_of_mass_height": 0.45,
+    "front_weight_share": 0.53,
+    "body_inertia": [
+      2014.7686544482972,
+      413.33025779135914,
+      2281.6490372428193
+    ],
+    "angular_damping": 0.0,
+    "suspension_travel": 0.2,
+    "suspension_force_limit": 6000.0
+  },
+  "output_sha256": {
+    "result-6240.bin": "02cf614f1cacb6d8bb6ab99811901884b6d38ca9e420167776effd4d156218fd",
+    "result-6241.bin": "276dc2c2515ff5a1473cf0e1377349905c2bf47a2b577634fba13ad606c2f830",
+    "result-6242.bin": "e87f49c1487b5a2420e5f574febd4eec93f31dd2595c1650b45e1c0f3216b35e",
+    "result-6243.bin": "637ff49f60c6933a2ce2db7c274f41bede3c47dabd2ce45435737cd35ded0b3d",
+    "result-6244.bin": "ba639f4ab91793788261713b0dcd33be668272aea3c13b25a325d6dc4e187ffd",
+    "result-6245.bin": "e79cd80b87287909beca45e0179ab9a404f6af3d60051c6f6f95305c376810db",
+    "result-6246.bin": "19e061600d5ae5d4694bf1492076e8703615fd00ac75f519c0733f3afdde0fd3",
+    "result-6247.bin": "e0883b4f589ec245a370fdc155c3f3b79cfb5b377bfb69aa01a7239ea812fd01",
+    "result-6248.bin": "192992ffc2ffd859cc34b774e80e0093aacda4568d099ca3590cdfced0beab06",
+    "result-6249.bin": "88a21f56b3d8bcff8a6898408a51296728093b3678be630c6c6f203d96ff659c",
+    "result-6250.bin": "17eff607e3e0816168c1afc62c6f88a3831312f5cfcdb913f15c46fee6c56c5d",
+    "result-6251.bin": "610e5d5a12ee676d9df62fc0852e8cb52300e5481a76aaec5b6f5ccd79ad2497",
+    "result-6252.bin": "10f53c8ae4b60ae0a7131bd92e315567b6fefa5585ace11390560cc19f729916",
+    "result-6253.bin": "d14ce9ab149303da934cde05fb3fe9a95f47110397d4ae6d3198f4a8a2ea6f73",
+    "result-6254.bin": "bc6a33e109ab5476d6e00bd06e9ce20a7801d0bce7d58daecff960a2367d71f6",
+    "result-6255.bin": "c664d59c0ef8a35cdade2087d9b684e2fb6c5b8d8f369c4583ba151fe5d61bbf",
+    "result-6256.bin": "73b64d5c6529566bcf9918207a3de25dda9f06776ff4f67b4c2e6aa71f77c088",
+    "result-6257.bin": "c90c506b12ed96b30b0cada84bd6334421892341ffefc594bb1615f89b0b00be",
+    "result-6258.bin": "771fe67812b461f18b4a96e3d87524bb6da5cb7b96d5993afb15b36faed8bbfb",
+    "result-6259.bin": "877c6e719a85b26d3d5fb6bb9f5a7e7e7dd36a7ef29f8edcf42024e8bc53a613",
+    "result-6260.bin": "4956f66b943494fa1d499c1910476dcf6f66e317a6cda68c76f0730ed5337b6c",
+    "result-6261.bin": "ab81973cb71191088ebaa396677fe2e16962bb4f965b87b8adfd6c8260fa86fd",
+    "result-6262.bin": "158e7c605f06c582a06ea3a1b7803e5f2d306f908f6d9561952342662f96a302",
+    "result-6263.bin": "39e2aaf46525dc873a1f65e167079e53dc47903283b40c6f055c4789258af2b7",
+    "result-6264.bin": "5d4d61d179bc4514dfc57efe7cad842b1259671bfe3887cb46dad9afeac271f8",
+    "result-6265.bin": "16cba11997aec39dec3cb97a8d3073df40e06dc9ed004cc63577f7cf95843a7b"
+  },
+  "normal_differences": {
+    "6240": {
+      "different_fields": 404,
+      "maximum_absolute_difference": 0.015056027004902717
+    },
+    "6241": {
+      "different_fields": 417,
+      "maximum_absolute_difference": 0.007009471308265347
+    },
+    "6242": {
+      "different_fields": 415,
+      "maximum_absolute_difference": 0.006792247630073689
+    },
+    "6243": {
+      "different_fields": 416,
+      "maximum_absolute_difference": 0.019750742547330447
+    },
+    "6244": {
+      "different_fields": 410,
+      "maximum_absolute_difference": 0.016378167594666593
+    },
+    "6245": {
+      "different_fields": 411,
+      "maximum_absolute_difference": 0.022120990834082477
+    },
+    "6246": {
+      "different_fields": 413,
+      "maximum_absolute_difference": 0.01921613677404821
+    },
+    "6247": {
+      "different_fields": 422,
+      "maximum_absolute_difference": 0.009881007172225509
+    },
+    "6248": {
+      "different_fields": 416,
+      "maximum_absolute_difference": 0.00975576498603914
+    },
+    "6249": {
+      "different_fields": 422,
+      "maximum_absolute_difference": 0.007383148004009854
+    },
+    "6250": {
+      "different_fields": 411,
+      "maximum_absolute_difference": 0.010055507598735858
+    },
+    "6251": {
+      "different_fields": 409,
+      "maximum_absolute_difference": 0.013936237432062626
+    },
+    "6252": {
+      "different_fields": 421,
+      "maximum_absolute_difference": 0.009320761455455795
+    },
+    "6253": {
+      "different_fields": 402,
+      "maximum_absolute_difference": 0.012342768619419076
+    },
+    "6254": {
+      "different_fields": 410,
+      "maximum_absolute_difference": 0.0160821825847961
+    },
+    "6255": {
+      "different_fields": 417,
+      "maximum_absolute_difference": 0.013123615281074308
+    },
+    "6256": {
+      "different_fields": 420,
+      "maximum_absolute_difference": 0.012883498806331772
+    },
+    "6257": {
+      "different_fields": 410,
+      "maximum_absolute_difference": 0.018683578047784977
+    },
+    "6258": {
+      "different_fields": 407,
+      "maximum_absolute_difference": 0.011388648948923219
+    },
+    "6259": {
+      "different_fields": 413,
+      "maximum_absolute_difference": 0.014345227798912674
+    },
+    "6260": {
+      "different_fields": 410,
+      "maximum_absolute_difference": 0.008307710035296623
+    },
+    "6261": {
+      "different_fields": 404,
+      "maximum_absolute_difference": 0.00641649554745527
+    },
+    "6262": {
+      "different_fields": 410,
+      "maximum_absolute_difference": 0.0060888737862114795
+    },
+    "6263": {
+      "different_fields": 408,
+      "maximum_absolute_difference": 0.010509278698009439
+    },
+    "6264": {
+      "different_fields": 413,
+      "maximum_absolute_difference": 0.01084586435899837
+    },
+    "6265": {
+      "different_fields": 425,
+      "maximum_absolute_difference": 0.009644168909289874
+    }
+  },
+  "difference_examples": [
+    {
+      "field": "result.omega[0]",
+      "normal": 4.668957284033287,
+      "double": 4.6689572872807,
+      "absolute_difference": 3.2474130051696193e-09
+    },
+    {
+      "field": "result.omega[1]",
+      "normal": 4.670381055792008,
+      "double": 4.670381063705405,
+      "absolute_difference": 7.913397048753268e-09
+    },
+    {
+      "field": "result.omega[2]",
+      "normal": 4.764794272855584,
+      "double": 4.764794279796769,
+      "absolute_difference": 6.941185404230055e-09
+    },
+    {
+      "field": "result.omega[3]",
+      "normal": 4.7658749996848,
+      "double": 4.7658750031144175,
+      "absolute_difference": 3.4296174789005818e-09
+    },
+    {
+      "field": "result.rotation[0]",
+      "normal": 2.781848360282798,
+      "double": 2.781848360292521,
+      "absolute_difference": 9.722889160457271e-12
+    }
+  ],
+  "reverse_repeat_exact": true,
+  "kind": "旧模块/当前相同输入适配在实际Double SDK的独立数值参考；非物理重跑或性能基准"
+}

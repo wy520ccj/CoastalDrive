@@ -37,7 +37,7 @@ def app(tmp_path, monkeypatch):
 
 def open_pair(app):
     app.choose_braking_lesson(GameMode.SHORT_BRAKING)
-    source = Path('docs/evidence/BRAKE-ROAD-AB-01/normal/player-braking-ab.json')
+    source = Path('tests/data/fixtures/BRAKE-ROAD-AB-01/normal/player-braking-ab.json')
     app.player_brake_ab.path.write_bytes(source.read_bytes())
     app.player_brake_ab = PlayerRoadAB(app.player_brake_ab.path, brakes=True)
     app.open_player_road_ab('brakes')

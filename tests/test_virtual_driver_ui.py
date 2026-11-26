@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def seed_library(target):
-    source = ROOT/"docs/evidence/DESIGN-SCHEMES-01/normal/schemes"
+    source = ROOT/"tests/data/fixtures/DESIGN-SCHEMES-01/normal/schemes"
     for path in source.rglob("*"):
         if not path.is_file():
             continue

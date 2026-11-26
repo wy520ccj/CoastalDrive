@@ -1,3 +1,0 @@
-{"passed": true, "same_input_calls": 2880, "corrected_hold_wheel_records": 50, "pressure_and_other_brake_fields_byte_equal": true, "old_module_sha256": "9ca1d8cc74d57cb57b050b912bc3aa2c18fe2d73a30fd744875fdec863753108", "new_module_sha256": "611db8504d855607af4ab6b450a8a2ba6bc457ab0cc5eca0f646e0c83278a7ea"}
-....................................                                     [100%]
-36 passed in 0.68s

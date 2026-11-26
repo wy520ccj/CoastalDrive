@@ -28,9 +28,9 @@ from suspension_kinematics import finite_contact_system
 from vehicle_suspension import Suspension
 from vehicle_tire_step import TireBodyInput, TireWheelInput, tire_hardware
 
-FIXTURE = Path(__file__).resolve().parents[1]/'docs/evidence/PHYS-PERF-01/structural-20261009/native-input-fixture'
-DOUBLE_REFERENCE = Path(__file__).resolve().parents[1]/'docs/evidence/VALIDATION-DOUBLE-01/reference'
-PRIOR_REFERENCE = Path(__file__).resolve().parents[1]/'docs/evidence/PHYS-SHARED-ROUNDING-01/archive-manifest.json'
+FIXTURE = Path(__file__).resolve().parents[1]/'tests/data/fixtures/PHYS-PERF-01/structural-20261009/native-input-fixture'
+DOUBLE_REFERENCE = Path(__file__).resolve().parents[1]/'tests/data/fixtures/VALIDATION-DOUBLE-01/reference'
+PRIOR_REFERENCE = Path(__file__).resolve().parents[1]/'tests/data/fixtures/PHYS-SHARED-ROUNDING-01/archive-manifest.json'
 
 # 归档夹具早于回正机制；只在测试中用其原签名读取，不改变生产数值包的版本拒绝。
 ALIGN_FIELDS = {'pneumatic_trail', 'aligning_moment', 'aligning_angular_impulse',

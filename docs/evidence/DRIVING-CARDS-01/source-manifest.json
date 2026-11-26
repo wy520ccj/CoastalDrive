@@ -1,7 +1,0 @@
-{
-  "src/application.py": "5bda161a58b6df7cd8aa0c223e5396f71072cbec6bf42921a84e04574fecd30b",
-  "src/ui/driving_cards.py": "2ade9e22af909319637acc1e3a73f5e8fbad5a403a8fdeb45295ec4c7922e5af",
-  "tests/test_sprint_ui.py": "7b667611d57e4cf6dfcda1f8c7ebd847d712c61e7d8242a1d6156e21df711db0",
-  "tests/test_hill_traffic_ui.py": "bc6b61eea78a510b7e1166182bf1568bfc63e75da2180ee49cc8990a4315ee22",
-  "tools/driving_cards_check.py": "6d78d766bfcab3ba73f08d703b6a53d0f4bf5d3ec3afd18303a0139a433a3583"
-}

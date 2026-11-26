@@ -1,7 +1,0 @@
-{
-  "convex_cast_kernels.cp314-win_amd64.pyd": "8e640cd429cd51ba93619cc8302dce19634f292eba34e87496707fd2de4170da",
-  "mechanical_kernels.cp314-win_amd64.pyd": "6ca08643bc79e1f614eb8bfe263bb45dc338de95902878ecb276b212032d99a6",
-  "physics_packet_kernels.cp314-win_amd64.pyd": "15a0b544c4f7d5bad628003ee1ebd3b1dc2a6a351fd4830de1feaadc2ac61ae7",
-  "radial_contact_kernels.cp314-win_amd64.pyd": "9a2d6155ec2df5436eb09712bdc3628da501b2cda7455a9814be5386b1550ba9",
-  "wheel_contact_kernels.cp314-win_amd64.pyd": "9ca1d8cc74d57cb57b050b912bc3aa2c18fe2d73a30fd744875fdec863753108"
-}

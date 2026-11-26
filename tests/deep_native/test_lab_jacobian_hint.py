@@ -21,7 +21,7 @@ from vehicle_unsprung import UnsprungAdvanceInput
 
 def experiment(duration=.05):
     root=Path(__file__).resolve().parents[2]
-    document=json.loads((root/'docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json').read_text(encoding='utf-8'))
+    document=json.loads((root/'tests/data/fixtures/SIM-UNSPRUNG-01/production/engineering-preview.json').read_text(encoding='utf-8'))
     config=config_from_document(document,vehicle_design('reference-rwd').config)
     return LabExperiment(LabOptions(maneuver='ride_bump',duration=duration,bump_distance_m=2.),config=config)
 

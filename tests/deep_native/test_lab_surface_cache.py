@@ -196,7 +196,7 @@ def test_actual_convex_mesh_success_and_epa_failures_repeat_with_cache(monkeypat
 
 def test_actual_checkpoint_omits_only_derived_cache_and_replays_identical_numeric_fields(tmp_path,monkeypatch):
     root = Path(__file__).resolve().parents[2]
-    document = json.loads((root/'docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json').read_text(encoding='utf-8'))
+    document = json.loads((root/'tests/data/fixtures/SIM-UNSPRUNG-01/production/engineering-preview.json').read_text(encoding='utf-8'))
     config = config_from_document(document,vehicle_design('reference-rwd').config)
     run = LabExperiment(LabOptions(maneuver='ride_bump',duration=1/120,bump_distance_m=2.),
                         config=config,parameter_metadata=document['metadata'])

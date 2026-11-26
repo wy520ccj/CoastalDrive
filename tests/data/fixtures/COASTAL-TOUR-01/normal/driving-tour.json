@@ -1,0 +1,41 @@
+{
+  "version": "coastal-tour-v1",
+  "groups": {
+    "game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c": {
+      "current": [
+        {
+          "mode": "valley_pace",
+          "seconds": 60.94505808442285,
+          "medal": "金"
+        },
+        {
+          "mode": "bend_sprint",
+          "seconds": 75.14218030228935,
+          "medal": "金"
+        },
+        {
+          "mode": "hill_traffic",
+          "seconds": 92.7333333333532,
+          "medal": "金"
+        }
+      ],
+      "best": [
+        {
+          "mode": "valley_pace",
+          "seconds": 60.94505808442285,
+          "medal": "金"
+        },
+        {
+          "mode": "bend_sprint",
+          "seconds": 75.14218030228935,
+          "medal": "金"
+        },
+        {
+          "mode": "hill_traffic",
+          "seconds": 92.7333333333532,
+          "medal": "金"
+        }
+      ]
+    }
+  }
+}

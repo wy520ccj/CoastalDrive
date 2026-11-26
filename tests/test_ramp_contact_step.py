@@ -47,7 +47,7 @@ def _tuples(value):
 
 
 def test_captured_ramp_edge_step_has_one_conjugate_end_state():
-    folder = Path(__file__).resolve().parents[1] / "docs/evidence/PHYS-DESIGN-01"
+    folder = Path(__file__).resolve().parents[1] / "tests/data/fixtures/PHYS-DESIGN-01"
     data = _tuples(json.loads((folder / "ramp-step-input.json").read_text(encoding="utf-8")))
     config = load_vehicle_config(folder / data["config_file"], CAR)
     rear = load_vehicle_config(folder / data["rear_config_file"], CAR)

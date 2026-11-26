@@ -1,8 +1,0 @@
-{
-  "passed": true,
-  "exact_calls": {
-    "box": 1024,
-    "rotation": 1536
-  },
-  "reference": "11c7c07"
-}

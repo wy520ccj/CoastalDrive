@@ -1,3 +1,0 @@
-running build_ext
-copying build\lib.win-amd64-cpython-314\mechanical_kernels.cp314-win_amd64.pyd -> src
-copying build\lib.win-amd64-cpython-314\wheel_contact_kernels.cp314-win_amd64.pyd -> src

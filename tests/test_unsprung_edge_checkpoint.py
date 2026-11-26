@@ -9,7 +9,7 @@ import pytest
 @pytest.mark.parametrize("folder",["local-origin","ride-braking"])
 def test_certified_edge_normal_resolves_recorded_joint_failure(folder):
     # 仅载入仓库中由本项目生成的可信数值夹具，不接收外部用户pickle。
-    path = Path(__file__).resolve().parents[1]/f"docs/evidence/SIM-UNSPRUNG-01/{folder}/failed-step.pkl"
+    path = Path(__file__).resolve().parents[1]/f"tests/data/fixtures/SIM-UNSPRUNG-01/{folder}/failed-step.pkl"
     source = pickle.loads(path.read_bytes())
     source.finite_contact.on_asphalt = lambda x,y:True
     step = source.solve()

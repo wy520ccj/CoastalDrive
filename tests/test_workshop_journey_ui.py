@@ -19,7 +19,7 @@ CORNER_ID = "e8009496ea504a31b63bdd5e754955b5"
 
 def restore_saved_scheme(root):
     """使用已提交真实道路圈的原始数据，不重跑/伪造驾驶成绩。"""
-    source = ROOT/"docs/evidence/DESIGN-SCHEMES-01/normal/schemes"/CORNER_ID
+    source = ROOT/"tests/data/fixtures/DESIGN-SCHEMES-01/normal/schemes"/CORNER_ID
     for path in source.rglob("*"):
         if not path.is_file():
             continue

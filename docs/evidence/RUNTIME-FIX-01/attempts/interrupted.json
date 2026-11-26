@@ -1,5 +1,0 @@
-{
-  "long-trace": "同步SendMessage于/Draw启动互等；无权威子进程/驾驶采样/报告；确认PID后停止，exit1，不计性能",
-  "icon-draw": "工具WM_GETICON同步读取阻塞任务泵超时，改后台读取/主线程绘制后通过",
-  "ghost-T0": "生产已包含extra依赖，测试路径分隔符误期待，修正Path断言后完整模块通过"
-}

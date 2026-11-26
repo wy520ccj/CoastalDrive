@@ -18,7 +18,7 @@ from wheel_dynamics import Mobility
 
 @pytest.mark.parametrize("filename", ("coastal-step-input.json", "coastal-long-step-input.json"))
 def test_captured_coastal_edge_step_has_one_conjugate_end_state(filename):
-    path = Path(__file__).resolve().parents[1] / "docs/evidence/PHYS-DESIGN-01" / filename
+    path = Path(__file__).resolve().parents[1] / "tests/data/fixtures/PHYS-DESIGN-01" / filename
     data = json.loads(path.read_text(encoding="utf-8"))
     config = load_vehicle_config(path.parent / data["config_file"], CAR)
     meshes = ({"road": TriangleSupport.build(data["triangles_m"])} if "triangles_m" in data

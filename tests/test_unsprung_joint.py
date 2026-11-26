@@ -257,7 +257,7 @@ def test_saved_actual_prepared_input_replays_reference_or_satisfies_original_mod
 
     from vehicle_parameters import config_from_document
 
-    folder = Path(__file__).resolve().parents[1]/"docs/evidence/SIM-UNSPRUNG-01/joint-powered-complete"
+    folder = Path(__file__).resolve().parents[1]/"tests/data/fixtures/SIM-UNSPRUNG-01/joint-powered-complete"
     source = json.loads((folder/"source-input.json").read_text(encoding="utf-8"))
     expected = json.loads((folder/"prediction.json").read_text(encoding="utf-8"))
     config = config_from_document(source["config"],REFERENCE_DESIGN)

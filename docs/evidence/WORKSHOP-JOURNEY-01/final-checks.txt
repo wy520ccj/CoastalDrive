@@ -1,6 +1,0 @@
-Final ruff check src tests tools: passed
-Working tree git diff --check: passed
-Copied archive SHA: 41/41 match
-Historical input SHA: 32/32 match previously archived actual records
-Source normalized LF SHA: 8 files
-Final normal/Double UI images: inspected

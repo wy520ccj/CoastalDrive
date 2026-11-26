@@ -1,6 +1,0 @@
---- actual-drive/application.py
-+++ final/application.py
-@@ -874 +874,2 @@
--                or self.audio_settings_page or self.highway_menu):
-+                or self.audio_settings_page or self.highway_menu
-+                or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()):

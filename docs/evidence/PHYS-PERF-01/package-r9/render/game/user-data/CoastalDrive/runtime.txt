@@ -1,1 +1,0 @@
-WARNING:application:Simulation catch-up dropped 0.225000 seconds

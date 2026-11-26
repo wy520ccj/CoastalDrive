@@ -16,4 +16,4 @@
 - [入口说明](../launchers/README.md)、[双精度隔离运行库](sim-double-runtime.md)。
 - [环境美术](environment-art.md)、[素材登记](asset-register.csv)。
 
-`tasks/`与`evidence/`按任务保存版本和证据；旧结果只支持其对应源码和场景。历史文件保留以供追溯，当前游戏请从首页Release下载，不从旧证据或本地归档取包。
+`tasks/`保留当前活跃任务包与模板，测试依赖的最小数值夹具沉淀于 `tests/data/fixtures/`。历史验收证据、已完成任务包、过时阶段评审与旧构建统一归档于 [archive/](../archive/README.md)，当前游戏请从首页Release下载，不从历史归档取包。

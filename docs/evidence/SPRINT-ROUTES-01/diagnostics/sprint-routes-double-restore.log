@@ -1,7 +1,0 @@
-Known pipe types:
-  wglGraphicsPipe
-(all display modules loaded.)
-:display(warning): FrameBufferProperties available less than requested.
-  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
-  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
-{"passed": true, "bits": 64, "cases": 2, "restore": true}

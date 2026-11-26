@@ -1,6 +1,0 @@
-{
-  "src/environment/expressway_route.py": "f491add7f742678c0959dd4baa2c94bb9bc02ee5a1921daadaafe37584cf0721",
-  "tests/test_sign_clearance.py": "81463145deadec7f856e0524451003b2780233c27bc22cd7c1ad77bf724f172c",
-  "tools/validate.py": "2227753df2f0a7585f2963c167124fe424938e45571e74a03ea68bdb2eca6df5",
-  "tools/environment/soundwall_sign_check.py": "0c8714631b664cb016603095fd3eb7fb514f486e30d6e6f68347d6bee95958fb"
-}

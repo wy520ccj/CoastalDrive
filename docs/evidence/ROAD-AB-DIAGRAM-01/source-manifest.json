@@ -1,8 +1,0 @@
-{
-  "src/ui/player_road_ab.py": "c30565f1c04a95c4072d7199fb89b911af58afb1a22eff782868e9caf8edc25d",
-  "src/ui/player_road_diagram.py": "45925d876468d2b870a8b75a130cb7881c8fc69ab49d099250c8f431703b8da7",
-  "tests/test_road_ab_diagram.py": "5939c34878e5af07df09fd8eafb551251114b8dde20f824d31d2f59e1ead40e2",
-  "tests/test_road_ab_diagram_ui.py": "3adaf6464d65c675a80bf440ba55ad1530f302fbae721c6a3ae3abb1b2f094ed",
-  "tools/player_road_diagram_check.py": "0b0cf5a9c089a3bc1bcea36945e96af84b7217918921b74887016c0bc002659f",
-  "tools/validate.py": "107092825d86a2032d23e5db4edd859bdecaf76f2eb34b1eb48f6fccce7335c5"
-}
