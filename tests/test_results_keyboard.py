@@ -104,7 +104,7 @@ def test_pause_groups_follow_screen_and_sound_returns_to_pause(tmp_path, monkeyp
         assert app.driving_cards.summary_order == (0, 2, 3, 4, 1, 5)
         app.key_down('arrow_down')
         app.key_up('arrow_down')
-        assert app.panel_selection == 2 and app.buttons[2]['text'].startswith('声音设置')
+        assert app.panel_selection == 2 and app.buttons[2]['text'].startswith('设置')
         app.key_down('enter')
         app.key_up('enter')
         assert app.audio_settings_page

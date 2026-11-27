@@ -100,7 +100,7 @@ def describe(baseline, candidate, topic, selection):
         rows = [('前轴ABS介入采样', old['front_abs_pct'], new['front_abs_pct'], '%'),
                 ('后轴ABS介入采样', old['rear_abs_pct'], new['rear_abs_pct'], '%'),
                 ('峰值横摆', old['peak_yaw'], new['peak_yaw'], 'rad/s')]
-        basis = 'ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。'
+        basis = 'ABS 介入率为单轴至少一轮触发防抱死控制的采样步占比；路径与横摆角速度依据仿真快照计算。'
         unmet = [text for condition, text in ((result['cost'] > 3, '预算超出'),
                  (result['improvement_pct'] < 10., '缩距不足10%'),
                  (result['peak_yaw_radps'] > .05, '横摆超限')) if condition]
@@ -124,9 +124,9 @@ def describe(baseline, candidate, topic, selection):
     else:
         raise ValueError('未知工坊题目')
     count = len(changes)
-    attribution = ('本次保留原配，用于确认基线表现。' if count == 0 else
-                   '同条件只改一项，本模型内差值对应这项改动。' if count == 1 else
-                   f'本次同时改了{count}项，只能解释组合结果；不能把全部收益归给其中一项。')
+    attribution = ('本次保留原车配置，用于建立基准对照。' if count == 0 else
+                   '相同试验条件下只改一项，当前指标差值直接对应该项改动。' if count == 1 else
+                   f'本次同时调整了 {count} 项参数，指标变化反映组合结果，难以归因于单项改动。')
     outcome = f"通过 · {result['medal']}牌" if result['passed'] else '未达标 · '+' / '.join(unmet)
     return {'version': VERSION, 'topic': topic, 'selection': selection, 'challenge_id': result['challenge_id'],
             'outcome': outcome, 'passed': result['passed'], 'changes': changes or ['保留原配'],

@@ -133,7 +133,33 @@ class VehicleConfig:
     suspension_travel: float = 0.2
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
+    camber_stiffness: float = 0.0  # 前轴标称轮荷下的外倾刚度，N/rad。
+    rear_camber_stiffness: float = 0.0  # 后轴标称轮荷下的外倾刚度，N/rad。
+    camber_load_exponent: float = 0.85
+    suspension_kc_enabled: bool = False
+    static_camber_deg: tuple[float, float] = (0.0, 0.0)  # 前/后轴，负值表示轮顶内倾。
+    static_toe_deg: tuple[float, float] = (0.0, 0.0)  # 前/后轴单轮值，正值表示前束。
+    camber_jounce_gains: tuple[float, float] = (0.0, 0.0)  # deg/m，正行程为压缩。
+    camber_jounce_quad: tuple[float, float] = (0.0, 0.0)  # deg/m²。
+    camber_steer_gain: float = 0.0  # deg/deg，右转时正增益使轮顶右倾。
+    bump_steer_gains: tuple[float, float] = (0.0, 0.0)  # deg/m，前束随压缩的增量。
+
     def __post_init__(self):
+        if type(self.suspension_kc_enabled) is not bool:
+            raise ValueError("悬架K&C开关须为bool")
+        for value in (self.camber_stiffness, self.rear_camber_stiffness,
+                      self.camber_load_exponent, self.camber_steer_gain):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                raise ValueError("外倾刚度、载荷指数和转向增益须为有限数")
+        if min(self.camber_stiffness, self.rear_camber_stiffness) < 0. or self.camber_load_exponent <= 0.:
+            raise ValueError("外倾刚度须非负，外倾载荷指数须为正")
+        for values in (self.static_camber_deg, self.static_toe_deg, self.camber_jounce_gains,
+                       self.camber_jounce_quad, self.bump_steer_gains):
+            if (type(values) is not tuple or len(values) != 2 or any(
+                isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)
+                for value in values
+            )):
+                raise ValueError("悬架K&C前后轴参数须为两个有限数构成的元组")
         if self.suspension_damper_curves is not None:
             if not self.unsprung_enabled:
                 raise ValueError("减振器力速表须使用独立轮心共同模型")

@@ -49,7 +49,7 @@ def _install_config(vehicle, config, workspace_path, topic, *, career_parts=None
             raise ValueError('原车副本与编号不一致，未覆盖副本或当前车')
     else:
         vehicle.save(backup)
-    metadata = {'basis': f'游戏{topic}教学配方；原标定与成绩留在原车副本，当前车须重新验证。',
+    metadata = {'basis': f'海岸工坊{topic}改装配置（原车配置已自动备份，可随时恢复）',
                 'tuning_previous': backup.name}
     if career_parts is not None:
         metadata['career_parts'] = sorted(career_parts)

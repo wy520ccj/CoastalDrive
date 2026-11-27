@@ -61,7 +61,7 @@ class CoastalDrivingHUD:
         # ── 右下角无底盒悬浮数字遥测（回归设计 40 通透质感，绝不遮挡路面）──
         self.instruments = self.panel(315, 160, color=(0, 0, 0, 0))
         self.speed = self.label(self.instruments, '000', 10, 91, 78, number=True)
-        self.label(self.instruments, 'km/h', 183, 87, 21, SOFT, mutable=False)
+        self.speed_unit_label = self.label(self.instruments, 'km/h', 183, 87, 21, SOFT, mutable=True)
         rounded_panel(self.instruments, 'gear-pill', (252, 310, -81, -38), ORANGE, 5)
         self.gear = OnscreenText(parent=self.instruments, text='', font=self.number_font,
                                  fg=theme.INK, pos=(281, -70), scale=27,
@@ -78,7 +78,20 @@ class CoastalDrivingHUD:
         self._rpm_active = self._assists = self._progress = None
         self._feedback_colors = self._notice_color = None
         self._challenge_active = self._chase_active = False
+        self._speed_unit = 'kmh'
+        self._show_key_hints = True
+        self._key_bindings = None
         self.root.hide()
+
+    def configure(self, *, speed_unit=None, show_key_hints=None, key_bindings=None):
+        if speed_unit is not None:
+            self._speed_unit = speed_unit
+            self.text(self.speed_unit_label, 'mph' if speed_unit == 'mph' else 'km/h')
+        if show_key_hints is not None:
+            self._show_key_hints = bool(show_key_hints)
+            self.help_frame.show() if self._show_key_hints else self.help_frame.hide()
+        if key_bindings is not None:
+            self._key_bindings = dict(key_bindings)
 
     def panel(self, width, height, *, color=DARK):
         item = DirectFrame(parent=self.root, frameSize=(0, width, -height, 0), frameColor=color)
@@ -320,11 +333,18 @@ class CoastalDrivingHUD:
         self.cumulative.setFg(WHITE)
 
     def update_instruments(self, player, driving_mode, station, *, automatic=False):
+        from settings import KEY_PRESETS, key_label
+
         simulation = driving_mode == DrivingMode.SIMULATION
-        primary_keys = ('C 视角   Esc 暂停' if automatic else 'W 油门   S 刹车   A/D 转向' if simulation else
-                        'W 油门   S 刹车·倒车   A/D 转向')
-        secondary_keys = ('R 复位  N 电台  M 静音' if automatic else
-                          ('Q 倒挡  E 前进  ' if simulation else '') + 'C 视角  R 复位  N 电台  M 静音  Esc 暂停')
+        keys = KEY_PRESETS['wasd'] if self._key_bindings is None else self._key_bindings
+        t, b = key_label(keys['throttle']), key_label(keys['brake'])
+        l, r = key_label(keys['steer_left']), key_label(keys['steer_right'])
+        cam, rst = key_label(keys['camera']), key_label(keys['reset'])
+        rad, mute = key_label(keys['radio_next']), key_label(keys['radio_mute'])
+        primary_keys = (f'{cam} 视角   Esc 暂停' if automatic else f'{t} 油门   {b} 刹车   {l}/{r} 转向' if simulation else
+                        f'{t} 油门   {b} 刹车·倒车   {l}/{r} 转向')
+        secondary_keys = (f'{rst} 复位  {rad} 电台  {mute} 静音' if automatic else
+                          ('Q 倒挡  E 前进  ' if simulation else '') + f'{cam} 视角  {rst} 复位  {rad} 电台  {mute} 静音  Esc 暂停')
         self.text(self.primary_keys, primary_keys)
         self.text(self.secondary_keys, secondary_keys)
         if station != self._station:
@@ -334,7 +354,8 @@ class CoastalDrivingHUD:
             height = 80 if station is None else 104
             self.help_frame['frameSize'] = (0, 620, -height, 0)
             self.help_frame.setZ(-941/2+36+height)
-        self.text(self.speed, f'{abs(player.speed)*3.6:03.0f}')
+        factor = 2.23693629 if self._speed_unit == 'mph' else 3.6
+        self.text(self.speed, f'{abs(player.speed)*factor:03.0f}')
         self.text(self.gear, 'R' if player.gear < 0 else 'N' if player.gear == 0 else f'D{player.gear}')
         self.text(self.rpm, f'{player.rpm:.0f} rpm')
         active = round(max(0., min(1., player.rpm/7000))*len(self.segments))

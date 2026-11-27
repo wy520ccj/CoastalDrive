@@ -12,3 +12,10 @@ def tire_stiffness(normal_load, config):
     ratio = normal_load / config.tire_reference_load
     return (config.longitudinal_stiffness * ratio ** config.longitudinal_load_exponent,
             config.lateral_stiffness * ratio ** config.lateral_load_exponent)
+
+
+def tire_camber_stiffness(normal_load, config) -> float:
+    """按轮荷缩放外倾刚度，离地时刚度为零。"""
+    if normal_load == 0.0 or config.camber_stiffness == 0.0:
+        return 0.0
+    return config.camber_stiffness * (normal_load / config.tire_reference_load) ** config.camber_load_exponent

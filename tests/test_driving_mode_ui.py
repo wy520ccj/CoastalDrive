@@ -63,7 +63,7 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         assert app.session.driving_mode is DrivingMode.GAME
         assert app.session.simulation.input_config is DrivingMode.GAME.input_config
         assert [b["text"] for b in app.main_menu.buttons] == [
-            "计时挑战", "滨海自由驾驶", "生涯赛事", "海岸车库", "声音设置", "退出", "专家试验台  ›", "驾驶辅助", "无限高速", "继续赛季"]
+            "计时挑战", "滨海自由驾驶", "生涯赛事", "海岸车库", "设置", "退出", "专家试验台  ›", "驾驶辅助", "无限高速", "继续赛季"]
         old_world = app.session.simulation
         app.messenger.send("f2")
         assert app.driving_mode_page and app.panel_option_count == 4
@@ -133,33 +133,29 @@ def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
         snapshot, world = app.session.current, app.session.simulation
         widget_count = len(DirectGuiWidget.guiDict)
         app.choose_audio_settings()
-        assert app.panel_option_count == 8
-        for minus, plus, name in ((0, 1, 'master_volume'), (2, 3, 'effects_volume'), (4, 5, 'music_volume')):
+        assert app.settings_panel.visible and app.settings_panel.category == 'audio'
+        assert app.settings_panel.audio_preview_active
+        for row_idx, name in ((0, 'master_volume'), (1, 'effects_volume'), (2, 'engine_volume'), (3, 'music_volume')):
+            app.settings_panel.selected = row_idx
             before = getattr(app.audio_settings, name)
-            app.buttons[minus]['command']()
-            assert getattr(app.audio_settings, name) == before-10
-            app.buttons[plus]['command']()
+            app.key_down('arrow_left')
+            app.key_up('arrow_left')
+            assert getattr(app.audio_settings, name) == before - 10
+            app.key_down('arrow_right')
+            app.key_up('arrow_right')
             assert getattr(app.audio_settings, name) == before
         music = app.audio_settings.music_volume
-        app.select_panel_option(4)
-        app.adjust_panel_option(-1)
-        assert app.audio_settings.music_volume == music-10
-        app.adjust_panel_option(1)
-        app.select_panel_option(0)
-        app.key_down('arrow_down')
-        app.key_up('arrow_down')
-        assert app.panel_selection == 2
-        app.key_down('arrow_down')
-        app.key_up('arrow_down')
-        assert app.panel_selection == 4
-        app.select_panel_option(6)
+        app.key_down('tab')
+        app.key_up('tab')
         station = app.audio_settings.radio_station
-        app.adjust_panel_option(1)
+        app.key_down('arrow_right')
+        app.key_up('arrow_right')
         restored = AudioSettingsStore(app.audio_settings.path)
-        assert restored.radio_station == station+1
+        assert restored.radio_station == station + 1
         assert restored.music_volume == music
-        app.buttons[7]['command']()
-        assert not app.audio_settings_page and not app.main_menu.root.isHidden()
+        app.key_down('escape')
+        app.key_up('escape')
+        assert not app.audio_settings_page and not app.settings_panel.visible and not app.main_menu.root.isHidden()
         # 菜单装饰随普通节点移除，借用的原按钮返回panel，不能留在旧content中。
         app.choose_highway()
         app.choose_sprint_routes()
@@ -172,7 +168,8 @@ def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
         app.refresh_panel()
         pause_count = len(DirectGuiWidget.guiDict)
         app.choose_audio_settings()
-        app.buttons[7]['command']()
+        app.key_down('escape')
+        app.key_up('escape')
         assert app.session.phase == Phase.PAUSED and not app.audio_settings_page
         assert len(DirectGuiWidget.guiDict) == pause_count
     finally:

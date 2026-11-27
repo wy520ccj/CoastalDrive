@@ -200,7 +200,8 @@ def test_photographed_sky_mesh_and_environment_share_actual_world_directions(kit
         panorama.lookup(shown, uv.x, uv.y, 0)
         cube.lookup(reflected, *direction)
         expected = shown.xyz*min(1, 4/max(shown.xyz))
-        assert tuple(reflected.xyz) == pytest.approx(tuple(expected), abs=.04)
+        # 带云 4K 全景与 128px 立方体贴图在云缘处存在降采样过渡，允许 0.06 误差。
+        assert tuple(reflected.xyz) == pytest.approx(tuple(expected), abs=.06)
     parent.removeNode()
 
 

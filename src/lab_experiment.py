@@ -11,8 +11,10 @@ from time import perf_counter
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode
 from panda3d.core import BitMask32, TransformState, Vec3
 
+from chassis_observer import ChassisObserver, EstimatedNativeStabilityController
 from driving_experiment import DrivingExperiment, ExperimentOptions
 from driving_modes import DrivingMode
+from iso_ride import install_iso_road
 from lab_inputs import LabInputError, active_fields, validate_number
 from lab_maneuvers import (
     CIRCLE_BRAKING_MANEUVERS,
@@ -20,6 +22,7 @@ from lab_maneuvers import (
     bump_geometry,
     path_command,
     path_error,
+    target_speed_mps,
 )
 from lab_metrics import (
     DELAYED_BRAKING_MANEUVERS,
@@ -36,8 +39,10 @@ from vehicle_state import FIXED_DT, VehicleCommand
 
 MANEUVERS = {"braking": "直线制动", "step_steer": "阶跃转向", "circle": "固定转角",
              "sine_steer": "正弦转向", "manual": "执行器输入", "constant_radius": "定圆试验",
+             "quasi_steady_circle": "准稳态定圆扫点",
              "double_lane_change": "参考双移线", "split_braking": "对开附着制动", "ride_bump":"单侧凸起 / 轮跳",
              "ride_braking":"单侧凸起 / 制动",
+             "iso_rough_road": "标准等级随机路面",
              "cornering_braking": "定圆弯道制动", "step_steer_braking": "阶跃转向同步制动",
              "mu_jump_cornering_braking": "对接附着弯道制动"}
 
@@ -64,16 +69,23 @@ class LabOptions:
     bump_length_m: float = .9
     bump_distance_m: float = 6.
     controller_mode: str = "native"
+    sweep_end_kph: float = 60.
+    road_class: str = "C"
+    feedback_source: str = "truth"
 
     def __post_init__(self):
         vehicle_design(self.vehicle_id)
         if self.maneuver not in MANEUVERS:
             raise ValueError("未知试验工况")
+        if self.road_class not in ("A", "B", "C", "D"):
+            raise ValueError("ISO 路面等级须为 A、B、C 或 D")
+        if self.feedback_source not in ("truth", "sensor_ekf"):
+            raise ValueError("控制器反馈源须为 truth 或 sensor_ekf")
         for key, value in (("speed", self.speed_kph), ("mu", self.friction),
                 ("radius", self.radius_m), ("right_mu", self.right_friction),
                 ("duration", self.duration), ("onset", self.onset),
                 ("bump_height", self.bump_height_m), ("bump_length", self.bump_length_m),
-                ("bump_distance", self.bump_distance_m)):
+                ("bump_distance", self.bump_distance_m), ("sweep_end", self.sweep_end_kph)):
             validate_number(key, value)
         validate_number("steer", self.steering_deg)
         if self.cg_height is not None:
@@ -110,15 +122,23 @@ class LabExperiment:
                  runtime_profile="reference", controller=None):
         if controller is None and options.controller_mode == "coord_abs_dyc":
             controller = load_coordinated_controller()
+        elif (controller is None and options.feedback_source == "sensor_ekf"
+              and options.controller_mode == "native"
+              and (options.abs_enabled or options.esc_enabled)):
+            controller = EstimatedNativeStabilityController(seed=options.seed + 100)
         self.options = options
         self.design = vehicle_design(options.vehicle_id)
         self.parameter_metadata = parameter_metadata
+        self.effective_abs = options.abs_enabled
+        self.effective_esc = options.esc_enabled
+        self.feedback_source = options.feedback_source
         if runtime_profile not in ("reference", "game"):
             raise ValueError("未知实验积分配置")
         self.runtime_profile = runtime_profile
+        internal_controls = controller is None and options.feedback_source != "sensor_ekf"
         config = DrivingMode.SIMULATION.configured_vehicle(
-            options.abs_enabled if controller is None else False,
-            esc_enabled=options.esc_enabled if controller is None else False,
+            options.abs_enabled if internal_controls else False,
+            esc_enabled=options.esc_enabled if internal_controls else False,
             base_config=self.design.config if config is None else config)
         config = replace(config, road_friction=options.friction)
         if options.maneuver in ("split_braking", "mu_jump_cornering_braking"):
@@ -168,6 +188,14 @@ class LabExperiment:
                 simulation.step(initial_command)
             if options.maneuver in ("ride_bump","ride_braking"):
                 install_bump(simulation,options,config)
+            self.iso_road_info = None
+            if options.maneuver == "iso_rough_road":
+                self.iso_road_info = install_iso_road(
+                    simulation,
+                    road_class=options.road_class,
+                    length_m=max(160.0, (options.speed_kph / 3.6) * options.duration + 40.0),
+                    seed=options.seed,
+                )
             # 只在初始化设置滚动初值；试验中的姿态/轮速全部由真实物理推进。
             player = simulation.player
             player.initialize_rolling(options.speed_kph/3.6)
@@ -180,11 +208,19 @@ class LabExperiment:
             self.initial_collisions = initial.collisions
             self.snapshots = [initial]
             self.commands = [initial_command]
-            self.samples = [sample_signals(initial, self.commands[0], self.start_time)]
-            self.samples[0]["path_error"] = path_error(options, initial.player, initial.player)
-            self.distance = 0.
             if controller is not None:
                 controller.reset(config, options, initial)
+            self.observer = None
+            if options.feedback_source == "sensor_ekf":
+                if isinstance(controller, EstimatedNativeStabilityController):
+                    self.observer = controller.observer
+                else:
+                    self.observer = ChassisObserver(initial, self.config, seed=options.seed + 100)
+            initial_estimate = self.observer.observe(initial) if self.observer is not None else None
+            self.samples = [sample_signals(initial, self.commands[0], self.start_time,
+                                           config=self.config, estimate=initial_estimate)]
+            self.samples[0]["path_error"] = path_error(options, initial.player, initial.player)
+            self.distance = 0.
         except Exception:
             self.experiment.close()
             raise
@@ -219,7 +255,12 @@ class LabExperiment:
                                         self.config, 0.).steering
                 return VehicleCommand(steering=steering, throttle=0., brake=0., gear=0, clutch=0.)
             return path_command(options, self.current.player, self.snapshots[0].player,
-                                self.config, self.speed_integral)
+                                self.config, self.speed_integral, target_speed_mps(options, time))
+        if options.maneuver == "iso_rough_road":
+            error = options.speed_kph / 3.6 - self.current.player.speed
+            throttle = max(0., min(1., .12 + .20 * error + self.speed_integral))
+            brake = max(0., min(1., -.12 * error)) if error < -1. else 0.
+            return VehicleCommand(steering=0., throttle=throttle, brake=brake, direction=1)
         steering, brake = 0., 0.
         if options.maneuver in ("braking", "split_braking"):
             brake = 1.
@@ -243,13 +284,21 @@ class LabExperiment:
             self.latched_steering = previous.player.steering
         if command is None:
             if maneuver in PATH_MANEUVERS and maneuver not in CIRCLE_BRAKING_MANEUVERS:
-                error = self.options.speed_kph/3.6-self.current.player.speed
+                error = target_speed_mps(self.options, elapsed) - self.current.player.speed
+                self.speed_integral = max(-.1, min(.4, self.speed_integral+.08*error*FIXED_DT))
+            elif maneuver == "iso_rough_road":
+                error = self.options.speed_kph/3.6 - self.current.player.speed
                 self.speed_integral = max(-.1, min(.4, self.speed_integral+.08*error*FIXED_DT))
             command = self.command_at(elapsed)
         started = perf_counter()
         try:
             if self.controller is not None:
-                command = self.controller.compute(previous, command, elapsed, FIXED_DT)
+                if self.observer is not None and not isinstance(self.controller, EstimatedNativeStabilityController):
+                    est = self.observer.observe(previous)
+                    controller_snapshot = self.observer.adapt_snapshot(previous, est)
+                else:
+                    controller_snapshot = previous
+                command = self.controller.compute(controller_snapshot, command, elapsed, FIXED_DT)
             self.experiment.simulation.step(command)
             state = self.experiment.simulation.snapshot()
             telemetry = None if self.controller_telemetry is None else dict(self.controller_telemetry())
@@ -260,8 +309,16 @@ class LabExperiment:
             self.compute_seconds += perf_counter()-started
         self.snapshots.append(state)
         self.commands.append(command)
-        self.samples.append(sample_signals(state, command, self.start_time))
+        estimate = self.observer.observe(state) if self.observer is not None else None
+        self.samples.append(sample_signals(state, command, self.start_time,
+                                           config=self.config, estimate=estimate))
         if self.controller is not None:
+            if estimate is not None and telemetry is not None:
+                telemetry.setdefault("est_vx_mps", estimate.vx_mps)
+                telemetry.setdefault("est_vy_right_mps", estimate.vy_right_mps)
+                telemetry.setdefault("est_yaw_rate_radps", estimate.yaw_rate_radps)
+                telemetry.setdefault("est_sideslip_deg", estimate.sideslip_deg)
+                telemetry.setdefault("est_mu", estimate.mu_est)
             self.controller_trace.append(telemetry)
         self.samples[-1]["path_error"] = path_error(self.options, state.player, self.snapshots[0].player)
         self.distance += math.dist(previous.player.position, state.player.position)

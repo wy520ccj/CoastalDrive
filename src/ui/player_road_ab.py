@@ -203,8 +203,8 @@ class PlayerRoadPanel:
         else:
             self.delta.setText('双方都有效完成后才比较总用时；漏门记录只看已到达的门。')
         note = store.notice or '；'.join(differences) or (
-            ('A记录于'+a['created_at'][:19]+'；' if a else '')+
-            '换方案出发时固定A；B取同目标硬件最近整次记录，不拼接单门。')
+            ('A 记录于 ' + a['created_at'][:19] + '；' if a else '') +
+            '切换方案发车时固定 A，B 记录同配置下最近一次完整试跑。')
         self.notice.setText(note[:150])
         self.root.show()
 
@@ -237,9 +237,9 @@ class PlayerRoadPanel:
             self.delta.setText(f"{'最大前进' if short else '绝对误差'} B−A {delta:+.3f}m；负值表示本次B更好\n"
                                f"入门速度 B−A {new['entry_kph']-old['entry_kph']:+.3f}km/h；含驾驶时机差异")
         else:
-            self.delta.setText('双方有效完成后才比较成绩；失败时的已走距离不算成功成绩。')
+            self.delta.setText('双方均有效完赛后计算成绩差值。')
         self.notice.setText((store.notice or '；'.join(differences) or
-            (('A记录于'+a['created_at'][:19]+'；' if a else '')+'A在下次制动结算改装时替换，B取同题目标硬件最近整次记录。'))[:150])
+            (('A 记录于 ' + a['created_at'][:19] + '；' if a else '') + '下次制动改装结算时更新 A，B 记录当前配置最近一次完整试跑。'))[:150])
 
     def prepare_parameters(self, store):
         fields = (('质量 / kg', 'mass', 1.), ('前侧偏刚度 / kN/rad', 'lateral_stiffness', .001),

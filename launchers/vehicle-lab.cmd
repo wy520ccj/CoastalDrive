@@ -1,3 +1,7 @@
 @echo off
+setlocal
 cd /d "%~dp0.."
-".venv\Scripts\python.exe" "src\main.py" --lab
+set "ROAD_EDGE_SDK=%CD%\build\road-edge-sdk\panda\built-road-edge"
+if exist "%ROAD_EDGE_SDK%\.road-edges-ready" set "PYTHONPATH=%ROAD_EDGE_SDK%;%PYTHONPATH%"
+"%~dp0..\.venv\Scripts\python.exe" "%~dp0..\src\main.py" --lab
+endlocal

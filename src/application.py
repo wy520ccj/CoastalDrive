@@ -17,6 +17,7 @@ from panda3d.core import (
     TextNode,
     TransparencyAttrib,
     Vec3,
+    WindowProperties,
     loadPrcFileData,
 )
 
@@ -65,7 +66,13 @@ from scene import Scene
 from season_cup import CUP_INPUT, CUP_LEGS, CUP_UNLOCK, cup_specs
 from sector_chase import CHASE_COURSES, CHASE_INPUT
 from session import Phase, Session
-from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
+from settings import (
+    BINDABLE_KEYS,
+    AppearanceStore,
+    AudioSettingsStore,
+    DrivingModeStore,
+    GameSettingsStore,
+)
 from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
 from slalom_lesson import SLALOM_MODES, SlalomScores
@@ -89,6 +96,7 @@ from ui.overtake_feedback import budget_rules as overtake_budget_rules
 from ui.overtake_feedback import result_feedback as overtake_result_feedback
 from ui.player_road_ab import PlayerRoadPanel
 from ui.race_feedback import result_columns
+from ui.settings_panel import SettingsPanel
 from ui.slalom_feedback import FAST_RULES as FAST_SLALOM_RULES
 from ui.slalom_feedback import RULES as SLALOM_RULES
 from ui.slalom_feedback import gate_columns
@@ -116,24 +124,31 @@ class CoastalDrive(ShowBase):
         self.session = None
         self.workspace = "startup"
         self.startup_trace = startup_trace
-        loadPrcFileData(
-            "coastaldrive",
-            "\n".join(
-                [
-                    "window-title CoastalDrive",
-                    "icon-filename",
-                    f"win-size {render_size[0]} {render_size[1]}",
-                    f"sync-video {int(sync_video)}",
-                    # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
-                    "transform-cache false",
-                    # 分帧清理已废弃的渲染状态，避免每帧扫描整张静态场景缓存表。
-                    "garbage-collect-states-rate 0.5",
-                    f"threading-model {threading_model}",
-                    "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
-                    "audio-library-name p3openal_audio" if audio_enabled else "audio-library-name null",
-                ]
-            ),
-        )
+        self.output = output or user_data()
+        game_settings_path = self.output / "test-game-settings.json" if smoke else None
+        self.game_settings = GameSettingsStore(game_settings_path)
+        startup_size = render_size if smoke else self.game_settings.resolution
+        startup_vsync = sync_video if smoke else self.game_settings.vsync
+        startup_msaa = 4 if smoke else self.game_settings.msaa_samples
+        prc_lines = [
+            "window-title CoastalDrive",
+            "icon-filename",
+            f"win-size {startup_size[0]} {startup_size[1]}",
+            f"sync-video {int(startup_vsync)}",
+            # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
+            "transform-cache false",
+            # 分帧清理已废弃的渲染状态，避免每帧扫描整张静态场景缓存表。
+            "garbage-collect-states-rate 0.5",
+            f"threading-model {threading_model}",
+            "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
+            "audio-library-name p3openal_audio" if audio_enabled else "audio-library-name null",
+        ]
+        if not smoke:
+            if self.game_settings.window_mode == "fullscreen":
+                prc_lines.append("fullscreen true")
+            elif self.game_settings.window_mode == "borderless":
+                prc_lines.append("undecorated true")
+        loadPrcFileData("coastaldrive", "\n".join(prc_lines))
         super().__init__()
         self.window_icon = load_window_icon(self.win)
         self.lab = None
@@ -143,28 +158,27 @@ class CoastalDrive(ShowBase):
         self.audio_enabled = audio_enabled
         self.game_input = DirectObject()
         self.menu_gamepads = set()
-        # 正式窗口由垂直同步调度；额外90Hz睡眠会打断其节奏。离屏/关闭同步诊断仍限帧。
+        # 正式窗口由垂直同步调度；关闭垂直同步或离屏诊断时按帧率上限限帧。
         ClockObject.getGlobalClock().setMode(ClockObject.MNormal)
         self._render_deadline = time.perf_counter()
-        if not sync_video or (smoke and not onscreen):
-            self.taskMgr.add(self.pace_frame,"render-frame-pacing",sort=-100)
+        self._sync_video = startup_vsync
+        self.smoke = smoke
+        self.onscreen = onscreen
+        self.apply_frame_pacing()
         if startup_trace is not None:
             startup_trace.mark("window_initialized")
         self.disableMouse()
         # The default bias detaches contact shadows at our light's depth range.
         # 驾驶场景和车库都只使用一束直射光，避免为七个空光槽处理阴影坐标。
         self.pipeline = ScenePipeline(enable_shadows=True, max_lights=1,
-                                      msaa_samples=4, shadow_bias=0.0007)
+                                      msaa_samples=startup_msaa, shadow_bias=0.0007)
         if startup_trace is not None:
             startup_trace.mark("renderer_initialized")
         self.workspace_loading = WorkspaceLoading(self)
         self.workspace_loading.show("正在驶入海岸工坊")
-        self.smoke = smoke
         self._pump_startup(0, "正在点亮海岸车库灯光")
-        self.camLens.setFov(68)
-        self.camLens.setNearFar(0.35, 1500)
-        self.onscreen = onscreen
-        self.output = output or user_data()
+        self.camLens.setFov(self.game_settings.fov)
+        self.camLens.setNearFar(0.35, self.game_settings.far_distance)
         self.workspace_path = self.output/"test-workspace-vehicle.json" if smoke else workspace_vehicle_path()
         self.scheme_root = self.output/"test-schemes" if smoke else scheme_library_path()
         appearance_path = self.output / "test-appearance.json" if smoke else None
@@ -221,6 +235,8 @@ class CoastalDrive(ShowBase):
             else Soundscape(
                 self, self.audio_settings.master_volume, self.audio_settings.effects_volume,
                 self.audio_settings.music_volume, self.audio_settings.radio_station,
+                engine_volume=self.audio_settings.engine_volume,
+                ui_volume=self.audio_settings.ui_volume,
             )
         )
         self._pump_startup(2, "正在擦亮展车漆面，布置车库视窗")
@@ -301,11 +317,16 @@ class CoastalDrive(ShowBase):
         self.panel_option_count = 0
         self._diagnostics_was_visible = False
         self._camera_origin = 0.0
-        self.chase_camera = ChaseCamera()
+        self.chase_camera = ChaseCamera(
+            base_fov=self.game_settings.fov,
+            dynamic_fov=self.game_settings.dynamic_fov,
+        )
+        self.session.camera_distance = self.game_settings.camera_distance
         self._camera_time = self.session.current.time
         self.commands_held = set()
-        self.ghost_enabled = True
+        self.ghost_enabled = self.game_settings.ghost_default
         self.driving_keys_held = set()
+        self._key_to_action = {}
         self._shutdown = False
         self.next_workspace = None
         self.next_drive = False
@@ -316,6 +337,8 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.setup_controls()
         self.setup_hud()
+        self.apply_control_settings()
+        self.apply_hud_settings()
         self.loading = DirectFrame(
             parent=self.aspect2d, frameColor=(1, 1, 1, 0.94),
             frameSize=(-0.62, 0.62, -0.13, 0.13), relief=DGG.FLAT,
@@ -409,7 +432,7 @@ class CoastalDrive(ShowBase):
             spec = self._budget_base_spec(self.budget_mode)
             self.workspace_vehicle = WorkspaceVehicle(spec.design_id,
                 spec.configuration(self._budget_driving_build()),
-                parameter_metadata={'basis': spec.name+' · 本关预算工程方案，参考试验不修改参赛草稿。'})
+                parameter_metadata={'basis': spec.name+' · 本关预算改装方案，可在试验台对比分析。'})
             self.lab_return_sprint = self.budget_mode if self.budget_mode in SPRINT_ROUTES else None
             self.lab_return_braking = self.lab_return_slalom = False
             self.lab_return_overtake = self.road_retest_return = None
@@ -533,7 +556,7 @@ class CoastalDrive(ShowBase):
     def open_cup(self, *, picking=False):
         if self.career_progress.stars < CUP_UNLOCK:
             return
-        self.open_career()
+        self._prepare_career_panel()
         if self.cup_store is None or not self.cup_store.unsaved:
             self.cup_store = self._read_cup()
         self.career_panel.show_season_cup(self.career_progress, self.cup_store,
@@ -600,13 +623,16 @@ class CoastalDrive(ShowBase):
         self.main_menu.hide_home()
         self.workshop_garage.show(self.workspace_vehicle)
 
-    def open_career(self, *, keep_tour_practice=False, event=None):
+    def _prepare_career_panel(self, *, keep_tour_practice=False):
         self.back_to_menu(keep_tour_practice=keep_tour_practice)
         self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
         self.journey.hide()
         self.driving_journey.hide()
         self._shown_phase = None
         self.refresh_panel()
+
+    def open_career(self, *, keep_tour_practice=False, event=None):
+        self._prepare_career_panel(keep_tour_practice=keep_tour_practice)
         self.career_panel.show_board(self.career_progress, event=event)
 
     def continue_career(self):
@@ -634,13 +660,13 @@ class CoastalDrive(ShowBase):
     def show_season_result(self):
         completed = self._read_cup('completed')
         if completed is not None and completed.best and self.career_progress.course_record(EVENT_BY_ID['coastal-cup']):
-            self.open_career()
+            self._prepare_career_panel()
             self.career_panel.show_season_cup(self.career_progress, completed, recap=True)
 
     def open_sector_chase(self, mode=GameMode.TIME_TRIAL):
         if self.career_progress.stars < 5 or mode not in CHASE_COURSES:
             return
-        self.open_career()
+        self._prepare_career_panel()
         self.chase_practice_sector = None
         group = self.session.driving_mode.score_variant(self.session.abs_enabled, self.session.tcs_enabled,
                                                         self.session.esc_enabled)
@@ -654,7 +680,7 @@ class CoastalDrive(ShowBase):
         if reset:
             self.career_preview = self.workspace_vehicle
             self.career_preview_skin = self.skin_index
-        self.open_career()
+        self._prepare_career_panel()
         self.career_panel.show_garage(self.career_progress, self.workspace_vehicle, notice,
             tab=self.career_garage_tab, preview=self.career_preview, skin_index=self.career_preview_skin,
             cars=garage_cars(self.workspace_vehicle, self.career_garage_folder))
@@ -717,7 +743,7 @@ class CoastalDrive(ShowBase):
             self.show_season_result()
         elif action == 'brief':
             if self.career_panel.page == 'challenge-result':
-                self.open_career()
+                self._prepare_career_panel()
             self.career_panel.show_brief(self.career_progress, BOARD_EVENTS[value])
         elif action == 'start':
             self.start_career_event(value)
@@ -739,11 +765,11 @@ class CoastalDrive(ShowBase):
             elif self.career_garage_return is None:
                 self.open_career(event=self.career_panel.board_event)
             else:
-                self.open_career()
+                self._prepare_career_panel()
                 self.career_panel.show_brief(self.career_progress, BOARD_EVENTS[self.career_garage_return])
         elif action == 'garage-tab':
             if value == 'upgrade':
-                self.open_budget_challenge(self.career_progress.recommended().id)
+                self.open_budget_challenge(self.career_progress.recommended().id, origin='garage')
                 return
             if value == 'setup':
                 self.open_expert_parameters()
@@ -833,6 +859,8 @@ class CoastalDrive(ShowBase):
             self.session.resume()
             self._shown_phase = None
             self.refresh_panel()
+        elif action == 'settings':
+            self.choose_settings()
         elif action == 'retry':
             self.start_career_event(self.career_event_id)
         elif action == 'save':
@@ -901,6 +929,7 @@ class CoastalDrive(ShowBase):
 
     def return_to_driving_journey(self):
         self.back_to_menu()
+        self.highway_menu = self.braking_menu = self.slalom_menu = self.sprint_menu = self.overtake_menu = False
         self._shown_phase = None
         self.refresh_panel()
         self.open_driving_journey()
@@ -1079,9 +1108,9 @@ class CoastalDrive(ShowBase):
         self.lab.close_game()
         self.lab = None
         self.cam.node().getDisplayRegion(0).setDimensions(0, 1, 0, 1)
-        self.camLens.setFov(68)
+        self.camLens.setFov(self.game_settings.fov)
         self.camLens.setAspectRatio(self.getAspectRatio())
-        self.camLens.setNearFar(.35, 1500)
+        self.camLens.setNearFar(.35, self.game_settings.far_distance)
         self.setBackgroundColor(.55, .73, .82)
         yield 1, "台架试车完成，正在断开遥测线束"
         vehicle = self.workspace_vehicle
@@ -1094,20 +1123,25 @@ class CoastalDrive(ShowBase):
         self.session_arguments.update(vehicle_config=vehicle.config, abs_enabled=electronics[0],
                                       tcs_enabled=electronics[1], esc_enabled=electronics[2])
         self.session = self.session_type(**self.session_arguments)
+        self.session.camera_distance = self.game_settings.camera_distance
         self._camera_time = self.session.current.time
         self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
+        self.settings_panel.close()
         self._audio_checkpoints = 0
         self._audio_phase = Phase.MENU
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         yield 2, "调校方案已装车，引擎自检就绪"
         if self.audio_enabled:
             self.soundscape = Soundscape(self, self.audio_settings.master_volume, self.audio_settings.effects_volume,
-                                         self.audio_settings.music_volume, self.audio_settings.radio_station)
+                                         self.audio_settings.music_volume, self.audio_settings.radio_station,
+                                         engine_volume=self.audio_settings.engine_volume,
+                                         ui_volume=self.audio_settings.ui_volume)
         yield 3, "正在唤醒海风声景与路面引擎"
         if self.scene is not None:
             self.scene.render.reparentTo(self.render)
         if self.road_retest_return is not None:
             topic, mode = self.road_retest_return
+            self.road_retest_return = None
             if topic == 'brakes':
                 self.choose_braking_lesson(mode)
             else:
@@ -1130,6 +1164,8 @@ class CoastalDrive(ShowBase):
             else:
                 mode = GameMode.TIME_TRIAL if vehicle.workshop_result is not None else GameMode.FREE_DRIVE
                 self._enter_game(mode, "coastal")
+        self.lab_return_braking = self.lab_return_slalom = False
+        self.lab_return_sprint = self.lab_return_overtake = None
         self.render.prepareScene(self.win.getGsg())
         self.main_menu.root.prepareScene(self.win.getGsg())
         yield 4, "正在拉开海岸车库闸门"
@@ -1137,7 +1173,7 @@ class CoastalDrive(ShowBase):
         if self.career_lab_return:
             self.career_lab_return = False
             if not self.next_drive:
-                self.open_career_collection()
+                self.open_career_garage()
         elif self.workshop_lab_return and not self.next_drive:
             self.workshop_lab_return = False
             self.open_workshop_garage()
@@ -1252,6 +1288,8 @@ class CoastalDrive(ShowBase):
         self.budget_auto, self.budget_stock = False, False
         self.auto_trial_reference = None
         self.career_lab_return = False
+        self.lab_return_braking = self.lab_return_slalom = False
+        self.lab_return_sprint = self.lab_return_overtake = None
         if self.budget_model_before is not None:
             self.vehicle_model_id, self.budget_model_before = self.budget_model_before, None
         self.career_active = False
@@ -1274,27 +1312,14 @@ class CoastalDrive(ShowBase):
             self._scene_seed = None
 
     def setup_controls(self):
-        for key in (
-            "w",
-            "a",
-            "s",
-            "d",
-            "q",
-            "e",
-            "arrow_up",
-            "arrow_down",
-            "arrow_left",
-            "arrow_right",
-            "r",
-            "c",
+        registered = (
+            *sorted(BINDABLE_KEYS),
             "escape",
             "enter",
             "tab",
-            "n",
-            "m",
-            "g",
             "control-a",
-        ):
+        )
+        for key in dict.fromkeys(registered):
             self.game_input.accept(key, self.key_down, [key])
             self.game_input.accept(f"{key}-up", self.key_up, [key])
             if len(key) == 1:
@@ -1351,14 +1376,22 @@ class CoastalDrive(ShowBase):
         else:
             self.save_audio_settings()
         if self.audio_settings_page:
-            self._shown_phase = None
-            self.refresh_panel()
+            if self.settings_panel.visible:
+                self.settings_panel.redraw()
+            else:
+                self._shown_phase = None
+                self.refresh_panel()
 
     def save_audio_settings(self):
-        self.audio_settings.save(self.audio_settings.master_volume,
-                                 self.audio_settings.effects_volume,
-                                 self.audio_settings.music_volume,
-                                 self.audio_settings.radio_station)
+        self.audio_settings.save(
+            self.audio_settings.master_volume,
+            self.audio_settings.effects_volume,
+            self.audio_settings.music_volume,
+            self.audio_settings.radio_station,
+            engine_volume=self.audio_settings.engine_volume,
+            ui_volume=self.audio_settings.ui_volume,
+            mute_unfocused=self.audio_settings.mute_unfocused,
+        )
         self._radio_dirty = False
 
     def toggle_radio(self):
@@ -1367,6 +1400,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if self.settings_panel.visible:
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.settings_panel.handle_key(key)
             return
         if (self.career_active or self.budget_active) and self.session.phase in (Phase.PAUSED, Phase.RESULTS):
             self.refresh_panel()
@@ -1400,15 +1438,16 @@ class CoastalDrive(ShowBase):
                 self.commands_held.add(key)
                 self.journey.key(key)
             return
-        if key == "g" and self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN, Phase.PAUSED):
+        mapped = self._key_to_action.get(key)
+        if mapped == "ghost" and self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN, Phase.PAUSED):
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 self.toggle_ghost()
             return
-        if key in ("n", "m"):
+        if mapped in ("radio_next", "radio_mute"):
             if key not in self.commands_held:
                 self.commands_held.add(key)
-                self.cycle_radio() if key == "n" else self.toggle_radio()
+                self.cycle_radio() if mapped == "radio_next" else self.toggle_radio()
             return
         if (self.session.phase == Phase.MENU and self.garage is None
                 and not self.audio_settings_page and not self.driving_mode_page and not self.highway_menu
@@ -1433,28 +1472,61 @@ class CoastalDrive(ShowBase):
                 self.handle_panel_key(key)
                 self.refresh_panel()
             return
-        if key in ("r", "c", "escape", "enter"):
+        command_key = (
+            "r" if mapped == "reset" else
+            "c" if mapped == "camera" else
+            key if key in ("escape", "enter") else
+            None
+        )
+        if command_key is not None:
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 if self.session.phase == Phase.MENU and self.highway_menu:
-                    if key == "enter":
+                    if command_key == "enter":
                         self.start_highway(self.highway_shape)
                         return
-                    if key == "escape":
+                    if command_key == "escape":
                         self.back_to_modes()
                         return
-                self.session.command(key)
-                if key in ("r", "escape", "enter"):
+                self.session.command(command_key)
+                if command_key in ("r", "escape", "enter"):
                     self.driving_keys_held.clear()
         elif self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN):
-            self.driving_keys_held.add(key)
-            if self.session.phase == Phase.DRIVING:
-                self.session.keyboard.press(key)
+            drive_key = self._translate_drive_key(key)
+            if drive_key is not None:
+                self.driving_keys_held.add(drive_key)
+                if self.session.phase == Phase.DRIVING:
+                    self.session.keyboard.press(drive_key)
 
     def key_up(self, key):
         self.commands_held.discard(key)
-        self.driving_keys_held.discard(key)
-        self.session.keyboard.release(key)
+        drive_key = self._translate_drive_key(key)
+        if drive_key is not None:
+            self.driving_keys_held.discard(drive_key)
+            self.session.keyboard.release(drive_key)
+        else:
+            self.driving_keys_held.discard(key)
+            self.session.keyboard.release(key)
+
+    def _translate_drive_key(self, key):
+        """将自定义键位翻译为权威驾驶输入符号，不改物理控制协议。"""
+        mapped = self._key_to_action.get(key)
+        if mapped == "throttle":
+            return "w"
+        if mapped == "brake":
+            return "s"
+        if mapped == "steer_left":
+            return "a"
+        if mapped == "steer_right":
+            return "d"
+        if mapped is not None:
+            return None
+        # 标准 WASD 预设保留方向键作为备用驾驶键，手动换挡 Q/E 未被重绑时仍直通。
+        if self.game_settings.key_preset == "wasd" and key in ("arrow_up", "arrow_down", "arrow_left", "arrow_right"):
+            return key
+        if key in ("q", "e"):
+            return key
+        return None
 
     def has_panel_navigation(self):
         return (
@@ -1551,7 +1623,11 @@ class CoastalDrive(ShowBase):
         super().windowEvent(win)
         if self.session is not None and self.workspace == "game" and win == self.win and not self.smoke:
             properties = win.getProperties()
-            self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
+            focused = properties.getForeground() and not properties.getMinimized()
+            if self.game_settings.pause_on_focus_loss:
+                self.session.focus_changed(focused)
+            if self.soundscape is not None:
+                self.soundscape.set_muted(self.audio_settings.mute_unfocused and not focused)
             if not properties.getForeground():
                 self.commands_held.clear()
                 self.driving_keys_held.clear()
@@ -1579,10 +1655,11 @@ class CoastalDrive(ShowBase):
         self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
             lambda: self.open_budget_challenge(GameMode.TIME_TRIAL, origin='coastal'),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
-            self.open_career, self.open_career_collection, self.choose_audio_settings, self.userExit,
+            self.open_career, self.open_career_collection, self.choose_settings, self.userExit,
         ), vehicle_view=self.workshop_vehicle, confirm_action=lambda: self.audio_cue('confirm'),
             driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
             highway_action=self.choose_highway, continue_action=self.continue_career)
+        self.settings_panel = SettingsPanel(self)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                        self.continue_workshop_project, self.open_driving_journey,
                                        on_back=self.back_from_workshop_journey)
@@ -1756,8 +1833,11 @@ class CoastalDrive(ShowBase):
         self.session.set_abs_enabled(not self.session.abs_enabled)
         self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
         self.save_workspace_electronics()
-        self._shown_phase = None
-        self.refresh_panel()
+        if self.settings_panel.visible:
+            self.settings_panel.redraw()
+        else:
+            self._shown_phase = None
+            self.refresh_panel()
 
     def toggle_tcs(self):
         if self.session.phase != Phase.MENU:
@@ -1765,8 +1845,11 @@ class CoastalDrive(ShowBase):
         self.session.set_tcs_enabled(not self.session.tcs_enabled)
         self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
         self.save_workspace_electronics()
-        self._shown_phase = None
-        self.refresh_panel()
+        if self.settings_panel.visible:
+            self.settings_panel.redraw()
+        else:
+            self._shown_phase = None
+            self.refresh_panel()
 
     def toggle_esc(self):
         if self.session.phase != Phase.MENU:
@@ -1776,8 +1859,11 @@ class CoastalDrive(ShowBase):
             self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled,
             self.session.esc_enabled)
         self.save_workspace_electronics()
-        self._shown_phase = None
-        self.refresh_panel()
+        if self.settings_panel.visible:
+            self.settings_panel.redraw()
+        else:
+            self._shown_phase = None
+            self.refresh_panel()
 
     def save_workspace_electronics(self):
         self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
@@ -1792,33 +1878,141 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
 
-    def choose_audio_settings(self):
+    def choose_settings(self, category="graphics", *, subsection=0):
         self.panel_selection = 0
         self.audio_settings_page = True
+        self.career_panel.hide()
+        self.main_menu.hide_home()
+        self.main_menu.root.hide()
+        self.driving_cards.hide()
+        self.panel.hide()
+        self.hud.root.hide()
+        self.settings_panel.open(
+            category,
+            subsection=subsection,
+            return_target="menu" if self.session.phase == Phase.MENU else "pause",
+        )
         self._shown_phase = None
         self.refresh_panel()
+
+    def choose_audio_settings(self):
+        self.choose_settings("audio")
 
     def adjust_audio_volume(self, setting, step):
         master = self.audio_settings.master_volume
         effects = self.audio_settings.effects_volume
+        engine = self.audio_settings.engine_volume
         music = self.audio_settings.music_volume
+        ui_vol = self.audio_settings.ui_volume
         if setting == "master":
             master = max(0, min(100, master + step))
         elif setting == "effects":
             effects = max(0, min(100, effects + step))
+        elif setting == "engine":
+            engine = max(0, min(100, engine + step))
+        elif setting == "ui":
+            ui_vol = max(0, min(100, ui_vol + step))
         else:
             music = max(0, min(100, music + step))
-        self.audio_settings.save(master, effects, music)
-        if self.soundscape is not None:
-            self.soundscape.set_volumes(master, effects, music)
-        self._shown_phase = None
-        self.refresh_panel()
+        self.audio_settings.save(master, effects, music, engine_volume=engine, ui_volume=ui_vol)
+        self.apply_audio_settings()
+        if self.settings_panel.visible:
+            self.settings_panel.redraw()
+        else:
+            self._shown_phase = None
+            self.refresh_panel()
 
     def back_from_audio_settings(self):
         self.audio_settings_page = False
+        self.settings_panel.close()
         self.panel_selection = 2 if self.session.phase == Phase.PAUSED else 0
         self._shown_phase = None
         self.refresh_panel()
+
+    def apply_display_settings(self):
+        """在线应用窗口模式与渲染分辨率；离屏 smoke 模式保持测试固定尺寸。"""
+        if self.smoke or self.win is None:
+            return
+        props = WindowProperties()
+        mode = self.game_settings.window_mode
+        w, h = self.game_settings.resolution
+        if mode == "fullscreen":
+            props.setUndecorated(False)
+            props.setFullscreen(True)
+            props.setSize(w, h)
+        elif mode == "borderless":
+            props.setFullscreen(False)
+            props.setUndecorated(True)
+            pipe = self.pipe
+            if pipe is not None and pipe.getDisplayWidth() > 0 and pipe.getDisplayHeight() > 0:
+                props.setOrigin(0, 0)
+                props.setSize(pipe.getDisplayWidth(), pipe.getDisplayHeight())
+            else:
+                props.setSize(w, h)
+        else:
+            props.setFullscreen(False)
+            props.setUndecorated(False)
+            props.setSize(w, h)
+        self.win.requestProperties(props)
+
+    def apply_frame_pacing(self):
+        """按垂直同步与帧率上限配置渲染限帧任务，不影响 120 Hz 独立物理步。"""
+        self.taskMgr.remove("render-frame-pacing")
+        cap = self.game_settings.fps_limit
+        need_cap = (not self._sync_video and cap > 0) or (self.smoke and not self.onscreen)
+        if need_cap:
+            self._render_deadline = time.perf_counter()
+            self.taskMgr.add(self.pace_frame, "render-frame-pacing", sort=-100)
+
+    def apply_graphics_settings(self):
+        """即时应用视距、场景阴影质量与画面曝光。"""
+        self.camLens.setNearFar(0.35, self.game_settings.far_distance)
+        if self.scene is not None:
+            self.scene.apply_graphics_settings(self.game_settings)
+
+    def apply_camera_settings(self):
+        """即时应用追车视野、动态视野与默认追车距离，保留 3.2m 认可镜位高度。"""
+        self.chase_camera.configure(
+            base_fov=self.game_settings.fov,
+            dynamic_fov=self.game_settings.dynamic_fov,
+        )
+        self.session.camera_distance = self.game_settings.camera_distance
+        if self.session.phase == Phase.MENU:
+            self.camLens.setFov(self.game_settings.fov)
+
+    def apply_audio_settings(self):
+        """即时同步全部声音分轨、电台频道与失焦静音状态。"""
+        if self.soundscape is None:
+            return
+        au = self.audio_settings
+        self.soundscape.set_volumes(
+            au.master_volume,
+            au.effects_volume,
+            au.music_volume,
+            engine_volume=au.engine_volume,
+            ui_volume=au.ui_volume,
+        )
+        self.soundscape.music.select(au.radio_station)
+        if not au.mute_unfocused:
+            self.soundscape.set_muted(False)
+
+    def apply_control_settings(self):
+        """重建键位映射表并即时同步驾驶 HUD 按键提示。"""
+        self._key_to_action = {key: action for action, key in self.game_settings.key_bindings.items()}
+        self.hud.configure(key_bindings=self.game_settings.key_bindings)
+
+    def apply_hud_settings(self):
+        """即时同步速度单位、按键提示栏显隐与诊断遥测开关。"""
+        gs = self.game_settings
+        self.hud.configure(
+            speed_unit=gs.speed_unit,
+            show_key_hints=gs.show_key_hints,
+            key_bindings=gs.key_bindings,
+        )
+        if gs.show_diagnostics:
+            self.diagnostics.show()
+        else:
+            self.diagnostics.hide()
 
     def choose_garage(self):
         if self.session.phase != Phase.MENU:
@@ -1931,6 +2125,9 @@ class CoastalDrive(ShowBase):
         if self.workshop_garage_return:
             self.open_workshop_garage()
             return
+        if self.driving_journey_return:
+            self.return_to_driving_journey()
+            return
         self.driving_journey_return = False
         self.braking_menu = False
         self.panel_selection = 4
@@ -2023,6 +2220,9 @@ class CoastalDrive(ShowBase):
         if self.workshop_garage_return:
             self.open_workshop_garage()
             return
+        if self.driving_journey_return:
+            self.return_to_driving_journey()
+            return
         self.driving_journey_return = False
         self.slalom_menu = False
         self.panel_selection = 5
@@ -2064,7 +2264,7 @@ class CoastalDrive(ShowBase):
         self.select_panel_option(3 if self.overtake_mode == GameMode.SAFE_OVERTAKE else 4)
 
     def start_overtake(self):
-        self.open_budget_challenge(self.overtake_mode, origin='sprint')
+        self.open_budget_challenge(self.overtake_mode, origin='overtake')
 
     def start_sprint(self, mode):
         self.open_budget_challenge(mode, origin='sprint')
@@ -2115,7 +2315,7 @@ class CoastalDrive(ShowBase):
             self.budget_tab = next(index for index, (_, keys) in enumerate(GROUPS)
                                    if any(key in spec.allowed for key in keys))
         self.budget_mode = mode
-        self.open_career(keep_tour_practice=self.budget_origin == 'tour-practice')
+        self._prepare_career_panel(keep_tour_practice=self.budget_origin == 'tour-practice')
         drafts, plans = self._budget_setup()
         if mode not in drafts:
             drafts[mode] = plans.load(spec)
@@ -2259,6 +2459,8 @@ class CoastalDrive(ShowBase):
             self.session.resume()
             self._shown_phase = None
             self.refresh_panel()
+        elif action == 'challenge-settings':
+            self.choose_settings()
         elif action == 'challenge-back':
             origin = self.budget_origin
             self.back_to_menu()
@@ -2275,6 +2477,10 @@ class CoastalDrive(ShowBase):
                 self.refresh_panel()
             elif origin == 'workshop':
                 self.open_workshop_garage()
+            elif origin == 'garage':
+                self.open_career_garage()
+            elif origin == 'overtake':
+                self.choose_overtake(course_mode(mode))
             elif origin == 'club' or course_mode(mode) == GameMode.CAREER:
                 self.open_career(event=BOARD_EVENTS[mode])
                 self.career_panel.show_brief(self.career_progress, BOARD_EVENTS[mode])
@@ -2452,6 +2658,23 @@ class CoastalDrive(ShowBase):
         if panel_state == self._shown_phase:
             return
         self.main_menu.hide_home()
+        if self.audio_settings_page:
+            self._shown_phase = panel_state
+            self.panel.hide()
+            self.hud.root.hide()
+            self.career_panel.hide()
+            self.main_menu.root.hide()
+            self.driving_cards.hide()
+            if not self.settings_panel.visible:
+                self.settings_panel.open(
+                    "audio",
+                    return_target="menu" if phase == Phase.MENU else "pause",
+                )
+            else:
+                self.settings_panel.redraw()
+            return
+        if self.settings_panel.visible:
+            self.settings_panel.close()
         if self.budget_active and phase == Phase.PAUSED and not (self.audio_settings_page or self.driving_mode_page):
             self._shown_phase = panel_state
             self.panel.hide()
@@ -2562,8 +2785,8 @@ class CoastalDrive(ShowBase):
         elif self.driving_mode_page:
             self.panel_title.setText("驾驶辅助")
             self.panel_note.setText(
-                "游戏使用车速转向辅助 · 下次起步应用\n"
-                "车辆硬件由车库选择，完整物理实验在实验室设置"
+                "游戏启用车速相关转向辅助，下次发车生效\n"
+                "车辆可在海岸车库选择，完整动力学试验请前往专家试验台"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
@@ -2662,7 +2885,7 @@ class CoastalDrive(ShowBase):
             options = [
                 ("继续驾驶  Enter", self.session.resume),
                 ("返回实验台", self.open_vehicle_lab),
-                ("设置", self.choose_audio_settings),
+                ("设置", self.choose_settings),
                 ("重新开始", self.session.start),
                 ("结束驾驶", self.session.finish),
                 ("返回主菜单", self.back_to_menu),
@@ -2987,10 +3210,11 @@ class CoastalDrive(ShowBase):
                 draw_result(self.driving_cards, self, summary_note)
 
     def pace_frame(self, task):
-        remaining = self._render_deadline-time.perf_counter()
+        cap = 90 if (self.smoke and not self.onscreen) else (self.game_settings.fps_limit or 90)
+        remaining = self._render_deadline - time.perf_counter()
         if remaining > 0:
             time.sleep(remaining)
-        self._render_deadline = time.perf_counter()+1/90
+        self._render_deadline = time.perf_counter() + 1 / cap
         self.clock.syncFrameTime()
         return task.cont
 
@@ -3027,6 +3251,7 @@ class CoastalDrive(ShowBase):
         self.career_panel.resize(self.getAspectRatio())
         self.player_road_panel.resize(self.getAspectRatio())
         self.driving_cards.resize(self.getAspectRatio())
+        self.settings_panel.resize(self.getAspectRatio())
         self.tour_panel.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
         self.layout_driving_buttons()
@@ -3058,7 +3283,7 @@ class CoastalDrive(ShowBase):
         if self.soundscape is not None:
             self.soundscape.update(state, self.session.phase, None, self.clock.getDt(),
                                    countdown_ticks=self.session.countdown_ticks,
-                                   music_preview=self.audio_settings_page)
+                                   music_preview=self.settings_panel.audio_preview_active)
             checkpoints = self.session.race.snapshot.checkpoints
             if checkpoints > self._audio_checkpoints:
                 self.audio_cue("checkpoint")
@@ -3222,6 +3447,7 @@ class CoastalDrive(ShowBase):
         self.player_road_panel.root.destroy()
         self.tour_banner.destroy()
         self.main_menu.destroy()
+        self.settings_panel.destroy()
         self.hud.destroy()
         self.countdown.destroy()
         self.loading.destroy()

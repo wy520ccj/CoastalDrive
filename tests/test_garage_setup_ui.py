@@ -33,7 +33,20 @@ def test_garage_expert_parameters_stage_current_vehicle_and_return_same_collecti
         app.lab.back_to_game()
         finish(app, 'game')
         assert app.session.phase == Phase.MENU and app.career_panel.page == 'garage'
+        assert app.career_garage_return == 'home'
         assert app.workspace_vehicle == original and app.workspace_path.read_bytes() == before
         assert app.lab_workspace.fields['cg'] == '.47'
+        # 从生涯赛事板进车库再去专家参数，返回后应保留赛事板来源而不跳回首页。
+        app.open_career()
+        app.career_action('board-chapter', 1)
+        app.career_action('garage')
+        assert app.career_garage_return is None
+        app.career_action('garage-tab', 'setup')
+        finish(app, 'lab')
+        app.lab.back_to_game()
+        finish(app, 'game')
+        assert app.career_panel.page == 'garage' and app.career_garage_return is None
+        app.career_action('garage-back')
+        assert app.career_panel.page == 'board' and app.career_panel.board_event.id == 'coast-sprint'
     finally:
         app.close_game()

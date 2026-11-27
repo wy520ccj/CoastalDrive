@@ -15,6 +15,7 @@ FIELDS = {
     "bump_height": ("凸起高度", "m", .001, .05),
     "bump_length": ("凸起长度", "m", .1, 5.),
     "bump_distance": ("凸起距离", "m", 2., 100.),
+    "sweep_end": ("扫点末速", "km/h", 20., 180.),
     "cg": ("质心高度", "m", .2, 1.),
     "tire_load": ("轮胎基准轮荷", "N", 0., math.inf),
     "manual.throttle": ("油门", "%", 0., 100.),
@@ -41,6 +42,8 @@ MANEUVER_FIELDS = {
     "cornering_braking": COMMON_FIELDS | {"radius", "onset"},
     "step_steer_braking": COMMON_FIELDS | STEERING_FIELDS,
     "mu_jump_cornering_braking": COMMON_FIELDS | {"radius", "onset", "right_mu"},
+    "quasi_steady_circle": COMMON_FIELDS | {"radius", "sweep_end"},
+    "iso_rough_road": COMMON_FIELDS,
 }
 MANEUVER_HINTS = {
     "braking": "直线制动：起点即全制动，转向和输入起始不参与。",
@@ -56,6 +59,8 @@ MANEUVER_HINTS = {
     "cornering_braking": "沿定圆入弯，到输入起始时刻锁定转角并全制动。",
     "step_steer_braking": "直线滚动，到输入起始时刻同时施加转向和全制动。",
     "mu_jump_cornering_braking": "沿定圆入弯并锁角制动，制动后行驶10 m切换附着系数。",
+    "quasi_steady_circle": "准稳态定圆扫点：沿定圆路径从初速线性缓增至扫点末速，拟合实算不足转向梯度。",
+    "iso_rough_road": "标准等级随机路面：直行维持目标车速，测量 ISO 2631-1 加权平顺性与频谱。",
 }
 
 

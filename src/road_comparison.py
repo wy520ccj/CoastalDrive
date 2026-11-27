@@ -293,12 +293,12 @@ def export_comparison(comparison, folder, names):
                         f"<td>{cells[0]}</td><td>{cells[1]}</td></tr>")
     page = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>虚拟试车员 A/B</title>
 <style>body{{font:16px system-ui;background:#f3efe3;color:#102b3a;max-width:1100px;margin:40px auto;padding:24px}}td,th{{padding:10px;border-bottom:1px solid #bbc9c8}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}svg{{width:100%;margin:15px 0}}</style>
-<h1>虚拟试车员 · 连续过门 A/B</h1><p>状态：{comparison.status}。固定60km/h目标、20Hz闭环策略、120Hz完整物理；游戏单机械步/原输入辅助，μ=1.1、种子0、无车流。</p>
-<p>同一策略会按各车状态产生不同请求，不是相同命令回放或最优驾驶。只有完成课题者有有效用时；余量/侧偏等指标区间截止各自终点或失败步，失败者更短的采样窗不表示更好。不会更新玩家奖牌或道路进度。</p>
+<h1>虚拟试车员 · 连续过门 A/B</h1><p>状态：{comparison.status}。目标车速 60 km/h、20 Hz 闭环控制策略、120 Hz 固定步仿真（路面附着 μ = 1.1，无车流）。</p>
+<p>闭环控制策略依据各车实时状态独立生成转向与速度指令；完整通过全部六门时记录有效用时，其余统计指标统计至各自结束时刻。本项试车结果独立存档，不影响玩家道路进度与奖牌。</p>
 <p>{html.escape(conditions)}</p><table><tr><th>指标</th><th>A</th><th>B</th><th>B−A</th><th>单位</th></tr>{table}</table>
-<h2>实际道路轨迹</h2><p>A海蓝 / B橙色 / 灰虚线为目标；横轴为行驶进度，纵轴为左右位置。失败步之后不补轨迹。</p>{path_svg(comparison.records)}
-<h2>逐门复盘</h2><p>同位置首次向前过门；车速、朝向与实际转角由相邻完成步插值，转向请求为该步保持值。余量沿用原整车判门结果；缺失处不补数据。不由单项变化推断改装因果。</p>
+<h2>实际道路轨迹</h2><p>A 线海蓝，B 线橙色，灰虚线为目标轨迹；横轴为行驶进度，纵轴为横向偏移，轨迹绘至各自结束位置。</p>{path_svg(comparison.records)}
+<h2>逐门复盘</h2><p>按首次向前通过各门位置插值统计车速、朝向与实际前轮转角，转向请求取当步保持值；多参数同时改动时，差异反映整车组合效应。</p>
 <table><tr><th>门 / 位置 / 目标左右</th><th>A 状态 / 余量 / 车速 / 请求→转角</th><th>B 状态 / 余量 / 车速 / 请求→转角</th></tr>{gates_table}</table>
-<p>每拍完整快照、控制请求、硬件、策略、源码与SDK首末摘要见A/B目录。逐步计算时间与初始化分别记录，不是实时FPS基准；不是实车标定。</p>{details}</html>'''
+<p>完整快照、控制序列、整车配置与环境指纹见同目录 A/B 存档；离线计算耗时与初始化耗时分别统计。</p>{details}</html>'''
     (folder/"report.html").write_text(page, encoding="utf-8")
     return folder/"report.html"

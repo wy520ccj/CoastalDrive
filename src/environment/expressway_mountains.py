@@ -94,7 +94,3 @@ def mountain_steps(root, index, seed, curve, kit, detail_parent):
         node.setShaderInput("expressway_rock",kit["rock"])
         node.reparentTo(root)
         yield "mountain-mesh"
-        if side < 0:
-            from environment.expressway_vegetation import mountain_vegetation_steps
-
-            yield from mountain_vegetation_steps(index,seed,curve,kit,detail_parent)

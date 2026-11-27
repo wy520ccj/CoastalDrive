@@ -310,6 +310,7 @@ class Scene:
         self.endless_tree_templates = []
         self.endless_bush_template = None
         self.endless_templates = None
+        self.expressway_kit = None
         self.ocean = None
         self.checkpoint_nodes = []
         self.ghost = None
@@ -356,6 +357,10 @@ class Scene:
             curve = base.session.simulation.stream.curve
             if isinstance(curve, CareerCourse) and curve.course_id in ('coast-club', 'coast-final'):
                 foundation.setup_daylight(self)
+            else:
+                from environment.expressway_landscape_materials import landscape_lighting
+
+                landscape_lighting(self)
             if isinstance(curve, CareerCourse) and coast_candidate(curve.course_id):
                 from environment.career_coast import _backdrop, _water_shader, _water_surface
 
@@ -375,6 +380,23 @@ class Scene:
             self.sky.getQuat().conjugate().extractToMatrix(rotation)
             self.render.setShaderInput("expressway_sky", self.sky.getTexture())
             self.render.setShaderInput("expressway_sky_inverse", rotation)
+        self.base_exposure = base.pipeline.exposure
+        self._default_shadow_size = int(self.sun_path.node().getShadowBufferSize().x)
+        if hasattr(base, "game_settings"):
+            self.apply_graphics_settings(base.game_settings)
+
+    def apply_graphics_settings(self, settings):
+        """即时应用阴影分辨率与画面曝光，不触碰物理或道路结构。"""
+        sun = self.sun_path.node()
+        if settings.shadow_quality == "off":
+            sun.setShadowCaster(False)
+        else:
+            # 高档保留各赛道认可的默认贴图尺寸（滨海 4096 / 常规 2048），中/极高按档切换。
+            size = self._default_shadow_size if settings.shadow_quality == "high" else settings.shadow_map_size
+            sun.setShadowCaster(True, size, size)
+            if self.coastal_daylight is not None:
+                self.render.setShaderInput('coastal_shadow_texel', (1 / size, 1 / size))
+        self.base.pipeline.exposure = self.base_exposure * (settings.exposure / 100.0)
 
     def setup_lighting(self) -> None:
         ambient = AmbientLight("coastal-ambient")
@@ -415,9 +437,19 @@ class Scene:
         self.sun_path.setPos(position + Vec3(-55, -75, 125))
         self.sun_path.lookAt(position)
         simulation = self.base.session.simulation
+        if simulation.track == "endless":
+            origin = float(self.base.session.render_origin())
+            current = self.render.getShaderInput("local_origin_y")
+            if current.getValueType() == current.MInvalid or current.getVector().x != origin:
+                self.render.setShaderInput("local_origin_y", origin)
         if self.coastal_daylight is not None:
             foundation.update_daylight(self, position)
         elif simulation.track == "endless":
+            if self.expressway_kit is not None:
+                from environment.expressway_landscape_materials import update_daylight_sun
+
+                update_daylight_sun(self, position)
+                return
             from environment.expressway import stabilize_sun
 
             stabilize_sun(self.sun_path, position, self.base.session.render_origin())
@@ -575,9 +607,27 @@ class Scene:
 
     def setup_endless(self):
         """Build reusable endless-road templates and the initially streamed segments."""
+        from career_courses import CareerCourse
+        from environment.expressway import load_kit
+        from environment.expressway_foliage import grass_heightfield
+        from environment.expressway_landscape_materials import cutout_shadows
+
         # 时间在合批范围外统一更新，新旧路段共享同一快照相位。
         self._set_render_sea_time(0.)
         self.render.setShaderInput('expressway_sky_tint', Vec3(1))
+        self.render.setShaderInput('local_canopy_occlusion', 0.7)
+        self.render.setShaderInput('local_sky_transmission', 0.0)
+        empty = Texture('empty-woodland-coverage')
+        empty.setup2dTexture(1, 1, Texture.TUnsignedByte, Texture.FRed)
+        empty.setRamImage(b'\x00')
+        self.render.setShaderInput('local_forest_coverage', empty)
+        self.render.setShaderInput('local_forest_bounds', (0.0, 0.0, 1.0, 1.0))
+        curve = self.base.session.simulation.stream.curve
+        coastal_course = isinstance(curve, CareerCourse) and coast_candidate(curve.course_id)
+        g_tex, g_origin, g_mode = grass_heightfield(curve.course_id if isinstance(curve, CareerCourse) else None)
+        self.render.setShaderInput('grass_heightfield', g_tex)
+        self.render.setShaderInput('grass_grid_origin', g_origin)
+        self.render.setShaderInput('grass_surface_mode', g_mode)
         self.endless_templates = self.render.attachNewNode("endless-templates")
         self.endless_templates.hide()
         self.endless_tree_templates = [
@@ -588,12 +638,11 @@ class Scene:
             template.reparentTo(self.endless_templates)
         self.endless_bush_template = self.load_model("nature/plant_bushLargeTriangle.glb")
         self.endless_bush_template.reparentTo(self.endless_templates)
-        from environment.expressway import load_kit
-
         self.expressway_kit = load_kit(
-            self.base.loader, self.endless_templates, self.endless_tree_templates
+            self.base.loader, self.endless_templates, self.endless_tree_templates, coastal=coastal_course
         )
         self.sync_segments(budget_ms=self.initial_stream_budget_ms)
+        cutout_shadows(self)
 
     def sync_segments(self, budget_ms=None, distance=None):
         """装卸窗口不变；驾驶中分摊远端美术，完整节点才挂入场景。"""

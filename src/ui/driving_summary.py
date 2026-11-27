@@ -29,12 +29,12 @@ def pause(cards, app):
     cards.summary_values = {}
     unit = 2/941
     x, inner, width = left+28, wide-56, app.getAspectRatio()*941
-    for index, title, y in ((0, '继续驾驶', 290), (2, '声音设置', 392),
+    for index, title, y in ((0, '继续驾驶', 290), (2, '设置', 392),
                              (3, '重新开始', 494), (4, '结束驾驶', 596)):
         item = button(index, title, x, y, inner, 72)
         item['text_font'], item['text_scale'] = app.ui_font, 24*unit
         if index in (0, 2):
-            icon_name = 'atelier/icon-steering.png' if index == 0 else 'atelier/icon-speaker.png'
+            icon_name = 'atelier/icon-steering.png' if index == 0 else 'atelier/icon-sliders.png'
             icon_col = theme.INK if index == 0 else WHITE
             cards.frames.append(atelier.picture(
                 item, app.loader, icon_name,

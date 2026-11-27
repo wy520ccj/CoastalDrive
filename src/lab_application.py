@@ -57,25 +57,30 @@ PANEL = LAB_CARD
 BUTTON = LAB_SURFACE
 DISABLED_FIELD = LAB_FIELD_DISABLED
 DISABLED_INK = LAB_DISABLED_TEXT
+ROAD_CLASSES = ("A", "B", "C", "D")
+FEEDBACK_SOURCES = ("truth", "sensor_ekf")
 
 
 def control_mode_label(options):
     """根据试验选项字典返回简洁的电子稳定控制短标；缺省键时返回 None。"""
     if not isinstance(options, dict):
         return None
+    suffix = "·EKF" if options.get("feedback_source") == "sensor_ekf" else ""
     if options.get("controller_mode") == "coord_abs_dyc":
-        return "ABS–DYC"
+        return "ABS–DYC" + suffix
     if "abs_enabled" not in options and "esc_enabled" not in options:
-        return None
+        return suffix.lstrip("·") or None
     abs_on = bool(options.get("abs_enabled", False))
     esc_on = bool(options.get("esc_enabled", False))
     if abs_on and esc_on:
-        return "ABS+ESC"
-    if abs_on:
-        return "ABS"
-    if esc_on:
-        return "ESC"
-    return "无控"
+        base = "ABS+ESC"
+    elif abs_on:
+        base = "ABS"
+    elif esc_on:
+        base = "ESC"
+    else:
+        base = "无控"
+    return base + suffix
 
 
 class VehicleLab(DirectObject):
@@ -95,8 +100,10 @@ class VehicleLab(DirectObject):
                          if self.owns_window else engine.pipeline)
         self.engine.camLens.setNearFar(.1, 1500)
         self.font = theme.load_font("fonts/SourceHanSansSC-Bold.otf")
-        # 正文按小字分辨率生成字形，避免160像素字形过度缩小时笔画忽细忽粗。
-        self.font.setPixelsPerUnit(48)
+        # 同步按 64 ppu 等比缩放图集与几何留边，保持与 160 ppu 标题一致的视觉基线，避免小字下沉。
+        self.font.setPixelsPerUnit(64)
+        self.font.setTextureMargin(6)
+        self.font.setPolyMargin(2)
         self.heading_font = theme.load_font()
         self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
         self.root = DirectFrame(parent=self.engine.aspect2d, frameColor=(0, 0, 0, 0), relief=None,
@@ -181,22 +188,29 @@ class VehicleLab(DirectObject):
     def button(self, label, x, z, width, action, parent=None, accent=False, dark=False):
         variant = "lab_primary" if accent else "dark" if dark else False
         fg = (1, 1, 1, 1) if (accent or dark) else LAB_TEXT
+        aspect = max(1, min(16, round(width / .08)))
+        text_z = -.008 if label in ("‹", "›") else -.011
         button = DirectButton(parent=parent or self.root, text=label, text_font=self.font,
-            text_scale=.036, text_fg=fg, text_pos=(0, -.011),
-            frameColor=(1, 1, 1, 1), frameTexture=button_textures(variant),
+            text_scale=.036, text_fg=fg, text_pos=(0, text_z),
+            frameColor=(1, 1, 1, 1), frameTexture=button_textures(variant, aspect),
             frameSize=(-width/2, width/2, -.040, .040), borderWidth=(0, 0),
             relief=DGG.FLAT, pos=(x, 0, z), command=action, pressEffect=False)
         button.setTransparency(TransparencyAttrib.MAlpha)
         return button
 
     def field(self, key, label, value, z, *, x=-1.61, width=.30, parent=None):
-        self.field_labels[key] = self.text(label, x, z, .032, MUTED, parent=parent)
+        self.field_labels[key] = self.text(label, x, z-.010, .032, MUTED, parent=parent)
         target = DirectFrame(parent=parent or self.root, frameColor=(0, 0, 0, 0), relief=None,
-                             frameSize=(0, .31, -.015, .045), pos=(x, 0, z), state=DGG.NORMAL)
+                             frameSize=(0, .32, -.032, .032), pos=(x, 0, z), state=DGG.NORMAL)
         self.bind_parameter(target, key)
+        scale = .034
+        pad_x = .28
+        span = width / scale
+        # 显式对称外框包裹数字视觉中心（+0.29*scale），避免 PGEntry 默认行高使框体上凸、数字贴底。
         entry = DirectEntry(parent=parent or self.root, initialText=str(value), text_font=self.font,
-            text_fg=LAB_TEXT, scale=.034, width=width/.034, numLines=1, focus=0,
-            frameColor=LAB_FIELD, pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
+            text_fg=LAB_TEXT, scale=scale, width=max(2.0, span - 2 * pad_x), numLines=1, focus=0,
+            frameSize=(-pad_x, span - pad_x, -.52, 1.12),
+            frameColor=LAB_FIELD, pos=(x + .34 + pad_x * scale, 0, z - .010), relief=DGG.FLAT)
         self.entries[key] = entry
         self.bind_parameter(entry, key, focus=True)
         return entry
@@ -278,18 +292,20 @@ class VehicleLab(DirectObject):
     def option(self, labels, x, z, width, command=None, parent=None, parameter=None):
         menu = LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
             item_text_font=self.font, item_text_scale=.033, item_text_fg=LAB_TEXT,
-            item_text_pos=(.024, -.011), item_frameSize=(0, width, -.035, .035),
+            item_text_pos=(.024, -.010), item_frameSize=(0, width, -.035, .035),
             item_frameColor=LAB_SURFACE, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
             item_pad=(0, 0), item_pressEffect=False,
             popupMenu_relief=DGG.FLAT, popupMenu_frameColor=BORDER,
             popupMenu_borderWidth=(0, 0), popupMenu_sortOrder=120,
-            text_scale=.033, text_fg=LAB_TEXT, text_align=TextNode.ALeft, text_pos=(.024, -.011),
+            text_scale=.033, text_fg=LAB_TEXT, text_align=TextNode.ALeft, text_pos=(.024, -.010),
             frameSize=(0, width, -.035, .035), frameColor=LAB_FIELD, relief=DGG.FLAT,
             pos=(x, 0, z), command=command, highlightColor=LAB_FIELD_FOCUS,
-            popupMarker_pos=(width-.026, 0, 0), popupMarker_scale=.026,
+            popupMarker_pos=(width-.032, 0, 0), popupMarker_scale=.026,
+            popupMarker_frameSize=(-.42, .42, -.50, .50),
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
-            popupMarker_text_fg=MUTED, popupMarker_text_scale=.65,
+            popupMarker_text_fg=MUTED, popupMarker_text_scale=.62,
+            popupMarker_text_align=TextNode.ACenter, popupMarker_text_pos=(0, -.165),
             popupMarkerBorder=(0, 0), before_popup=self._prepare_popup)
         self._option_menus.append(menu)
         if parameter is not None:
@@ -324,7 +340,10 @@ class VehicleLab(DirectObject):
             tire_reference_load=self.read_field("tire_load", optional=True),
             abs_enabled=self.abs_menu.selectedIndex == 0 and not coordinated,
             esc_enabled=self.esc_menu.selectedIndex == 1,
-            controller_mode="coord_abs_dyc" if coordinated else "native")
+            controller_mode="coord_abs_dyc" if coordinated else "native",
+            sweep_end_kph=read("sweep_end", defaults.sweep_end_kph),
+            road_class=ROAD_CLASSES[self.road_class_menu.selectedIndex],
+            feedback_source=FEEDBACK_SOURCES[self.feedback_menu.selectedIndex])
         if "onset" in available and options.onset >= options.duration:
             raise LabInputError("onset", "输入起始须小于试验时长，否则试验结束前不会施加输入。")
         return options
@@ -346,7 +365,13 @@ class VehicleLab(DirectObject):
             for state in range(entry["numStates"]):
                 entry.guiItem.setTextDef(state, entry.onscreenText.textNode)
             self.field_labels[key].setFg(MUTED if enabled else DISABLED_INK)
-        maintains_speed = mode in PATH_MANEUVERS and mode not in CIRCLE_BRAKING_MANEUVERS
+        road_active = mode == "iso_rough_road"
+        road_state = DGG.NORMAL if road_active else DGG.DISABLED
+        self.road_class_menu["state"] = road_state
+        self.road_class_menu["popupMarker_state"] = road_state
+        self.road_class_menu["text_fg"] = INK if road_active else DISABLED_INK
+        maintains_speed = ((mode in PATH_MANEUVERS and mode not in CIRCLE_BRAKING_MANEUVERS
+                            and mode != "quasi_steady_circle") or mode == "iso_rough_road")
         self.field_labels["speed"].setText("目标车速 km/h" if maintains_speed else "初速 km/h")
         self.field_labels["right_mu"].setText("突变后附着 μ" if mode == "mu_jump_cornering_braking"
                                              else "右侧附着 μ")
@@ -457,11 +482,11 @@ class VehicleLab(DirectObject):
         self.entries["mu"].enterText(str(config.road_friction))
         self.entries["cg"].enterText("")
         self.entries["tire_load"].enterText("")
-        basis = metadata.get("basis", "导入工程配置，来源按文件声明")
+        basis = metadata.get("basis", "已导入自定义车辆工程配置")
         if self.run_state is None and self.record is None:
             self.model_note.setText(f"{design.name} · 导入工程模型")
         else:
-            basis += "；将用于下次试验，当前结果仍使用原配置。"
+            basis += "；新配置将于下次试验生效。"
         self.notice.setText(basis)
         self.record_menu.hide()
 
@@ -505,8 +530,8 @@ class VehicleLab(DirectObject):
                 return
             metadata = dict(self.parameter_metadata or {})
             metadata["suspension_calibration"] = report
-            metadata["basis"] = ("悬架合成数据验证，非实测；其他硬件沿用当前模型" if report["input"]["source_kind"] == "synthetic"
-                                 else "悬架台架拟合与安装运动比换算；其他硬件沿用当前模型")
+            metadata["basis"] = ("已载入悬架合成基准数据；其余整车参数沿用当前模型" if report["input"]["source_kind"] == "synthetic"
+                                 else "已载入悬架台架拟合数据；其余整车参数沿用当前模型")
             save_vehicle_config(folder/"candidate-vehicle.json", config, metadata=metadata)
             self.import_engineering(folder/"candidate-vehicle.json")
             self.advanced_panel.hide()
@@ -527,10 +552,12 @@ class VehicleLab(DirectObject):
                            ("duration", options.duration), ("steer", options.steering_deg),
                            ("onset", options.onset), ("radius", options.radius_m), ("right_mu", options.right_friction),
                            ("bump_height", options.bump_height_m), ("bump_length", options.bump_length_m),
-                           ("bump_distance", options.bump_distance_m)):
+                           ("bump_distance", options.bump_distance_m), ("sweep_end", options.sweep_end_kph)):
             self.entries[key].enterText(str(value))
         self.abs_menu.set(0 if options.abs_enabled else 1)
         self.esc_menu.set(2 if options.controller_mode == "coord_abs_dyc" else int(options.esc_enabled))
+        self.road_class_menu.set(ROAD_CLASSES.index(options.road_class), fCommand=0)
+        self.feedback_menu.set(FEEDBACK_SOURCES.index(options.feedback_source), fCommand=0)
         self.entries["cg"].enterText("" if options.cg_height is None else str(options.cg_height))
         self.entries["tire_load"].enterText("" if options.tire_reference_load is None else str(options.tire_reference_load))
         self.refresh_parameter_availability()
@@ -571,11 +598,11 @@ class VehicleLab(DirectObject):
         self.run_state.paused = False
         self.scene.set_vehicle(self.run_state.design, self.run_state.config)
         self.scene.set_trial(options, self.run_state.snapshots[0].player)
-        basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"
+        basis = "工程先验" if options.vehicle_id.startswith("gr86") else "设计模型"
         if self.engineered_config is not None:
             basis = "导入工程模型"
         self.model_note.setText(f"{self.run_state.design.name} · {basis}")
-        self.notice.setText("离线计算真实固定步；暂停后可拖动时间轴分析")
+        self.notice.setText("离线固定步长仿真中；暂停后可拖动时间轴逐帧分析")
         self.manual_panel.show() if options.maneuver == "manual" else self.manual_panel.hide()
         self.manual_button.show() if options.maneuver == "manual" else self.manual_button.hide()
         if options.maneuver == "manual":
@@ -590,12 +617,15 @@ class VehicleLab(DirectObject):
         for key, value in (("speed", options.speed_kph), ("duration", options.duration),
                            ("onset", options.onset)):
             self.entries[key].enterText(str(value))
-        if mode in NEW_BRAKING_MANEUVERS:
+        if mode in (*NEW_BRAKING_MANEUVERS, "quasi_steady_circle", "iso_rough_road"):
             available = active_fields(mode)
             for key, value in (("mu", options.friction), ("radius", options.radius_m),
-                               ("right_mu", options.right_friction), ("steer", options.steering_deg)):
+                               ("right_mu", options.right_friction), ("steer", options.steering_deg),
+                               ("sweep_end", options.sweep_end_kph)):
                 if key in available:
                     self.entries[key].enterText(str(value))
+        if mode == "iso_rough_road":
+            self.road_class_menu.set(ROAD_CLASSES.index(options.road_class), fCommand=0)
         self.select_maneuver_plot(mode)
         self.refresh_parameter_availability()
 
@@ -605,6 +635,10 @@ class VehicleLab(DirectObject):
         options = LabOptions(vehicle_id=design.id, maneuver=mode, friction=config.road_friction)
         if mode in ("constant_radius", "double_lane_change"):
             return replace(options, speed_kph=60.)
+        if mode == "quasi_steady_circle":
+            return replace(options, speed_kph=18., sweep_end_kph=60., radius_m=40., duration=24.)
+        if mode == "iso_rough_road":
+            return replace(options, speed_kph=70., duration=6., road_class="C")
         if mode == "ride_bump":
             return replace(options, speed_kph=18., duration=3.)
         if mode == "ride_braking":
@@ -627,12 +661,14 @@ class VehicleLab(DirectObject):
         self.notice.setText("已重置当前工况参数；工程模型、已有结果和A保留，重新开始试验后生效。")
 
     def select_maneuver_plot(self, mode):
-        if mode in PATH_MANEUVERS:
+        if mode == "quasi_steady_circle":
+            self.set_plot_group("转向响应")
+        elif mode in ("ride_bump", "iso_rough_road"):
+            self.set_plot_group("车身 / 轮心振动")
+        elif mode in PATH_MANEUVERS:
             self.set_plot_group("路径跟踪")
         elif mode in BRAKING_MANEUVERS:
             self.set_plot_group("制动响应")
-        elif mode=="ride_bump":
-            self.set_plot_group("车身 / 轮心振动")
         else:
             self.set_plot_group("转向响应")
 
@@ -841,7 +877,7 @@ class VehicleLab(DirectObject):
         self.candidate_value.setText("—")
         self.timing.setText("仿真 — · 计算 —")
         self.result.setText("等待有效 B" if self.baseline is not None else "固定 A 后比较")
-        self.telemetry.setText("等待真实实验信号")
+        self.telemetry.setText("等待试验数据")
         self.wheel_telemetry.setText("")
         self.model_note.setText("等待新试验初始化")
         self._seeking = True
@@ -859,7 +895,8 @@ class VehicleLab(DirectObject):
         names = ("制动响应", "转向响应",
                  "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
                  "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩",
-                 "质心运动", "车身 / 轮心振动", "悬架行程 / 速度", "轮胎径向压缩")
+                 "质心运动", "车身 / 轮心振动", "悬架行程 / 速度", "轮胎径向压缩",
+                 "K&C 外倾 / 转角", "状态估计对比")
         groups = ((("speed",), ("ax",)), (("yaw",), ("steering_request", "steering")),
                   (("sample_load_fl", "sample_load_fr"), ("sample_load_rl", "sample_load_rr")),
                   (("kappa_fl", "kappa_fr"), ("kappa_rl", "kappa_rr")),
@@ -872,7 +909,9 @@ class VehicleLab(DirectObject):
                   (("cg_ax", "cg_ay"), ("cg_beta",)),
                   (("sprung_az",), ("hub_az_fl", "hub_az_rl")),
                   (("travel_fl", "travel_rl"), ("travel_rate_fl", "travel_rate_rl")),
-                  (("radial_fl", "force_radial_fl"), ("radial_rl", "force_radial_rl")))
+                  (("radial_fl", "force_radial_fl"), ("radial_rl", "force_radial_rl")),
+                  (("camber_fl", "camber_fr"), ("kc_steer_fl", "kc_steer_rl")),
+                  (("speed", "est_speed"), ("beta", "est_beta")))
         for plot, keys in zip(self.plots, groups[names.index(selection)]):
             plot.keys = keys
         self.refresh_plots()
@@ -1027,7 +1066,7 @@ class VehicleLab(DirectObject):
             b_tag = control_mode_label(record.metadata["summary"]["options"]) or "当前"
             self.notice.setText(f"已载入保存的试验与同包 A 基线（A {a_tag} / B {b_tag}）；点击“开始试验”可重跑。")
         else:
-            self.notice.setText("已载入保存的试验；回放只读取记录，点击“开始试验”可按当前配置重新运行。")
+            self.notice.setText("已载入保存的试验记录；点击“开始试验”可按现行配置重新运行。")
         self.present_summary(record.metadata["summary"])
         self.refresh_plots()
         self.show_sample(0)
@@ -1082,9 +1121,11 @@ class VehicleLab(DirectObject):
         self.metric_label.setText("停车距离" if distance is not None else "行驶距离")
         self.metric.setText(f"{value:.2f} m")
         b_tag = control_mode_label(summary["options"])
-        self.candidate_label.setText(f"B · {b_tag}" if b_tag else "本次 B")
+        b_label = f"B · {b_tag}" if b_tag else "本次 B"
+        a_label = "对照 A"
+        self.candidate_label.setText(b_label)
         self.candidate_value.setText(f"{value:.2f} m")
-        self.baseline_label.setText("对照 A")
+        self.baseline_label.setText(a_label)
         self.baseline_value.setText("—")
         self.result.setText("固定 A 后比较")
         self.result.setFg(MUTED)
@@ -1093,7 +1134,8 @@ class VehicleLab(DirectObject):
             old = old_summary["stopping_distance_m"]
             old_value = old if old is not None else old_summary["distance_m"]
             a_tag = control_mode_label(old_summary["options"])
-            self.baseline_label.setText(f"A · {a_tag}" if a_tag else "对照 A")
+            a_label = f"A · {a_tag}" if a_tag else "对照 A"
+            self.baseline_label.setText(a_label)
             self.baseline_value.setText(f"{old_value:.2f} m")
             comparable = (old_summary["options"]["maneuver"] == summary["options"]["maneuver"]
                           and (old is None) == (distance is None))
@@ -1103,6 +1145,10 @@ class VehicleLab(DirectObject):
                 self.result.setFg(LAB_ACCENT_A if distance is not None and delta < 0 else INK)
             else:
                 self.result.setText("工况或距离定义不同，仅并列展示")
+        longest = max(len(a_label), len(b_label))
+        slot_scale = .023 if longest > 13 else .025 if longest > 10 else .027
+        self.baseline_label.setScale(slot_scale)
+        self.candidate_label.setScale(slot_scale)
         self.timing.setText(f"仿真 {summary['simulation_seconds']:.2f} s · 计算 {summary['compute_seconds']:.2f} s")
 
     def update(self, task):

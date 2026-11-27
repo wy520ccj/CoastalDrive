@@ -19,8 +19,8 @@ class RoadReviewPanel:
         app.text("道路复盘 · 同位置对照", -1.52, .64, .055, parent=self.root, font=app.heading_font)
         app.button("返回结果", 1.30, .65, .49, self.hide, parent=self.root)
         self.names = app.text("", -1.52, .56, .029, parent=self.root)
-        app.text("A海蓝 / B橙色 / 灰线目标 · 按首次向前到达位置插值；未到达处留空\n"
-                 "只读完成步，不推进物理；横轴道路进度、纵轴左右位置，两轴比例不同。",
+        app.text("A 海蓝 / B 橙色 / 灰线为目标轨迹 · 按首次通过位置插值\n"
+                 "横轴为行驶进度，纵轴为横向偏移（纵横比例独立缩放）。",
                  -1.52, .49, .031, LAB_ACCENT_A, parent=self.root)
         self.gate_buttons = []
         for index, (_, x) in enumerate(GATES):
@@ -115,7 +115,7 @@ class RoadReviewPanel:
                 continue
             sample = sample_at(self.records[index], distance)
             if sample is None:
-                detail.setText(f"{'AB'[index]} · 未到达此处；终点之后不补数据")
+                detail.setText(f"{'AB'[index]} · 未到达该位置")
                 continue
             dot = LineSegs()
             dot.setColor(*(LAB_ACCENT_A if index == 0 else LAB_ACCENT_B))

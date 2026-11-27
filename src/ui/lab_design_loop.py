@@ -46,8 +46,9 @@ class DesignLoopPanel:
         self.button_geometry = glyphs.generate()
         rounded_panel(self.root, 'link-edge', (-1.704, 1.704, -.864, .794), BORDER, .026)
         rounded_panel(self.root, 'link-card', (-1.70, 1.70, -.86, .79), LAB_CARD, .024)
-        app.text("保存与试驾", -1.52, .64, .060, parent=self.root, font=app.heading_font)
-        self.close_button = app.button("关闭", 1.50, .65, .27, self.hide, parent=self.root)
+        DirectFrame(parent=self.root, frameColor=LAB_ACCENT_B, frameSize=(-1.57, -1.56, .622, .688))
+        app.text("保存与试驾", -1.52, .637, .056, parent=self.root, font=app.heading_font)
+        self.close_button = app.button("关闭", 1.48, .655, .28, self.hide, parent=self.root)
         self.info = app.text("", -1.52, .49, .036, MUTED, parent=self.root)
         for x, title, note in ((-1.56, '游戏计算对照', '同一工况与直接命令\n游戏每拍1次机械求解'),
                                (.04, '保存试验车辆', '保留本次完整硬件\n进入滨海公路辅助驾驶')):
@@ -67,7 +68,7 @@ class DesignLoopPanel:
         DirectFrame(parent=self.root, frameColor=LAB_TRACK, frameSize=(-1.52, 1.52, -.60, -.58))
         self.progress_bar = DirectFrame(parent=self.root, frameColor=LAB_ACCENT_A,
             frameSize=(0., 0., -.60, -.58), pos=(-1.52, 0, 0))
-        app.text('始终使用打开时的试验记录；编辑参数需重新试验后生效。', -1.52, -.66, .035,
+        app.text('基于当前试验记录执行对照或装车；修改参数后需重新运行试验。', -1.52, -.66, .035,
                  MUTED, parent=self.root)
         self.report_button = app.button("打开报告", -.98, -.75, .90, self.open_report, parent=self.root)
         self.retry_button = app.button('重试导出', .08, -.75, .90, self.export_completed, parent=self.root)
@@ -177,9 +178,9 @@ class DesignLoopPanel:
             return
         self.app.last_report = self.report_path = path
         self.app.notice.dismiss()
-        self.app.notice.setText('游戏对照已导出，完整记录保留；可在游戏联动页打开报告。')
+        self.app.notice.setText('游戏对照报告已导出，可点击“打开报告”查看完整曲线与差异。')
         self.progress['fg'] = LAB_ACCENT_A
-        self.progress.setText('对照已保存 · 打开报告查看完整条件、曲线与差异。')
+        self.progress.setText('对照报告已保存 · 点击“打开报告”查看完整曲线与指标差异。')
         self.refresh_buttons()
 
     def refresh_buttons(self):
@@ -194,7 +195,7 @@ class DesignLoopPanel:
             for title, value, label in zip(self.metric_titles, self.values, ('参考记录', '游戏记录', '游戏 − 参考'), strict=True):
                 title.setText(label)
                 value.setText('—')
-            self.caption.setText('对照完成后显示实际指标；两份完整记录单独保留。')
+            self.caption.setText('运行完成后显示参考求解与游戏步长配置的指标对比。')
             self.progress_bar['frameSize'] = (0., 0., -.60, -.58)
             return
         report = comparison_report(*self.completed_records)
@@ -204,8 +205,8 @@ class DesignLoopPanel:
                 ('reference', 'game', 'delta'), strict=True):
             title.setText(label)
             value.setText('—' if metric[key] is None else f"{metric[key]:+.3f} m" if key == 'delta' else f"{metric[key]:.3f} m")
-        self.caption.setText(f"公共命令 {report['common_seconds']:.3f}s · 参考{report['reference_ticks']}拍 / "
-                             f"游戏{report['game_ticks']}拍 · 尚未设置合格线")
+        self.caption.setText(f"公共命令 {report['common_seconds']:.3f} s · 参考 {report['reference_ticks']} 步 / "
+                             f"游戏 {report['game_ticks']} 步")
         self.progress_bar['frameSize'] = (0., 3.04, -.60, -.58)
 
     def open_report(self):

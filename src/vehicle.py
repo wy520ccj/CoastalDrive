@@ -9,6 +9,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 from driver_assist import GAME_INPUT, DriverAssist
 from powertrain import Powertrain
 from suspension import native_coefficients
+from suspension_kc import wheel_kinematics
 from tire_drivetrain import solve_drivetrain_stages
 from vehicle_brakes import Brakes
 from vehicle_collision import install_chassis_shape
@@ -248,6 +249,22 @@ class Vehicle:
         """驾驶辅助和研究控制共用同一执行器与轮胎受力路径。"""
         self.advance_physics(self.prepare_command(command), FIXED_DT, static_shapes=static_shapes)
 
+    @property
+    def _active_kc(self):
+        cfg = self.config
+        return cfg.suspension_kc_enabled and (
+            any(cfg.static_camber_deg)
+            or any(cfg.static_toe_deg)
+            or any(cfg.camber_jounce_gains)
+            or any(cfg.camber_jounce_quad)
+            or cfg.camber_steer_gain != 0.0
+            or any(cfg.bump_steer_gains)
+        )
+
+    def _kc_angles(self):
+        compressions = tuple(contact.compression for contact in self._wheel_contacts) or (0.,) * 4
+        return wheel_kinematics(self.steering.angle, compressions, self.config)
+
     def prepare_command(self, command: VehicleCommand, *, input_config=None):
         """转向、电子控制及执行器只按固定120Hz准备一次。"""
         pose = self.reference_pose()
@@ -260,7 +277,11 @@ class Vehicle:
                                           input_config.steering_return_time)
         else:
             self.steering.advance(command.steering, FIXED_DT)
-        for wheel_index, angle in enumerate(wheel_angles(self.steering.angle, self.config)):
+        if self._active_kc:
+            angles, _camber, _inclination = self._kc_angles()
+        else:
+            angles = wheel_angles(self.steering.angle, self.config)
+        for wheel_index, angle in enumerate(angles):
             self._vehicle.setSteeringValue(-angle, wheel_index)
 
         pedal, brake, direction = command.throttle, command.brake, command.direction
@@ -286,13 +307,14 @@ class Vehicle:
         if self.config.finite_drivetrain:
             self.powertrain.observe(self._chassis,orientation=pose.getQuat())
             self.powertrain.prepare(speed, self.tires.driven_omega(
-                self._chassis, wheel_angles(self.steering.angle, self.config),orientation=pose.getQuat()), pedal, direction,
+                self._chassis, angles,orientation=pose.getQuat()), pedal, direction,
                 brake > 0, FIXED_DT, drive_scale=min(traction.torque_scale, stability.torque_scale),
                 gear=command.gear, clutch=command.clutch)
             drive_torque = engine_drag = 0.
         else:
             drive_torque, engine_drag = self.powertrain.advance(
-                speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT,
+                speed, (self.tires.driven_omega(self._chassis, angles) if self._active_kc
+                        else self.tires.driven_omega(self._chassis)), pedal, direction, brake > 0, FIXED_DT,
                 drive_scale=min(traction.torque_scale, stability.torque_scale),
             )
         requests = stability.brake_requests
@@ -314,8 +336,9 @@ class Vehicle:
                        complete_tires=False):
         """从当前真实Bullet姿态读取接点，完成一个机械/世界共用的积分子步。"""
         drive_torque, engine_drag, pressures = request
+        active_kc = self._active_kc
         # 游戏标志随机械请求传递，独立工作进程也读同一标志。
-        complete_tires = complete_tires and not self.game_solver_tolerance
+        complete_tires = complete_tires and not self.game_solver_tolerance and not active_kc
         if self.config.unsprung_enabled:
             angles = wheel_angles(self.steering.angle,self.config) if angles is None else angles
             source = UnsprungAdvanceInput.read(self,pressures,angles,self._contact_tick+1,dt,accumulate,static_shapes)
@@ -335,7 +358,18 @@ class Vehicle:
         pose = self._chassis.getTransform()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
-        angles = wheel_angles(self.steering.angle, self.config) if angles is None else angles
+        inclination = (0.,) * 4
+        if active_kc:
+            kc_angles, _camber, inclination = self._kc_angles()
+            if angles is None or len(angles) == 2:
+                angles = kc_angles
+            else:
+                inclination = tuple(value + math.radians(self.config.camber_steer_gain * (angles[i] - kc_angles[i]))
+                                    if i < 2 else value for i, value in enumerate(inclination))
+            for wheel_index, angle in enumerate(angles):
+                self._vehicle.setSteeringValue(-angle, wheel_index)
+        else:
+            angles = wheel_angles(self.steering.angle, self.config) if angles is None else angles
         grade = self._road_grade(hpr.x)
         front_load, rear_load = (
             axle_loads(self._load_acceleration, grade, self.config) if grade is not None else (0.0, 0.0)
@@ -397,7 +431,7 @@ class Vehicle:
                 tuple(external_velocity), tuple(external_angular),
                 powertrain=self.powertrain if self.config.finite_drivetrain else None,
                 suspension=suspension,
-                substeps=tire_substeps, accumulate=accumulate,
+                substeps=tire_substeps, accumulate=accumulate, inclination_rad=inclination,
             )
             if self.game_solver_tolerance and self.config.finite_drivetrain:
                 result = None

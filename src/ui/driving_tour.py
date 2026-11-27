@@ -197,7 +197,7 @@ class DrivingTourPanel:
                                           bold=current or entry is not None, right=True))
             if not self.page or entry is not None and not legacy:
                 self.button(11+index, '单站练习', columns[3]-104, top+78, 104, 32, role='practice')
-        note = (self.legacy.notice or '旧规则整轮最佳 · 不补油耗，不换算新奖牌' if legacy else self.store.notice or
+        note = (self.legacy.notice or '旧版赛制整轮最佳（仅统计用时，不含油耗）' if legacy else self.store.notice or
                 '单站练习独立计成绩 · 巡回进度保留')
         self.notice = self.text(note, self.left+28, 800, 16,
                                 theme.AMBER if self.store.notice and not legacy else theme.DARK_SUB, wrap=self.wide-56)

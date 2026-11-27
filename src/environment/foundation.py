@@ -187,8 +187,9 @@ def update_daylight(scene, position):
     inverse = sun.getQuat().conjugate()
     origin = Vec3(0, scene.base.session.render_origin(), 0)
     light_position = inverse.xform(position+offset+origin)
-    for axis, step in ((0, lens.getFilmSize().x/size.x), (2, lens.getFilmSize().y/size.y)):
-        light_position[axis] = round(light_position[axis]/step)*step
+    if size.x > 0 and size.y > 0:
+        for axis, step in ((0, lens.getFilmSize().x/size.x), (2, lens.getFilmSize().y/size.y)):
+            light_position[axis] = round(light_position[axis]/step)*step
     sun.setPos(sun.getQuat().xform(light_position)-origin)
 
 

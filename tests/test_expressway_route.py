@@ -336,13 +336,21 @@ def test_completed_detail_batches_keep_shared_native_vegetation_lods(kit):
 
     root = NodePath('shared-plants')
     build_segment(root, 0, 23, assets, lambda node: None)
-    for name in ('source-grass', 'fine-shrubs', 'broadleaf-a'):
-        copies = root.findAllMatches('**/'+name)
+    for prefix, templates in (
+        ('standalone-shrub-', assets['standalone-shrubs']),
+        ('standalone-young-', assets['standalone-young-oaks']),
+    ):
+        copies = [n for n in root.findAllMatches('**/' + prefix + '*') if n.node().isOfType(type(templates[0].node()))]
         assert len(copies) > 1
-        expected = vertex_tables(assets[name])
+        allowed = set().union(*(vertex_tables(t) for t in templates))
         for copy in copies:
-            assert copy.node().getNumSwitches() == 2
-            assert vertex_tables(copy) == expected
+            assert copy.node().getNumSwitches() == 1
+            assert vertex_tables(copy) <= allowed
+    grass_nodes = root.findAllMatches('**/standalone-stream-grass')
+    assert len(grass_nodes) > 1
+    grass_allowed = vertex_tables(assets['standalone-grass']) | vertex_tables(assets['standalone-grass-mid'])
+    for gnode in grass_nodes:
+        assert vertex_tables(gnode) <= grass_allowed
     root.removeNode()
 
 

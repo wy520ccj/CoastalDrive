@@ -30,7 +30,7 @@ def test_context_explanations_distinguish_inputs_from_solved_force():
         assert explanation(key).source.startswith("src/")
     assert "固定" in explanation("tire_load").role
     assert "Fn/Fn0" in explanation("tire_load").formula
-    assert "不直接施加" in explanation("cg").use
+    assert "耦合悬架动力学求解" in explanation("cg").use
     assert "公式" in explanation("mass").formula
 
 

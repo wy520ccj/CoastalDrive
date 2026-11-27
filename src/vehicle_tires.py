@@ -32,7 +32,8 @@ class Tires:
     def __init__(self, config=CAR):
         self.config = config
         self.hubs = wheel_hubs(config)
-        self.rear_config = replace(config, lateral_stiffness=config.rear_lateral_stiffness)
+        self.rear_config = replace(config, lateral_stiffness=config.rear_lateral_stiffness,
+                                   camber_stiffness=config.rear_camber_stiffness)
         self.omega = [0.0] * 4
         self.rotation = [0.0] * 4
         self.deformation = [(0.0, 0.0, 0.0)] * 4
@@ -44,24 +45,24 @@ class Tires:
 
     def driven_omega(self, chassis, angles=(0., 0.), *, orientation=None):
         orientation = chassis.getTransform().getQuat() if orientation is None else orientation
-        if self.config.front_drive_share == 0:
+        if self.config.front_drive_share == 0 and (len(angles) == 2 or (angles[2] == 0. and angles[3] == 0.)):
             return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(orientation.getRight())
         angular = tuple(chassis.getAngularVelocity())
         return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
-            orientation.getRight(), orientation.getForward(), angles[i] if i < 2 else 0.)))
+            orientation.getRight(), orientation.getForward(), angles[i] if i < len(angles) else 0.)))
             for i, weight in enumerate(self.config.drive_weights))
 
     def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
                 external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None,
-                suspension=None, substeps=None, accumulate=False):
+                suspension=None, substeps=None, accumulate=False, inclination_rad=(0.,) * 4):
         return solve_drivetrain_stages(self.advance_stages(
             chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
             external_velocity, external_angular, powertrain=powertrain,
-            suspension=suspension, substeps=substeps, accumulate=accumulate))
+            suspension=suspension, substeps=substeps, accumulate=accumulate, inclination_rad=inclination_rad))
 
     def advance_stages(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
                        external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None,
-                       suspension=None, substeps=None, accumulate=False):
+                       suspension=None, substeps=None, accumulate=False, inclination_rad=(0.,) * 4):
         """准备完整机械输入，等待末状态，再按原轮序向唯一车身提交冲量。"""
         pose = chassis.getTransform()
         origin = pose.getPos()
@@ -86,7 +87,7 @@ class Tires:
         wheel_frames = []
         contact_geometry = []
         for index in range(4):
-            angle = angles[index] if index < 2 else 0.0
+            angle = angles[index] if index < len(angles) else 0.0
             steering = Quat()
             steering.setHpr(Vec3(-angle, 0, 0))
             heading = orientation.xform(steering.xform(Vec3(0, 1, 0)))
@@ -187,7 +188,7 @@ class Tires:
                 wheel_frames = tuple(aligning_frame(frame, state,
                     config if i < 2 else self.rear_config, tensor,
                     tuple(-math.radians(base_frames[i].steering - initial_angles[i]) / dt * value
-                          for value in orientation.getUp()))
+                          for value in orientation.getUp()), gamma_rad=inclination_rad[i])
                     for i, (frame, state) in enumerate(zip(wheel_frames, prior)))
             if config.tire_compliance or config.wheel_rotor_transport or config.finite_drivetrain:
                 projected = []
@@ -227,7 +228,7 @@ class Tires:
                         "downstream_inertias": config.downstream_inertias,
                         "downstream_axes": tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)
                             if powertrain.downstream_active else (), "suspension": normal_system if suspension is not None else None,
-                        "rolling_coefficients": rolling_coefficients})
+                        "rolling_coefficients": rolling_coefficients, "inclination_rad": inclination_rad})
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
                     drives = result.wheel_drive_torques

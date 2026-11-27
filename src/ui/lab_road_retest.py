@@ -100,9 +100,8 @@ class RoadRetestPanel:
             f'B{"开" if self.comparison.configs[1].traction.tcs_enabled else "关"}\n'
             f'源路面 μ：A {self.comparison.pair["A"]["config"]["road_friction"]:g} / '
             f'B {self.comparison.pair["B"]["config"]["road_friction"]:g}\n\n'
-            '硬件来自两份道路保存记录，通用参考外观。\n'
-            '新复测单独保留；旧试验、草稿、当前驾驶车与道路成绩保持。\n'
-            '导出含完整配置、曲线、快照与改动清单。')
+            '硬件参数读取自道路 A/B 记录，采用标准参考工况复测。\n'
+            '复测结果独立导出，包含完整配置、时域曲线、快照与参数差异清单。')
         self.details.hide()
         self.refresh(plots=True)
         self.root.show()

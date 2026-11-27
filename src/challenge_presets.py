@@ -99,6 +99,8 @@ _DISTANCE_PRESETS = {
 def road_setups(spec, *, distance_conditions=None):
     if spec.id == GameMode.DISTANCE_CHALLENGE.value:
         return _DISTANCE_PRESETS.get(distance_conditions, ())
+    if spec.assessment == 'reference':
+        return ()
     return _ROAD_PRESETS.get((spec.id, spec.road_shape), ())
 
 

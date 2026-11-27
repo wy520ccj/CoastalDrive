@@ -37,7 +37,7 @@ from virtual_test_driver import target_x
 METRICS = (('valid_seconds', '有效用时', 's'), ('gates', '通过门数', '/6'),
            ('minimum_clearance_m', '最小车身余量', 'm'), ('peak_beta_deg', '峰值侧偏', '°'),
            ('peak_roll_deg', '峰值侧倾', '°'), ('esc_seconds', 'ESC介入', 's'))
-RESULT_NOTE = '轨迹与指标截止各自终点/失败步；漏门没有有效用时，玩家成绩独立。'
+RESULT_NOTE = '轨迹与指标统计至各自结束时刻；完整通过六门计入有效用时，玩家成绩独立保存。'
 
 
 class VirtualDriverPanel:
@@ -337,7 +337,7 @@ class VirtualDriverPanel:
 
     def checked_right(self):
         if self.comparison is None or not self.comparison.done or len(self.comparison.records) != 2:
-            raise ValueError("B尚无冻结试车记录")
+            raise ValueError("方案二尚无已完成的试车记录")
         item = load_scheme(self.app.scheme_root, self.identities[1])
         item.records()
         original = self.comparison.records[1].metadata["original_vehicle"]

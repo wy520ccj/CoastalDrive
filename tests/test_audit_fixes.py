@@ -256,5 +256,63 @@ def test_audit_ui_garage_menu_cards_and_loading(tmp_path):
         # INT-03: WorkshopVehicle 隐藏时暂停 workshop-pbr-update 任务。
         app.workshop_vehicle.hide()
         assert not app.taskMgr.hasTaskNamed("workshop-pbr-update")
+
+        # NAV-01: 首页进车库 → 挑战改装 → 返回应回到车库而非跳去生涯简报；车库再返回回首页。
+        app.career_action("exit")
+        app.open_career_collection()
+        assert app.career_panel.page == "garage" and app.career_garage_return == "home"
+        app.career_action("garage-tab", "upgrade")
+        assert app.career_panel.page == "challenge" and app.budget_origin == "garage"
+        app.challenge_action("challenge-back")
+        assert app.career_panel.page == "garage" and app.career_garage_return == "home"
+        app.career_action("garage-back")
+        assert app.career_panel.root.isHidden() and not app.main_menu.home.isHidden()
+
+        # NAV-02: 生涯赛事板第 2 章 → 车库 → 挑战改装 → 返回车库 → 返回原章节原赛事，不跳回第 1 章。
+        app.open_career()
+        app.career_action("board-chapter", 1)
+        assert app.career_panel.board_event.id == "coast-sprint"
+        app.career_action("garage")
+        assert app.career_panel.page == "garage" and app.career_garage_return is None
+        app.career_action("garage-tab", "upgrade")
+        assert app.career_panel.page == "challenge" and app.budget_origin == "garage"
+        app.challenge_action("challenge-back")
+        assert app.career_panel.page == "garage" and app.career_garage_return is None
+        app.career_action("garage-back")
+        assert app.career_panel.page == "board" and app.career_panel.board_event.id == "coast-sprint"
+
+        # NAV-03: 短途超车 → 车辆方案 → 返回回到超车说明卡；驾驶进阶 → 刹停/过门 → 返回回到驾驶进阶。
+        app.career_action("exit")
+        app.choose_sprint_routes()
+        app.choose_overtake()
+        app.start_overtake()
+        assert app.career_panel.page == "challenge" and app.budget_origin == "overtake"
+        app.challenge_action("challenge-back")
+        assert app.overtake_menu and app.career_panel.root.isHidden()
+        app.back_to_menu()
+        app.open_driving_journey()
+        app.continue_driving_project("braking")
+        app.back_from_braking_lesson()
+        assert not app.driving_journey.root.isHidden()
+        app.driving_journey.hide()
+        app.open_driving_journey()
+        app.continue_driving_project("slalom")
+        app.back_from_slalom_lesson()
+        assert not app.driving_journey.root.isHidden()
+        app.driving_journey.hide()
     finally:
         app.close_game()
+
+
+def test_reference_challenge_presets_and_lab_launcher():
+    from pathlib import Path
+
+    from challenge_presets import road_setups
+    from workshop_budget import REFERENCE_CHALLENGES
+
+    for spec in REFERENCE_CHALLENGES:
+        assert road_setups(spec) == ()
+    for name, flag in (("game-current.cmd", "--driving-mode game"), ("vehicle-lab.cmd", "--lab")):
+        launcher = (Path(__file__).resolve().parents[1] / "launchers" / name).read_text(encoding="utf-8")
+        assert r"src\main.py" in launcher and flag in launcher and "ROAD_EDGE_SDK" in launcher
+        assert "local_kcd_drive.py" not in launcher

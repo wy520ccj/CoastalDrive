@@ -4,13 +4,15 @@ import math
 from dataclasses import dataclass, replace
 
 import numpy as np
-from mechanical_kernels import cross, unsprung_contact_residual, unsprung_port_residual
-from wheel_contact_kernels import unsprung_body_torque, unsprung_momentum_values
+from mechanical_kernels import (
+    unsprung_fixed_evaluate,
+    unsprung_fixed_prepare,
+    unsprung_jacobian_tail,
+)
 
 from tire_compliance import energy_terms
-from tire_properties import tire_grip, tire_stiffness
+from tire_properties import tire_camber_stiffness, tire_grip, tire_stiffness
 from unsprung_contact import normal_material, suspension_potential
-from unsprung_dynamics import native_gyro_impulse
 from wheel_dynamics import WheelStep
 
 
@@ -75,23 +77,20 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                          brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None,
                          finite_contact=None, wheel_velocity_bias=None, wheel_known_force=None,
                          native_body_gyro=False, body_external_torque=None,finite_motion=None,jacobian_updates=True,
-                         jacobian_hint=None):
+                         jacobian_hint=None, inclination_rad=(0.,) * 4):
     """同时解十六速度、八接触力和十有限端口，不在结束后修补轮速/轮荷。
 
     本函数保持当前构型的质量/力端口，有限姿态与真实世界接点须由外层联立。
     known_force含外层已知广义力，惯性偏置应在外层按同一构型处理。
     原生轮心速度若带有限导向误差，显式传入并保留其动量/动能，而不是先强设到导向速度。
     """
-    start = np.asarray(velocity)
-    old_down = np.asarray(downstream_omega)
-    q0,delta0,previous = map(np.asarray,(compression,tire_deflection,deformations))
-    known,road,rates,radial_c,mu,rolling_c,brakes = map(np.asarray,
+    start = np.asarray(velocity,dtype=float)
+    old_down = np.asarray(downstream_omega,dtype=float)
+    q0,delta0,previous = (np.asarray(item,dtype=float) for item in (compression,tire_deflection,deformations))
+    known,road,rates,radial_c,mu,rolling_c,brakes = (np.asarray(item,dtype=float) for item in
         (known_force,road_delta,radial_rates,radial_damping,friction,rolling_coefficients,brake_capacities))
-    gx = contacts.longitudinal
     if finite_contact is not None and np.any(road!=0.):
         raise ValueError("有限真实静态接触不接受额外道路位移输入")
-    gs = np.zeros((4,16))
-    gs[:,6:10] = np.eye(4)
     ports = np.vstack((hardware.clutch,hardware.gear,hardware.output,hardware.brakes,hardware.differential))
     inertia = hardware.mass
     actual_wheels = (hardware.mechanical.wheel_jacobians@start[:10] if wheel_initial_velocity is None
@@ -104,9 +103,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     if bias.shape!=(4,3) or wheel_known.shape!=(4,3) or not np.isfinite(bias).all() or not np.isfinite(wheel_known).all():
         raise ValueError("轮心导向速度与已知外力须为四个有限世界三维向量")
     momentum[:10] -= hardware.mechanical.wheel_forces(hardware.mechanical.wheel_masses[:,None]*bias)
-    external_torque = np.zeros(3) if body_external_torque is None else np.asarray(body_external_torque)
+    external_torque = np.zeros(3) if body_external_torque is None else np.asarray(body_external_torque,dtype=float)
     response = np.diag(ports@np.linalg.solve(inertia,ports.T))
-    rolling = np.maximum(np.abs(gx@start+contacts.radii*start[12:]),np.abs(contacts.radii*start[12:]))>=config.static_contact_speed
+    wheel_speed = contacts.radii*start[12:]
+    initial_vx = contacts.longitudinal@start+wheel_speed
+    rolling = np.maximum(np.abs(initial_vx),np.abs(wheel_speed))>=config.static_contact_speed
     rolling_flags = rolling.astype(float)
     port_settings = (dt,ratio,synchronizing,config.front_drive_share,config.final_drive,
                      config.drivetrain_efficiency,clutch_capacity,config.synchronizer_capacity)
@@ -115,19 +116,31 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     state_scale = np.r_[np.ones(10),np.full(6,100.),np.full(8,1000.),np.full(10,100.)]
     row_scale = np.r_[np.maximum(np.diag(inertia)*state_scale[:16],1.),np.full(8,1000.),np.full(10,100.)]
 
+    mechanical = hardware.mechanical
+    fixed = unsprung_fixed_prepare(
+        (inertia,momentum,known,ports,response,hardware.engine,hardware.downstream,hardware.downstream_inertias,
+         hardware.downstream_axes,old_down,hardware.engine_axis,hardware.shaft_axis,hardware.axes,mechanical.wheel_arms,
+         mechanical.guides,wheel_known,mechanical.world_inertia,external_torque,start[3:6],brakes,*port_tuning,rolling_flags),
+        port_settings,(engine_torque,engine_drag,config.engine_inertia,config.input_shaft_inertia,config.wheel_inertia,
+                       config.rolling_transition_speed,config.slip_speed,config.tire_contact_stiffness,
+                       config.tire_contact_damping,config.tire_shape,config.tire_curvature),native_body_gyro)
+    config_rear = replace(config,lateral_stiffness=config.rear_lateral_stiffness,camber_stiffness=config.rear_camber_stiffness)
+    zero_camber = np.zeros(4)
+    camber_factors = zero_camber
+    if any(inclination_rad) and (config.camber_stiffness or config.rear_camber_stiffness):
+        initial_vx = initial_vx+contacts.steering_velocity[:,0]
+        if contacts.guide_velocity is not None:
+            initial_vx = initial_vx+contacts.guide_velocity[:,0]
+        camber_factors = np.array([math.sin(gamma)*min(1.,abs(vx)/config.slip_speed) if rolls else 0.
+                                   for gamma,vx,rolls in zip(inclination_rad,initial_vx,rolling)])
     configuration_key,configuration_data = None,None
-    velocity_key,velocity_data = None,None
-    force_key,force_data = None,None
-    torque_key,torque_data = None,None
     configuration_base_key,configuration_base_data = None,None
-    velocity_base_key,velocity_base_data = None,None
-    force_base_key,force_base_data = None,None
-    gyro_cache = {}
+    geometry_columns = 10 if finite_contact is not None else 16
 
     def configuration(end):
         nonlocal configuration_key,configuration_data
         # 有限接触/行程只依赖车身和轮心十速度；旧冻结法向端口仍可含自旋，须用全部速度。
-        key = (end[:10] if finite_contact is not None else end).tobytes()
+        key = end[:geometry_columns].tobytes()
         if key==configuration_key:
             return configuration_data
         if key==configuration_base_key:
@@ -152,93 +165,27 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         coefficients = normal_material(q,suspension_velocity,delta,delta0,dt,config,rates*eligible,radial_c*eligible)
         normal = coefficients if kinematics is None else replace(coefficients,normal_force=coefficients.normal_force*scale)
         parameters = []
+        offsets = np.empty(4) if camber_factors is not zero_camber else zero_camber
         for i in range(4):
             car = config if i<2 else config_rear
             load = float(normal.normal_force[i])
             grip = tire_grip(load,local_mu[i],car)
             cx,cy = tire_stiffness(load,car)
             parameters.append((grip,cx,cy))
+            if offsets is not zero_camber:
+                offsets[i] = tire_camber_stiffness(load,car)*camber_factors[i] if camber_factors[i] != 0. else 0.
         configuration_key = key
-        configuration_data = (kinematics,active,guide,local_previous,local_rolling,scale,q,
-                              suspension_velocity,delta,coefficients,normal,np.asarray(parameters))
+        native = (active.longitudinal,active.lateral,gn,active.radii,active.steering_velocity,guide,
+                  local_previous,local_rolling,normal.suspension_force,normal.normal_force,np.asarray(parameters),offsets)
+        configuration_data = native,(kinematics,active,scale,q,suspension_velocity,delta,coefficients,normal)
         return configuration_data
 
-    def velocity_terms(end):
-        nonlocal velocity_key,velocity_data
-        key = end.tobytes()
-        if key==velocity_key:
-            return velocity_data
-        if key==velocity_base_key:
-            velocity_key,velocity_data = key,velocity_base_data
-            return velocity_data
-        geometry = configuration(end)
-        _kinematics,active,guide,_previous,local_rolling,_scale,_q,_u,_delta,_coefficients,normal,_parameters = geometry
-        gx,gy,gn = active.longitudinal,active.lateral,active.normal
-        down = hardware.downstream@end
-        inertial_torques = hardware.downstream_inertias*(down-old_down)/dt
-        speeds = ports@end
-        contact_speeds = np.column_stack((gx@end,gy@end,gn@end))+active.steering_velocity+guide
-        rolling_torque = local_rolling*normal.normal_force*active.radii**2*end[12:] / np.maximum(
-            np.abs(active.radii*end[12:]),config.rolling_transition_speed)
-        engine_reaction = known+engine_torque*hardware.engine-engine_drag*np.dot(hardware.engine,end)*hardware.engine
-        # 原反力表达式的连续前缀；只依赖本次完整速度/构型，保持矩阵及加减顺序。
-        reaction_base = engine_reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force
-        rotor_bias = np.zeros(16)
-        rotor_bias[3:6] = cross(end[3:6],hardware.spin(end,config))
-        free_momentum = inertia@end-momentum
-        velocity_key = key
-        velocity_data = (geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,
-                         reaction_base,rotor_bias,free_momentum)
-        return velocity_data
-
     def evaluate(values):
-        nonlocal force_key,force_data,torque_key,torque_data
-        end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
-        geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,reaction_base,rotor_bias,free_momentum = velocity_terms(end)
-        kinematics,active,_guide,local_previous,_rolling,scale,q,suspension_velocity,delta,coefficients,normal,parameters = geometry
-        gx,gy,gn = active.longitudinal,active.lateral,active.normal
-        loss = torques[2]
-        output_torque = ratio*(torques[1]-loss)
-        # 扭矩扰动不改变本速度与八接触力的原反力前缀/轮心力；不跨共同解复用。
-        current_force_key = velocity_key,forces.tobytes()
-        if current_force_key!=force_key:
-            if current_force_key==force_base_key:
-                force_data = force_base_data
-            else:
-                force_reaction = reaction_base+gx.T@forces[:,0]+gy.T@forces[:,1]
-                wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
-                               -normal.suspension_force[:,None]*hardware.mechanical.guides+wheel_known) if native_body_gyro else None
-                force_data = force_reaction,wheel_force
-            force_key = current_force_key
-        force_reaction,wheel_force = force_data
-        # ports在本次共同解内固定，完整十扭矩字节相同才复用原矩阵投影。
-        current_torque_key = torques.tobytes()
-        if current_torque_key!=torque_key:
-            torque_data = ports.T@torques
-            torque_key = current_torque_key
-        reaction,residual = np.empty(16),np.empty(34)
-        unsprung_momentum_values((force_reaction,torque_data,rolling_torque,rotor_bias,free_momentum),
-                                 (reaction,residual),dt)
-        gyro = np.zeros(3)
-        if native_body_gyro:
-            body_torque = np.empty(3)
-            unsprung_body_torque((hardware.mechanical.wheel_arms,wheel_force,reaction,rotor_bias),(body_torque,))
-            free_angular = start[3:6]+dt*np.linalg.solve(hardware.mechanical.world_inertia,body_torque-external_torque)
-            # 本次共同解内惯量和dt固定；仅复用自由角速度字节完全相同的原隐式陀螺。
-            gyro_key = free_angular.tobytes()
-            if gyro_key not in gyro_cache:
-                gyro_cache[gyro_key] = native_gyro_impulse(hardware.mechanical.world_inertia,free_angular,dt)
-            gyro = gyro_cache[gyro_key]
-            residual[3:6] -= gyro
-        # 残差维数由共同方程固定；直接装配，避免每次差分重新解释通用拼接规则。
-        details = unsprung_contact_residual((end,forces,local_previous,contact_speeds,active.radii,rolling_flags,parameters),
-            residual,dt,config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature,
-            config.slip_speed,math.hypot)
-        unsprung_port_residual((torques,speeds,response,inertial_torques,brakes,*port_tuning),residual,port_settings,output_torque)
-        return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,parameters,speeds,output_torque,
-                         active,local_previous,coefficients,scale,kinematics,gyro,suspension_velocity)
+        native,_details = configuration(values[:16])
+        residual = np.empty(34)
+        unsprung_fixed_evaluate(fixed,native,values,residual)
+        return residual
 
-    config_rear = replace(config,lateral_stiffness=config.rear_lateral_stiffness)
     values = np.r_[start,np.asarray(initial_force).ravel(),np.zeros(10)]
     # 只更新数值Jacobian，原完整残差/精确端口行和收敛门槛不变。
     jacobian = None
@@ -248,7 +195,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             # 种子以未缩放物理坐标保存；这里换成当前质量/状态的缩放坐标。
             jacobian = jacobian_hint.previous*state_scale[None,:]/row_scale[:,None]
     for iteration in range(30):
-        residual,details = evaluate(values)
+        residual = evaluate(values)
         momentum_error = float(np.max(np.abs(residual[:16])))
         force_error = float(np.max(np.abs(residual[16:24])))
         port_error = float(np.max(np.abs(residual[24:])))
@@ -257,33 +204,33 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         if polishing and (not jacobian_updates or jacobian is None):
             break
         # 一轮差分中会反复回到已算基点；只固定该点的完整字节项，不缓存新构型或跨子步复用。
-        configuration_base_key = (values[:10] if finite_contact is not None else values[:16]).tobytes()
-        configuration_base_data = velocity_data[0]
-        velocity_base_key,velocity_base_data = velocity_key,velocity_data
-        force_base_key,force_base_data = force_key,force_data
+        configuration_base_key = values[:geometry_columns].tobytes()
+        configuration_base_data = configuration_data
         fresh_jacobian = jacobian is None
         if fresh_jacobian:
-            columns = []
-            for i,scale in enumerate(state_scale):
+            jacobian = np.empty((34,34))
+            unsprung_jacobian_tail(fixed,configuration_base_data[0],values,residual,state_scale,row_scale,
+                                  jacobian,geometry_columns,jacobian_updates)
+            for i in range(geometry_columns):
+                scale = state_scale[i]
                 plus = values.copy()
                 epsilon = 1e-5*scale
                 plus[i] += epsilon
                 if jacobian_updates:
-                    # Jacobian只给搜索方向；基点残差已知，候选仍按原完整方程验收。
-                    columns.append((evaluate(plus)[0]-residual)/epsilon*scale/row_scale)
+                    jacobian[:,i] = (evaluate(plus)-residual)/epsilon*scale/row_scale
                 else:
                     minus = values.copy()
                     minus[i] -= epsilon
-                    columns.append((evaluate(plus)[0]-evaluate(minus)[0])/(2*epsilon)*scale/row_scale)
-            jacobian = np.column_stack(columns)
+                    jacobian[:,i] = (evaluate(plus)-evaluate(minus))/(2*epsilon)*scale/row_scale
         # 轮速差分0.001rad/s可能跨过小制动容量的两个边界，给出不属于当前分支的割线。
         # 固定容量端口使用精确分段导数；仍解原来的全部残差，不裁剪/覆写末状态。
         fixed_ports = [(0, clutch_capacity), *((i+3, capacity) for i, capacity in enumerate(brakes))]
         if ratio and synchronizing:
             fixed_ports.append((1, config.synchronizer_capacity))
+        speeds = ports@values[:16]
         for index, capacity in fixed_ports:
             speed_row, torque_derivative = dry_port_derivative(ports[index], values[24+index],
-                details[8][index], capacity, dt*response[index])
+                speeds[index], capacity, dt*response[index])
             derivative = np.r_[speed_row, np.zeros(18)]
             derivative[24+index] = torque_derivative
             jacobian[24+index] = derivative*state_scale/row_scale[24+index]
@@ -297,9 +244,10 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             jacobian = None
             continue
         before = np.linalg.norm(residual/row_scale)
-        for attempt in range(12):
+        max_attempts = 12 if jacobian_updates else 20
+        for attempt in range(max_attempts):
             candidate = values-2.**-attempt*delta
-            candidate_residual,_candidate_details = evaluate(candidate)
+            candidate_residual = evaluate(candidate)
             after = np.linalg.norm(candidate_residual/row_scale)
             if after<before:
                 if polishing:
@@ -307,7 +255,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                         float(np.max(np.abs(candidate_residual[16:24]))),float(np.max(np.abs(candidate_residual[24:]))))
                     if not (candidate_errors[0]<1e-9 and candidate_errors[1]<1e-5 and candidate_errors[2]<1e-9):
                         continue
-                    values,residual,details = candidate,candidate_residual,_candidate_details
+                    values = candidate
                     momentum_error,force_error,port_error = candidate_errors
                     break
                 if jacobian_updates and not attempt and after<.5*before:
@@ -329,6 +277,10 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             if not fresh_jacobian:
                 jacobian = None
                 continue
+            if jacobian_updates:
+                jacobian_updates = False
+                jacobian = None
+                continue
             raise ArithmeticError(f"簧下/轮胎/传动共同线搜索不下降：{momentum_error:g}Ns，{force_error:g}N，{port_error:g}Nm")
         if polishing:
             break
@@ -338,7 +290,12 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         jacobian_hint.current = jacobian*row_scale[:,None]/state_scale[None,:]
         jacobian_hint.current.flags.writeable = False
     end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
-    q,delta,normal,down,surface,rolling_torque,contact,parameters,speeds,drive,active,previous,coefficients,scale,kinematics,gyro,suspension_velocity = details
+    native,geometry = configuration(end)
+    kinematics,active,scale,q,suspension_velocity,delta,coefficients,normal = geometry
+    down,surface,rolling_torque,contact,speeds,gyro = unsprung_fixed_evaluate(fixed,native,values,np.empty(34),True)
+    down,surface,rolling_torque,speeds,gyro = map(np.asarray,(down,surface,rolling_torque,speeds,gyro))
+    previous,parameters = native[6],native[10]
+    drive = ratio*(torques[1]-torques[2])
     wheels,contact_energy,material_heat,road_heat,tangent_numeric = [],0.,0.,0.,0.
     for i,result in enumerate(contact):
         _target,elastic,rate,patch,patch_kappa,patch_alpha,mode = result
@@ -392,3 +349,21 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         float(road_heat),port_heat,float(rolling_heat),float(engine_work),float(engine_heat),float(known_work),
         float(steering_work),float(road_work),float(balance),momentum_error,force_error,port_error,iteration+1,
         kinematics,coefficients.normal_force.copy(),scale,guide_work,gyro_work,float(suspension_geometry_work),suspension_velocity.copy())
+
+
+def unsprung_energy_ledger(steps) -> dict[str, float]:
+    """累计同一簧下序列的储能、耗散、输入功、离散项及闭合残差，单位J。"""
+    steps = tuple(steps)
+    return {
+        "kinetic_change": math.fsum(s.kinetic_change for s in steps),
+        "potential_change": math.fsum(s.potential_change for s in steps),
+        "physical_dissipation": math.fsum(
+            s.material_loss+s.road_loss+s.rolling_heat+s.engine_heat+sum(s.port_heat) for s in steps),
+        "external_work": math.fsum(s.engine_work+s.known_work+s.steering_work+s.road_work for s in steps),
+        "numerical_terms": math.fsum(s.kinetic_numerical_loss+s.contact_numerical_loss
+                                      +s.guide_work+s.body_gyro_work+s.suspension_geometry_work for s in steps),
+        # 导向、陀螺及构型功在闭合式中作为输入功扣除。
+        "numerical_balance": math.fsum(s.kinetic_numerical_loss+s.contact_numerical_loss
+                                        -s.guide_work-s.body_gyro_work-s.suspension_geometry_work for s in steps),
+        "cumulative_energy_error": math.fsum(s.energy_error for s in steps),
+    }

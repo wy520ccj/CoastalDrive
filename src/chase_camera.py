@@ -8,13 +8,23 @@ from simulation import forward
 
 
 class ChaseCamera:
-    def __init__(self):
+    def __init__(self, base_fov=68.0, dynamic_fov=True):
         self.position = None
         self.target_position = None
         self.heading = 0.0
         self.distance = 11.0
-        self.fov = 68.0
+        self.base_fov = float(base_fov)
+        self.dynamic_fov = bool(dynamic_fov)
+        self.fov = self.base_fov
         self.acceleration = 0.0
+
+    def configure(self, *, base_fov=None, dynamic_fov=None):
+        if base_fov is not None:
+            self.base_fov = float(base_fov)
+        if dynamic_fov is not None:
+            self.dynamic_fov = bool(dynamic_fov)
+        if self.position is None:
+            self.fov = self.base_fov
 
     def update(self, car, distance, dt, *, snap=False, road_grade=0., road_heading=0.):
         position = Vec3(*car.position)
@@ -41,7 +51,8 @@ class ChaseCamera:
                               +(desired-self.target_position)*(1-0.08*response/dt))
         self.target_position = Vec3(desired)
         look_at = position + direction * 6 + Vec3(0, 0, 0.7)
-        target_fov = 68 + 4 * min(abs(car.speed) / 45, 1)
+        boost = 4 * min(abs(car.speed) / 45, 1) if self.dynamic_fov else 0.0
+        target_fov = self.base_fov + boost
         self.fov += (target_fov - self.fov) * (1 - math.exp(-dt / 0.35))
         self.acceleration += (car.acceleration - self.acceleration) * (1 - math.exp(-dt / 0.15))
         return self.position, look_at

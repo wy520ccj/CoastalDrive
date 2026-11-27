@@ -55,11 +55,13 @@ class CareerDrivingHUD:
         self.bar(self.hints, 10, 12, 4, 24, ORANGE)
         self.tip = self.label(self.hints, '', 26, 31, 20)
         self.tip.textNode.setWordwrap(468/20)
-        for x, text in ((16, 'W'), (148, 'S'), (310, 'A'), (346, 'D')):
+        self.keycap_labels = {}
+        for binding, x, text in (('throttle', 16, 'W'), ('brake', 148, 'S'),
+                                 ('steer_left', 310, 'A'), ('steer_right', 346, 'D')):
             key = self.card('key-'+text, 28, 28, parent=self.hints, color=(0.56, 0.64, 0.74, 0.72))
             key.setPos(x, 0, -61)
             rounded_panel(key, 'key-center', (1, 27, -27, -1), (0.048, 0.064, 0.092, 0.76), 4)
-            self.label(key, text, 6, 21, 18)
+            self.keycap_labels[binding] = self.label(key, text, 6, 21, 18)
         self.label(self.hints, '加速', 54, 83, 18, SOFT)
         self.brake_key = self.label(self.hints, '', 186, 83, 18, SOFT)
         self.label(self.hints, '转向', 385, 83, 18, SOFT)
@@ -68,7 +70,7 @@ class CareerDrivingHUD:
         # ── 右下角无底盒悬浮数字遥测（与滨海设计 40 完全一致，不挡路面）──
         self.speed_card = self.card('driving-instruments', 315, 160, color=(0, 0, 0, 0))
         self.speed = self.label(self.speed_card, '000', 10, 91, 78, number=True)
-        self.label(self.speed_card, 'km/h', 183, 87, 21, SOFT)
+        self.speed_unit_label = self.label(self.speed_card, 'km/h', 183, 87, 21, SOFT)
         rounded_panel(self.speed_card, 'car-gear-pill', (252, 310, -81, -38), ORANGE, 5)
         self.gear = OnscreenText(parent=self.speed_card, text='', font=self.number_font,
                                  fg=theme.INK, pos=(281, -70), scale=27,
@@ -92,7 +94,25 @@ class CareerDrivingHUD:
         self.widgets.append(self.pause)
         self._rpm_active = None
         self._assists = None
+        self._speed_unit = 'kmh'
+        self._show_key_hints = True
+        self._key_bindings = None
         self.root.hide()
+
+    def configure(self, *, speed_unit=None, show_key_hints=None, key_bindings=None):
+        from settings import key_label
+
+        if speed_unit is not None:
+            self._speed_unit = speed_unit
+            self.text(self.speed_unit_label, 'mph' if speed_unit == 'mph' else 'km/h')
+        if show_key_hints is not None:
+            self._show_key_hints = bool(show_key_hints)
+            self.hints.show() if self._show_key_hints else self.hints.hide()
+        if key_bindings is not None:
+            self._key_bindings = dict(key_bindings)
+            for action, label in self.keycap_labels.items():
+                text = key_label(self._key_bindings[action])[:2]
+                self.text(label, text)
 
     def card(self, name, width, height, *, parent=None, color=DARK, fade=False):
         target = self.root if parent is None else parent
@@ -180,10 +200,16 @@ class CareerDrivingHUD:
         self.text(self.tip, notice or event.tip)
         brake = '刹车' if driving_mode == DrivingMode.SIMULATION else '刹车·倒车'
         self.text(self.brake_key, brake)
+        from settings import KEY_PRESETS, key_label
+
+        keys = KEY_PRESETS['wasd'] if self._key_bindings is None else self._key_bindings
+        cam, rst = key_label(keys['camera']), key_label(keys['reset'])
+        rad, mute = key_label(keys['radio_next']), key_label(keys['radio_mute'])
         controls = 'Q 倒挡  E 前进' if driving_mode == DrivingMode.SIMULATION else '辅助驾驶'
         station_name = STATIONS[station].split(' · ', 1)[0] if station is not None else ''
-        self.text(self.secondary_keys, 'C 视角  R 复位  N 电台  M 静音  '+controls+(' · '+station_name if station_name else ''))
-        self.text(self.speed, f'{abs(player.speed)*3.6:03.0f}')
+        self.text(self.secondary_keys, f'{cam} 视角  {rst} 复位  {rad} 电台  {mute} 静音  '+controls+(' · '+station_name if station_name else ''))
+        factor = 2.23693629 if self._speed_unit == 'mph' else 3.6
+        self.text(self.speed, f'{abs(player.speed)*factor:03.0f}')
         self.text(self.gear, 'R' if player.gear < 0 else 'N' if player.gear == 0 else f'D{player.gear}')
         self.text(self.rpm, f'{player.rpm:.0f} rpm')
         # 延续原HUD的7000rpm显示标尺，不由表现层改变发动机限制。

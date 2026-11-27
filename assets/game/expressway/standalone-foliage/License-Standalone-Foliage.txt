@@ -1,0 +1,10 @@
+CoastalDrive Standalone Mediterranean Coast Foliage, Terrain & Limestone Pack
+Zero proprietary / external game dependencies.
+
+1. Sculpted 3D Coastal Trees, Shrubs, Grass Blades & Closed Limestone Boulders:
+   - Original procedural geometry by CoastalDrive (tools/environment/prepare_standalone_env.py).
+   - Oak leaf cluster derived from EZ-Tree (MIT, Daniel Greenheck) + ambientCG bark (CC0-1.0).
+2. Ground, Ferns & Cliff Scans:
+   - Poly Haven leafy_grass, grass_ground, grass_medium_01, coastal_cliff_01, coast_rocks_01 (CC0-1.0).
+3. Daylight Sky & IBL:
+   - Poly Haven kloofendal_48d_partly_cloudy_puresky (Greg Zaal, Jarod Guest), CC0-1.0.

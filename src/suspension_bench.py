@@ -234,23 +234,23 @@ def source_note(metadata, field, value, config):
         return None
     saved = report["parameters"][field]
     if json.loads(json.dumps(value)) != saved:
-        return "已覆盖部件换算值，不沿用其台架来源"
+        return "参数已覆盖原台架拟合值"
     kind = next((kind for kind, key in KINDS.items() if key == field),"compression" if field=="suspension_damper_curves" else "spring")
     if kind!="spring" and not _damper_matches(report,config):
-        return "减振器本构已覆盖，不沿用原台架表/线性模型的来源和适用域"
+        return "减振器本构已覆盖，脱离原台架模型适用域"
     if (kind=="spring" or report["schema"] in CURVED_FITS) and not _installation_matches(report,config):
-        return "部件斜率来自原台架；安装值已覆盖，不沿用其安装来源/适用域"
+        return "部件斜率源自台架拟合；安装值已覆盖，脱离原安装适用域"
     values = [report["results"][wheel][kind] for wheel in WHEELS]
     ratios = " / ".join(f"{item['motion_ratio']:g}" for item in values)
     rates = " / ".join(f"{item['component_rate']:.4g}" for item in values)
-    source = "合成数据，非实测" if report["input"]["source_kind"] == "synthetic" else "按文件声明：部件台架拟合"
-    installation = ("安装压缩m："+" / ".join(f"{report['results'][wheel]['spring']['installed_compression_m']:g}" for wheel in WHEELS)
+    source = "合成基准数据（算法验证）" if report["input"]["source_kind"] == "synthetic" else "部件台架拟合数据"
+    installation = ("安装压缩（m）："+" / ".join(f"{report['results'][wheel]['spring']['installed_compression_m']:g}" for wheel in WHEELS)
                     if report["schema"] in (INSTALLED_FIT_SCHEMA,*CURVED_FITS) and kind=="spring" else
                     "零预载" if kind=="spring" else
-                    "分段力速表生效；系数仅零速切线" if report["schema"]==DAMPER_FIT_SCHEMA else "压缩/伸张分别拟合")
-    return (f"{source}；{report['input']['temperature_c']:g}°C\n"
-            f"部件系数 {rates}；r0={ratios}\n{installation}；"+
-            ("独立留出通过；域外线性外推" if report["schema"] in CURVED_FITS else "范围见工程JSON"))
+                    "分段力速表生效（系数对应零速切线斜率）" if report["schema"]==DAMPER_FIT_SCHEMA else "压缩/伸张分段线性拟合")
+    return (f"{source}（{report['input']['temperature_c']:g} °C）\n"
+            f"部件系数：{rates}；参考运动比 r0 = {ratios}\n{installation}；"+
+            ("独立留出验证通过，域外按端段线性外推" if report["schema"] in CURVED_FITS else "适用区间见工程 JSON"))
 
 
 def record_coverage(metadata, config, samples):

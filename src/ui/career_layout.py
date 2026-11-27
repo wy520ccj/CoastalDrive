@@ -160,11 +160,16 @@ def canvas(panel, progress, title, *, car=False, budget=None, chrome=True, seaso
                                                    20 if aspect > 1.5 else 17, WHITE, right=True)
         return width, margin, fill, label, image, button
     panel.frames.append(atelier.wordmark(panel.content, panel.loader, box(margin, 15, 212 if aspect > 1.5 else 182, 40 if aspect > 1.5 else 34)))
-    button('赛事', width*.42-60, 14, 120, 44, 'board', role='tab-active' if title == '生涯赛事' else 'tab')
-    button('海岸车库' if title == '生涯赛事' else title, width*.56-85, 14, 170, 44,
-           'garage' if title == '生涯赛事' else 'board', role='tab' if title == '生涯赛事' else 'tab-active')
-    fill(width*(.42 if title == '生涯赛事' else .56)-(60 if title == '生涯赛事' else 85)+20,
-         66, (120 if title == '生涯赛事' else 170)-40, 3, theme.AMBER, 1.5)
+    if title == '比赛暂停':
+        lbl = label(title, width*.50, 44, 21, WHITE, bold=True)
+        lbl.textNode.setAlign(TextNode.ACenter)
+        fill(width*.50-44, 66, 88, 3, theme.AMBER, 1.5)
+    else:
+        button('赛事', width*.42-60, 14, 120, 44, 'board', role='tab-active' if title == '生涯赛事' else 'tab')
+        button('海岸车库' if title == '生涯赛事' else title, width*.56-85, 14, 170, 44,
+               'garage' if title == '生涯赛事' else 'board', role='tab' if title == '生涯赛事' else 'tab-active')
+        fill(width*(.42 if title == '生涯赛事' else .56)-(60 if title == '生涯赛事' else 85)+20,
+             66, (120 if title == '生涯赛事' else 170)-40, 3, theme.AMBER, 1.5)
     star_w = 152
     image('atelier/btn-ghost.png', width-margin-star_w, 15, star_w, 42)
     label(f'★  {progress.stars} / 18 星', width-margin-star_w/2, 42, 17, theme.AMBER, bold=True)
@@ -580,8 +585,9 @@ def pause(panel, progress, event):
     fill(left+10, 114, 4, 42, theme.AMBER, 2)
     label(f'正在比赛  /  {event.name}', x, 146, 15, theme.DARK_SUB)
     label('比赛已暂停', x, 206, 42, WHITE, bold=True)
-    for index, (name, command) in enumerate((('继续驾驶', 'resume'), ('重新开始', 'retry'), ('退出本场', 'board'))):
-        item = button(name, x, 286+index*96, inner, 68, command,
+    for index, (name, command) in enumerate((('继续驾驶', 'resume'), ('设置', 'settings'),
+                                             ('重新开始', 'retry'), ('退出本场', 'board'))):
+        item = button(name, x, 276+index*92, inner, 68, command,
                       role='primary' if index == 0 else 'secondary', primary=index == 0)
         if index == 0:
             item['text_pos'] = (16*unit, -7*unit)

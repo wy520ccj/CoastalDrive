@@ -5,7 +5,7 @@ import math
 from vehicle_state import VehicleCommand
 
 CIRCLE_BRAKING_MANEUVERS = ("cornering_braking", "mu_jump_cornering_braking")
-CIRCLE_MANEUVERS = ("constant_radius", *CIRCLE_BRAKING_MANEUVERS)
+CIRCLE_MANEUVERS = ("constant_radius", "quasi_steady_circle", *CIRCLE_BRAKING_MANEUVERS)
 PATH_MANEUVERS = (*CIRCLE_MANEUVERS, "double_lane_change")
 
 
@@ -43,7 +43,15 @@ def target_point(options, state, initial):
     return x0+lane_offset(y-y0+preview), y+preview
 
 
-def path_command(options, state, initial, config, speed_integral=0.):
+def target_speed_mps(options, elapsed=0.):
+    """准稳态定圆扫点按时长线性缓增车速，其余路径工况保持恒定目标车速。"""
+    if options.maneuver == "quasi_steady_circle":
+        fraction = min(1., max(0., elapsed) / max(options.duration, 1.))
+        return (options.speed_kph + (options.sweep_end_kph - options.speed_kph) * fraction) / 3.6
+    return options.speed_kph / 3.6
+
+
+def path_command(options, state, initial, config, speed_integral=0., target_speed=None):
     target_x, target_y = target_point(options, state, initial)
     dx, dy = target_x-state.position[0], target_y-state.position[1]
     angle = math.radians(state.heading)
@@ -51,7 +59,8 @@ def path_command(options, state, initial, config, speed_integral=0.):
     curvature = 2*lateral/(dx*dx+dy*dy)
     steering = math.degrees(math.atan(config.wheelbase*curvature))
     steering = max(-config.steering_degrees, min(config.steering_degrees, steering))
-    error = options.speed_kph/3.6-state.speed
+    desired_speed = options.speed_kph/3.6 if target_speed is None else target_speed
+    error = desired_speed-state.speed
     throttle = max(0., min(1., .12+.20*error+speed_integral))
     brake = max(0., min(1., -.12*error)) if error < -1. else 0.
     return VehicleCommand(steering=steering, throttle=throttle, brake=brake, direction=1)

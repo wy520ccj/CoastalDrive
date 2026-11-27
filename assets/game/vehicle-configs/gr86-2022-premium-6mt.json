@@ -1417,7 +1417,92 @@
           40.0,
           40.0
         ],
-        "basis": "当前独立轮心关闭；每轮40kg沿用通用试验设计初值，不是GR86簧下质量实测，启用时从整车总质量中分出。"
+        "basis": "当前独立轮心关闭；每轮 40 kg 沿用通用试验工程先验，启用时从整车总质量中分出。"
+      },
+      "camber_stiffness": {
+        "unit": "N/rad",
+        "definition": "前轴外倾刚度；标称单轮法向载荷下前轮单位外倾角产生的侧向推力刚度 Cγ0",
+        "status": "model_mechanism",
+        "value": 0.0,
+        "basis": "原厂基准文件默认保持悬架 K&C 与外倾推力关闭以兼容旧版轨迹；标定版另存。"
+      },
+      "rear_camber_stiffness": {
+        "unit": "N/rad",
+        "definition": "后轴外倾刚度；标称单轮法向载荷下后轮单位外倾角产生的侧向推力刚度 Cγ0",
+        "status": "model_mechanism",
+        "value": 0.0,
+        "basis": "原厂基准文件默认保持悬架 K&C 与外倾推力关闭以兼容旧版轨迹；标定版另存。"
+      },
+      "camber_load_exponent": {
+        "unit": "1",
+        "definition": "外倾刚度轮荷指数；外倾推力刚度随法向载荷变化的幂律指数 pγ",
+        "status": "engineering_prior",
+        "value": 0.85,
+        "basis": "沿用与侧偏刚度同阶的默认载荷非线性先验指数 0.85。"
+      },
+      "suspension_kc_enabled": {
+        "unit": "bool",
+        "definition": "悬架 K&C 运动学模型；启用外倾角与前束角随静态定位、轮跳行程及转向角的耦合变化",
+        "status": "model_mechanism",
+        "value": false,
+        "basis": "原厂基准文件默认保持悬架 K&C 关闭以逐拍兼容旧版基准；K&C 标定版另存。"
+      },
+      "static_camber_deg": {
+        "unit": "°",
+        "definition": "静态外倾角；前／后轴设计静态车轮外倾角（轮顶向外倾斜为正、向内倾斜为负）",
+        "status": "model_mechanism",
+        "value": [
+          0.0,
+          0.0
+        ],
+        "basis": "原厂基准文件未启用 K&C，保留零静态外倾默认值。"
+      },
+      "static_toe_deg": {
+        "unit": "°",
+        "definition": "静态前束角；前／后轴单轮设计静态前束角（车轮前缘向内偏转为正）",
+        "status": "model_mechanism",
+        "value": [
+          0.0,
+          0.0
+        ],
+        "basis": "原厂基准文件未启用 K&C，保留零静态前束默认值。"
+      },
+      "camber_jounce_gains": {
+        "unit": "°/m",
+        "definition": "外倾跳动一次增益；前／后轴车轮外倾角随轮心压缩行程的线性变化率",
+        "status": "model_mechanism",
+        "value": [
+          0.0,
+          0.0
+        ],
+        "basis": "原厂基准文件未启用 K&C，保留零跳动外倾增益默认值。"
+      },
+      "camber_jounce_quad": {
+        "unit": "°/m²",
+        "definition": "外倾跳动二次增益；前／后轴车轮外倾角随轮心压缩行程的二次非线性变化率",
+        "status": "model_mechanism",
+        "value": [
+          0.0,
+          0.0
+        ],
+        "basis": "原厂基准文件未启用 K&C，保留零二次跳动外倾增益默认值。"
+      },
+      "camber_steer_gain": {
+        "unit": "°/°",
+        "definition": "转向外倾增益；主销倾角引起的前轮外倾角随车轮转角的变化率",
+        "status": "model_mechanism",
+        "value": 0.0,
+        "basis": "原厂基准文件未启用 K&C，保留零转向外倾增益默认值。"
+      },
+      "bump_steer_gains": {
+        "unit": "°/m",
+        "definition": "跳动前束增益；前／后轴单轮前束角随轮心压缩行程的线性变化率",
+        "status": "model_mechanism",
+        "value": [
+          0.0,
+          0.0
+        ],
+        "basis": "原厂基准文件未启用 K&C，保留零跳动前束增益默认值。"
       }
     },
     "nested_field_metadata": {

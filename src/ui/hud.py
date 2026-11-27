@@ -29,11 +29,19 @@ def set_text(widget, value):
         widget.setText(value)
 
 
-def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
+def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None, bindings=None):
     """输入说明只表达已有模式行为。"""
+    from settings import KEY_PRESETS, key_label
+
+    keys = KEY_PRESETS["wasd"] if bindings is None else bindings
     shift = "  Q/E 换挡" if mode == DrivingMode.SIMULATION else ""
     brake = "刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
-    return f"W/↑ 油门  S/↓ {brake}  A/D 转向{shift}  R 复位  C 视角  N 切台  Esc 暂停"
+    if keys == KEY_PRESETS["wasd"]:
+        return f"W/↑ 油门  S/↓ {brake}  A/D 转向{shift}  R 复位  C 视角  N 切台  Esc 暂停"
+    t, b = key_label(keys["throttle"]), key_label(keys["brake"])
+    l, r = key_label(keys["steer_left"]), key_label(keys["steer_right"])
+    rst, cam, rad = key_label(keys["reset"]), key_label(keys["camera"]), key_label(keys["radio_next"])
+    return f"{t} 油门  {b} {brake}  {l}/{r} 转向{shift}  {rst} 复位  {cam} 视角  {rad} 切台  Esc 暂停"
 
 
 class DrivingHUD:
@@ -115,8 +123,8 @@ class DrivingHUD:
         self.course_speed_needle = DirectFrame(parent=self.course_speed_frame, frameColor=theme.AMBER,
                                               frameSize=(-.004, .004, .39, .44))
         self.course_speed_frame.hide()
-        OnscreenText(parent=self.speed_frame, text="km/h", font=body_font,
-                     fg=soft_fg, pos=(-0.36, 0.125), scale=0.042, **shadow_cfg)
+        self.speed_unit_label = OnscreenText(parent=self.speed_frame, text="km/h", font=body_font,
+                     fg=soft_fg, pos=(-0.36, 0.125), scale=0.042, mayChange=True, **shadow_cfg)
         self.gear_box = DirectFrame(parent=self.speed_frame, frameColor=theme.AMBER,
                                    frameSize=(-0.23, -0.06, 0.140, 0.258))
         self.gear = OnscreenText(parent=self.gear_box, text="D1", font=number_font, fg=theme.INK,
@@ -137,6 +145,28 @@ class DrivingHUD:
         self.coastal = CoastalDrivingHUD(self.root, body_font, number_font, self.career.regular)
         self._career_active = False
         self._coastal_active = False
+        self._speed_unit = "kmh"
+        self._show_key_hints = True
+        self._key_bindings = None
+
+    def configure(self, *, speed_unit=None, show_key_hints=None, key_bindings=None):
+        """应用玩家界面与按键提示偏好，只改表现层显示。"""
+        if speed_unit is not None:
+            self._speed_unit = speed_unit
+            unit_text = "mph" if speed_unit == "mph" else "km/h"
+            set_text(self.speed_unit_label, unit_text)
+            self.coastal.configure(speed_unit=speed_unit)
+            self.career.configure(speed_unit=speed_unit)
+        if show_key_hints is not None:
+            self._show_key_hints = bool(show_key_hints)
+            if not (self._career_active or self._coastal_active):
+                self.help_frame.show() if self._show_key_hints else self.help_frame.hide()
+            self.coastal.configure(show_key_hints=self._show_key_hints)
+            self.career.configure(show_key_hints=self._show_key_hints)
+        if key_bindings is not None:
+            self._key_bindings = dict(key_bindings)
+            self.coastal.configure(key_bindings=self._key_bindings)
+            self.career.configure(key_bindings=self._key_bindings)
 
     def update(self, state, race, highway, *, track, countdown, notice,
                driving_mode=DrivingMode.GAME, automatic=False, automatic_splits=(), career_gold=None):
@@ -145,8 +175,12 @@ class DrivingHUD:
         coastal_active = track == 'coastal' or budget_active
         if (career_active, coastal_active) != (self._career_active, self._coastal_active):
             self._career_active, self._coastal_active = career_active, coastal_active
-            for widget in (self.status_frame, self.notice_frame, self.speed_frame, self.help_frame):
+            for widget in (self.status_frame, self.notice_frame, self.speed_frame):
                 widget.hide() if career_active or coastal_active else widget.show()
+            if career_active or coastal_active or not self._show_key_hints:
+                self.help_frame.hide()
+            else:
+                self.help_frame.show()
             self.career.root.show() if career_active else self.career.root.hide()
             self.coastal.root.show() if coastal_active else self.coastal.root.hide()
         if career_active:
@@ -203,8 +237,9 @@ class DrivingHUD:
         esc_label = "关闭" if not player.esc_enabled else (
             "介入" if player.stability_state.active else "待命"
         )
-        set_text(self.help, driving_help(driving_mode, abs_label, tcs_label, esc_label))
-        set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
+        set_text(self.help, driving_help(driving_mode, abs_label, tcs_label, esc_label, self._key_bindings))
+        speed_factor = 2.23693629 if self._speed_unit == "mph" else 3.6
+        set_text(self.speed, f"{abs(state.player.speed) * speed_factor:03.0f}")
         if race.mode == GameMode.FAST_SLALOM:
             kph = state.player.velocity[1]*3.6
             action = '继续加速' if kph < 70 else '松油门 / 轻刹' if kph > 80 else '速度合适'

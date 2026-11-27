@@ -100,7 +100,7 @@ def _weld_static_mesh(root):
             node.setGeom(idx, new_geom)
 
 
-def load_kit(loader, parent, old_trees):
+def load_kit(loader, parent, old_trees, *, coastal=False):
     """每个Scene加载一次；资源跟随已有Scene父节点释放。"""
     folder = resource_root() / "assets/game/expressway"
     kit = {}
@@ -208,6 +208,12 @@ def load_kit(loader, parent, old_trees):
         car.flattenStrong()
         car.reparentTo(parent)
         kit['city-parked-cars'].append(car)
+    from environment.expressway_foliage import load_standalone_pack
+    from environment.expressway_landscape_materials import apply_standalone_terrain_materials
+
+    render_root = parent.getParent() if not parent.getParent().isEmpty() else parent
+    load_standalone_pack(parent, kit, old_trees, coastal=coastal)
+    apply_standalone_terrain_materials(kit, render_root)
     return kit
 
 

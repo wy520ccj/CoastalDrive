@@ -96,12 +96,12 @@ def test_parameter_help_exposes_prior_basis_only_for_unchanged_gr86_value(tmp_pa
     app.engine.taskMgr.remove("lab-update")
     try:
         basis, _ = app.parameter_help.context("unsprung_masses")
-        assert "工程初值" in basis and "不是GR86簧下质量实测" in basis
+        assert "工程先验" in basis and "40 kg" in basis
         assert "当前独立轮心关闭" in basis
         basis, _ = app.parameter_help.context("wheelbase")
-        assert "车型账本分类：原厂" in basis
+        assert "参数来源分类：原厂规格" in basis
         app.engineered_config = replace(GR86_DESIGN, unsprung_masses=(41.,)*4)
         changed, _ = app.parameter_help.context("unsprung_masses")
-        assert "不沿用原来源分类" in changed and "不是GR86簧下质量实测" not in changed
+        assert "偏离车型原始配置" in changed and "40 kg" not in changed
     finally:
         app.close_game()

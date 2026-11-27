@@ -63,7 +63,7 @@ def export_comparison(reference, game, folder):
     (folder/"comparison.json").write_text(json.dumps(report, ensure_ascii=False, indent=2,
                                                     allow_nan=False)+"\n", encoding="utf-8")
     def cell(value):
-        return "未满足条件" if value is None else f"{value:.5g}"
+        return "不适用" if value is None else f"{value:.5g}"
 
     rows = "".join(f"<tr><td>{html.escape(item['label'])}</td><td>{cell(item['reference'])}</td>"
                    f"<td>{cell(item['game'])}</td><td>{cell(item['delta'])}</td><td>{item['unit']}</td></tr>"
@@ -74,11 +74,8 @@ def export_comparison(reference, game, folder):
     page = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>车辆游戏对照</title>
 <style>body{{font:16px system-ui;background:#f3efe3;color:#102b3a;max-width:1000px;margin:40px auto;padding:24px}}td,th{{padding:10px;border-bottom:1px solid #bbc9c8}}svg{{width:100%}}pre{{white-space:pre-wrap}}</style>
 <h1>同一车辆 · 参考实验 / 游戏积分对照</h1>
-<p>海蓝：参考；橙色：游戏。两者均为120Hz、直接VehicleCommand输入。仅游戏配置使用每拍一次机械求解。
-闭环工况沿用参考驾驶员的命令，不在游戏侧重新纠偏；游戏键盘辅助与道路交通另由实际驾驶体验。
-两次计算均使用当前 {report['precision_bits']} 位数学运行库，跨运行库误差另行测量。</p>
-<p>此报告显示模型差异，尚未设置合格误差范围。未完成停车的距离不作停车距离比较。
-公共时间段曲线偏差与各自终止时刻指标分别列出；计算耗时不含初始化、渲染和导出。</p>
+<p>海蓝线为参考多子步配置，橙线为游戏单子步配置。两者均运行于 120 Hz 固定步与 {report['precision_bits']} 位原生数学库，施加相同的控制指令序列（VehicleCommand）。</p>
+<p>下表分别列出公共时间段内的时域误差与各自终止时刻的汇总指标；离线计算耗时不含初始化、渲染与导出。</p>
 <table><tr><th>指标</th><th>参考</th><th>游戏</th><th>游戏−参考</th><th>单位</th></tr>{rows}</table>{plots}
 <h2>运行条件与公共时间段误差</h2><pre>{details}</pre>
 <p><a href="reference/report.html">参考完整记录</a> · <a href="game/report.html">游戏完整记录</a></p></html>'''

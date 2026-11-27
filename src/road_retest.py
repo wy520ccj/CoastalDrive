@@ -82,7 +82,7 @@ class RoadRetest:
         index = len(self.records)
         source = self.pair['AB'[index]]
         self.run = LabExperiment(self.options[index], config=self.configs[index], parameter_metadata={
-            'basis': '道路A/B保存硬件的标准参考复测；通用参考外观，不授驾驶/工坊奖牌',
+            'basis': '基于道路 A/B 硬件配置的标准台架复测',
             'road_record_created_at': source['created_at'], 'road_context': source['context'],
             'source_vehicle_config': source['config']})
         self.run.paused = False
@@ -134,7 +134,7 @@ class RoadRetest:
                 'effective_overrides': [{key: {'source': self.pair['AB'[i]]['config'][key], 'reference': value}
                     for key, value in config.items() if self.pair['AB'[i]]['config'][key] != value}
                     for i, config in enumerate(effective)],
-                'scope': '同标准参考工况；直接控制策略，非道路键盘回放，不授奖或改当前车'}
+                'scope': '基于标准试验工况与闭环控制策略复测，结果独立存档'}
 
     def export(self, folder):
         if not self.done:

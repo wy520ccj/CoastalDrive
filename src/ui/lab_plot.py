@@ -29,9 +29,9 @@ class LabPlot:
         rounded_panel(self.root, "signal-border", (left-.004, right+.004, bottom-.004, top+.004), BORDER, .024)
         rounded_panel(self.root, "signal-card", box, LAB_CARD, .022)
         self.title = OnscreenText(parent=self.root, font=font, text="", fg=TEXT,
-            pos=(left+.055, top-.062), scale=.036, align=TextNode.ALeft, mayChange=True)
+            pos=(left+.055, top-.064), scale=.035, align=TextNode.ALeft, mayChange=True)
         self.readout = OnscreenText(parent=self.root, font=font, text="", fg=MUTED,
-            pos=(left+.055, bottom+.022), scale=.031, align=TextNode.ALeft, mayChange=True)
+            pos=(left+.055, bottom+.032), scale=.030, align=TextNode.ALeft, mayChange=True)
         self.axis_labels = []
         self.lines = self.root.attachNewNode("curves")
         self.cursor = self.root.attachNewNode("cursor")
@@ -56,7 +56,7 @@ class LabPlot:
             low, high = low-step, high+step
         self.duration = max((rows[-1]["time"] for rows in series if rows), default=1.) or 1.
         left, right, bottom, top = self.box
-        x0, x1, z0, z1 = left+.14, right-.065, bottom+.115, top-.135
+        x0, x1, z0, z1 = left+.145, right-.060, bottom+.142, top-.118
         for label in self.axis_labels:
             label.destroy()
         self.axis_labels.clear()
@@ -69,14 +69,14 @@ class LabPlot:
             grid.drawTo(x1, 0, z)
             label = f"{value:.4g}"
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font, text=label, fg=MUTED,
-                pos=(x0-.022, z-.008), scale=.029, align=TextNode.ARight))
+                pos=(x0-.022, z-.009), scale=.029, align=TextNode.ARight))
         for index in range(5):
             x = x0+index*(x1-x0)/4
             grid.moveTo(x, 0, z0)
             grid.drawTo(x, 0, z1)
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font,
                 text=f"{self.duration*index/4:.1f}", fg=MUTED,
-                pos=(x, z0-.046), scale=.029))
+                pos=(x, z0-.042), scale=.029))
         self.lines.attachNewNode(grid.create())
         for slot, rows in indexed:
             color = COLORS[slot]
@@ -110,11 +110,11 @@ class LabPlot:
         self.cursor.removeNode()
         self.cursor = self.root.attachNewNode("cursor")
         left, right, bottom, top = self.box
-        x = left+.14+min(1., time/self.duration)*(right-left-.205)
+        x = left+.145+min(1., time/self.duration)*(right-left-.205)
         lines = LineSegs()
         lines.setColor(*LAB_TEXT)
-        lines.moveTo(x, 0, bottom+.115)
-        lines.drawTo(x, 0, top-.135)
+        lines.moveTo(x, 0, bottom+.142)
+        lines.drawTo(x, 0, top-.118)
         self.cursor.attachNewNode(lines.create())
         values = []
         for index, rows in enumerate(self.series):

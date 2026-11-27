@@ -729,6 +729,284 @@
         "texture_height": 128,
         "sha256": "e701446370c52f33672ce1c49ea43f615e1e3add8bd2bdefe2ab242c5bedf370"
       }
+    ],
+    "camber_stiffness": [
+      {
+        "file": "camber_stiffness-0.png",
+        "tex": "C_\\gamma(F_z)=C_{\\gamma 0}\\left(\\frac{F_z}{F_{z0}}\\right)^{p_\\gamma}",
+        "width": 610,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "3aa2adc992fbefa9f377c328cd3f1c869267dba9cd40d6898720f93cc9107147"
+      },
+      {
+        "file": "camber_stiffness-1.png",
+        "tex": "q_y=\\frac{C_\\alpha\\tan\\alpha+C_\\gamma\\sin\\gamma}{D}",
+        "width": 550,
+        "height": 110,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "6c8dec15160076fff3ee02b7fe6166b234fb0a691619922b3c6920a55ed4b993"
+      }
+    ],
+    "suspension_kc_enabled": [
+      {
+        "file": "suspension_kc_enabled-0.png",
+        "tex": "\\delta_i=\\delta_{\\mathrm{ack},i}+s_i\\left(\\tau_0+k_{\\mathrm{toe}}q_i\\right)",
+        "width": 810,
+        "height": 76,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "24b92aa8aed39db224b1488426495b8513095466e63b144ed399b3dfc84f09bf"
+      },
+      {
+        "file": "suspension_kc_enabled-1.png",
+        "tex": "\\gamma_i=\\gamma_0+k_{\\gamma,1}q_i+k_{\\gamma,2}q_i^2,\\qquad \\gamma_{\\mathrm{tire},i}=-s_i\\gamma_i+k_{\\mathrm{steer}}\\delta_i",
+        "width": 1620,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "5bd2f0249b2eef8989be2c584865c782937bfdb0d08ca9ea459b12a98967612c"
+      }
+    ],
+    "static_camber_deg": [
+      {
+        "file": "static_camber_deg-0.png",
+        "tex": "\\gamma_{\\mathrm{auto}}=\\gamma_0+k_{\\gamma,1}q+k_{\\gamma,2}q^2",
+        "width": 803,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "9fac801c8638749f0a3e600f507f2da4f849715619300039ef2e3dc51a6fe16c"
+      },
+      {
+        "file": "static_camber_deg-1.png",
+        "tex": "\\gamma_{\\mathrm{tire}}=-s\\gamma_{\\mathrm{auto}}+k_{\\mathrm{steer}}\\delta",
+        "width": 683,
+        "height": 73,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "3009211198641befde3121a16992df2e01597008418339abd08d04ae6c9caca4"
+      }
+    ],
+    "static_toe_deg": [
+      {
+        "file": "static_toe_deg-0.png",
+        "tex": "\\tau(q)=\\tau_0+k_{\\mathrm{toe}}q,\\qquad \\delta_i=\\delta_{\\mathrm{ack},i}+s_i\\tau(q_i)",
+        "width": 1290,
+        "height": 76,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "548ba9aeb87eaf8aee1fe0ac577c65817392e79ff0c7d36839ca849732716e48"
+      }
+    ],
+    "sweep_end": [
+      {
+        "file": "sweep_end-0.png",
+        "tex": "v_{\\mathrm{ref}}(t)=\\frac{1}{3.6}\\left[v_0+(v_{\\mathrm{end}}-v_0)\\min\\left(1,\\frac{t}{T}\\right)\\right]",
+        "width": 1193,
+        "height": 93,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "6e03f3c690dc57097819686e5b122b010f8e9e74fa9c15a5624fea6d99bcc56c"
+      }
+    ],
+    "road_class": [
+      {
+        "file": "road_class-0.png",
+        "tex": "G_q(n)=G_q(n_0)\\left(\\frac{n}{n_0}\\right)^{-W},\\qquad n_0=0.1\\,\\mathrm{m}^{-1},\\quad W=2",
+        "width": 1606,
+        "height": 103,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "ccba372294e91bff4d07167cd0482e08253b1fb88f459c2647eddce2377333fc"
+      }
+    ],
+    "feedback_source": [
+      {
+        "file": "feedback_source-0.png",
+        "tex": "\\hat{\\mathbf{x}}_{k|k}=\\hat{\\mathbf{x}}_{k|k-1}+\\mathbf{K}_k(\\mathbf{z}_k-\\mathbf{h}(\\hat{\\mathbf{x}}_{k|k-1}))",
+        "width": 1073,
+        "height": 80,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "303acdcb0c455c1bd46f6540029540a81d49db4bac23031691ffba9b3369afe0"
+      },
+      {
+        "file": "feedback_source-1.png",
+        "tex": "\\hat{\\mu}_{k+1}=\\hat{\\mu}_k+\\alpha_\\mu\\left(\\frac{\\sqrt{a_x^2+a_y^2}}{g}-\\hat{\\mu}_k\\right)",
+        "width": 980,
+        "height": 156,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "599a627aa6f9ca81070cd74ff5d298840ed18afbdc5f4b8ddf932dc75f132e9e"
+      }
+    ],
+    "metric.iso.awz_rms": [
+      {
+        "file": "metric.iso.awz_rms-0.png",
+        "tex": "a_{wz}=\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}\\left[\\mathcal{F}^{-1}\\left(W_k(f)\\mathcal{F}(a_z-\\bar{a}_z)\\right)\\right]_n^2}",
+        "width": 1206,
+        "height": 220,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "cbe4c2614da768d3964cb58a49ce4ccfd45b32649bd9e8df22fc6267fcb12051"
+      }
+    ],
+    "metric.iso.unweighted_rms": [
+      {
+        "file": "metric.iso.unweighted_rms-0.png",
+        "tex": "a_{z,\\mathrm{RMS}}=\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}(a_{z,n}-\\bar{a}_z)^2}",
+        "width": 920,
+        "height": 220,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "12161e0a3ea08411e709e8dab72474388c8050151ebfabdba0a1d0305cf1cf9a"
+      }
+    ],
+    "metric.iso.sprung_peak_hz": [
+      {
+        "file": "metric.iso.sprung_peak_hz-0.png",
+        "tex": "f_{\\mathrm{peak}}=\\arg\\max_{f\\in[f_{\\min},f_{\\max}]}S_{aa}(f)",
+        "width": 810,
+        "height": 123,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "258393cff90f77662b8c9dc8ed8cbc4c66e22eb806b2cacf2ff2a5ac73b59c3d"
+      }
+    ],
+    "metric.iso.dynamic_load_fl": [
+      {
+        "file": "metric.iso.dynamic_load_fl-0.png",
+        "tex": "\\frac{\\sigma_{F_d}}{G_0}=\\frac{\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}(F_{z,\\mathrm{FL},n}-\\bar{F}_{z,\\mathrm{FL}})^2}}{F_{z,\\mathrm{FL},0}}",
+        "width": 753,
+        "height": 220,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "d4229347a1dc33357ee09a8becae30eabfc58375c58852e1aabede31406569de"
+      }
+    ],
+    "metric.iso.travel_rms_mm": [
+      {
+        "file": "metric.iso.travel_rms_mm-0.png",
+        "tex": "q_{\\mathrm{RMS}}=1000\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}(q_{\\mathrm{FL},n}-\\bar{q}_{\\mathrm{FL}})^2}",
+        "width": 1120,
+        "height": 220,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "cf47c395bb3bfb62ee30d47e8e08e93e0119bdd559fbca2dd648f3da62ae31ab"
+      }
+    ],
+    "metric.theory.vmax": [
+      {
+        "file": "metric.theory.vmax-0.png",
+        "tex": "F_t(v_{\\max})=\\frac{T_e i_g i_0 \\eta_T}{r}=m g f\\cos\\alpha+\\frac{1}{2}\\rho C_D A v_{\\max}^2+m g\\sin\\alpha",
+        "width": 1700,
+        "height": 110,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "51621d75e41a3e4ae8f8964fb5374284980223507d97d19417d3e7cef477d0fa"
+      }
+    ],
+    "metric.theory.time_0_100": [
+      {
+        "file": "metric.theory.time_0_100-0.png",
+        "tex": "\\delta_k=1+\\frac{4I_w+(I_e+I_{\\mathrm{in}})i_g^2i_0^2\\eta_T}{mr^2},\\qquad t=\\int_0^{100/3.6}\\frac{\\delta_k m}{F_{t,\\max}-F_f-F_w}\\mathrm{d}u",
+        "width": 1743,
+        "height": 146,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "b704c9e401496e15786b86caac97989394b596446e4da025976c46835dead791"
+      }
+    ],
+    "metric.theory.max_grade": [
+      {
+        "file": "metric.theory.max_grade-0.png",
+        "tex": "D_1=\\frac{F_{t1}-F_w}{mg},\\qquad i_{\\max}=\\min\\left(\\tan\\alpha_{\\mathrm{drive}},\\tan\\alpha_{\\mathrm{adhesion}}\\right)\\times 100\\%",
+        "width": 1916,
+        "height": 106,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "3f0c28f2e08989f6184d5353f0ad6ee1595e11bb7ffca75c07ecfc507e435e38"
+      }
+    ],
+    "metric.theory.phi0": [
+      {
+        "file": "metric.theory.phi0-0.png",
+        "tex": "\\varphi_0=\\frac{L\\beta-b}{h_g}",
+        "width": 326,
+        "height": 123,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "cb929cc37a719125c45475a8bd552ef5c9a448109c6315e66ecabd744e10a5f6"
+      }
+    ],
+    "metric.theory.brake_eff": [
+      {
+        "file": "metric.theory.brake_eff-0.png",
+        "tex": "E_f(\\varphi)=\\frac{b/L}{\\beta-\\varphi h_g/L},\\qquad E_r(\\varphi)=\\frac{a/L}{(1-\\beta)+\\varphi h_g/L},\\qquad E=\\min(E_f,E_r)",
+        "width": 1990,
+        "height": 113,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "3ceda60a7e20c0ad263951301f4a3cfaac30cbe2b3bf1d2a6782a86d6e05d2bb"
+      }
+    ],
+    "metric.theory.stop_dist": [
+      {
+        "file": "metric.theory.stop_dist-0.png",
+        "tex": "S=v_0\\tau_b+\\frac{v_0^2}{2a_{\\max}}-\\frac{1}{2}a_{\\max}\\tau_b^2",
+        "width": 830,
+        "height": 133,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "d3f9a598d7e3b997ff9061e8fadb0317186a95f644ab1d286f11349168316a32"
+      }
+    ],
+    "metric.theory.k_lin": [
+      {
+        "file": "metric.theory.k_lin-0.png",
+        "tex": "K_{\\mathrm{lin}}=\\frac{m}{L}\\left(\\frac{b}{C_{\\alpha f}}-\\frac{a}{C_{\\alpha r}}\\right)+K_{\\mathrm{KC}}",
+        "width": 800,
+        "height": 110,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "7014438205bf56a73d6e61c6d675be37ad6535634f1ac52c5d0245dc851865d1"
+      }
+    ],
+    "metric.theory.u_ch": [
+      {
+        "file": "metric.theory.u_ch-0.png",
+        "tex": "u_{\\mathrm{ch}}=3.6\\sqrt{\\frac{L}{K_{\\mathrm{lin}}}}\\quad (K_{\\mathrm{lin}}>0)",
+        "width": 840,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "320cac0e38870a204b2f21654153d5c660ad3fe17744b6186745f090de1f336d"
+      }
+    ],
+    "metric.theory.k_sim": [
+      {
+        "file": "metric.theory.k_sim-0.png",
+        "tex": "\\delta_{\\mathrm{actual}}\\approx \\delta_0+K_{\\mathrm{sim}}a_y\\qquad \\left(|a_y|\\in[0.6,3.5]\\,\\mathrm{m/s^2},\\ |a_x|\\leq 0.65\\,\\mathrm{m/s^2}\\right)",
+        "width": 2080,
+        "height": 100,
+        "texture_width": 4096,
+        "texture_height": 128,
+        "sha256": "b64cba36826ba59d8ac865e69d33a850e81257c377fd3d8b33c78d350feeaa99"
+      }
+    ],
+    "metric.theory.k_delta": [
+      {
+        "file": "metric.theory.k_delta-0.png",
+        "tex": "\\Delta K=K_{\\mathrm{sim}}-K_{\\mathrm{lin}}",
+        "width": 530,
+        "height": 70,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "37bda46c06b7514e0e351e13bc9e85a92771bf920472711e29427fecaa54527a"
+      }
     ]
   }
 }

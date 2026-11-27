@@ -1,17 +1,5 @@
-Kloofendal 43d Clear (Pure Sky)
-https://polyhaven.com/a/kloofendal_43d_clear_puresky
-Greg Zaal: Original
-CC0 1.0 Universal
-https://polyhaven.com/license
-https://creativecommons.org/publicdomain/zero/1.0/
-
-Powered by Poly Haven.
-The original 4K HDR pixels are used unchanged for the sky. CoastalDrive aligns
-the panorama around the vertical axis with its existing directional sun and
-offline filters this same photograph to a 128px cubemap, spherical harmonics
-and 64-sample roughness reflection mipmaps for daylight.env.
-No runtime convolution and no generated painted sky substitute.
-Source SHA256 and precise source URLs: daylight-manifest.json.
-The source sun elevation is recorded in daylight-manifest.json; the retained
-scene light is approximately 53.35 degrees. Yaw alignment keeps the horizon
-horizontal; it does not change source sun elevation.
+CoastalDrive Expressway Daylight Sky
+Source: https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky
+File: kloofendal_48d_partly_cloudy_puresky_4k.hdr
+Authors: Greg Zaal (Original), Jarod Guest (Sky edits)
+License: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)

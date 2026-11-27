@@ -19,15 +19,15 @@ class GarageCar:
 
 
 GARAGE_CARS = (
-    GarageCar('game-tuned', 'sports', 'Subaru BRZ', '双门 / 后轮驱动', 'BRZ Varis开放车模，保留熟悉的项目后驱调校。', 0),
-    GarageCar('coastal-hatch', 'coastal-hatch', 'Hyundai i20', '掀背 / 前轮驱动', '开放车模；沿用项目轻型前驱调校，适合入门与绕桩。', 0),
+    GarageCar('game-tuned', 'sports', 'Subaru BRZ', '双门 / 后轮驱动', '前置后驱双门轿跑，均衡流畅的公路操控调校。', 0),
+    GarageCar('coastal-hatch', 'coastal-hatch', 'Hyundai i20', '掀背 / 前轮驱动', '轻量前驱掀背车，操控轻快，适合入门与绕桩练习。', 0),
     GarageCar('coastal-roadster', 'coastal-roadster', 'Lotus Elise', '敞篷 / 后轮驱动',
-              '开放的Elise车模，沿用项目轻量后驱调校。', 3),
-    GarageCar('gr86-2022-premium-6mt', 'gr86-2022', 'GR86 Premium', '跑车 / 后轮驱动', '六速手动硬件设计，体验另一种驾驶节奏。', 5),
-    GarageCar('coastal-gt', 'coastal-gt', '远航 GT', 'GT / 四轮驱动', '更强动力与四驱，迎接海岸杯。', 9),
-    GarageCar('club-coupe', 'club-coupe', 'BMW 1M Coupé', '双门 / 后轮驱动', '开放车模；项目通用后驱调校，非原厂参数。', 3),
-    GarageCar('subaru-wrx-sti', 'subaru-wrx-sti', 'Subaru WRX STI', '掀背 / 四轮驱动', '开放的Impreza WRX STI车模，搭配项目四驱调校。', 5),
-    GarageCar('porsche-930', 'porsche-930', 'Porsche 911 Turbo', '经典 / 后轮驱动', '1975年930开放车模；后轮驱动，项目调校。', 9),
+              '轻量低质心后驱跑车，转向响应敏捷直接。', 3),
+    GarageCar('gr86-2022-premium-6mt', 'gr86-2022', 'GR86 Premium', '跑车 / 后轮驱动', '2022 款六速手动后驱跑车，采用原厂几何与动力配置。', 5),
+    GarageCar('coastal-gt', 'coastal-gt', '远航 GT', 'GT / 四轮驱动', '充沛动力与四轮驱动，从容应对海岸杯赛段。', 9),
+    GarageCar('club-coupe', 'club-coupe', 'BMW 1M Coupé', '双门 / 后轮驱动', '紧凑型后驱双门性能车，出弯姿态灵动利落。', 3),
+    GarageCar('subaru-wrx-sti', 'subaru-wrx-sti', 'Subaru WRX STI', '掀背 / 四轮驱动', '全轮驱动性能掀背车，中高速弯道抓地力稳健充沛。', 5),
+    GarageCar('porsche-930', 'porsche-930', 'Porsche 911 Turbo', '经典 / 后轮驱动', '经典后驱涡轮跑车，后段爆发力强劲且富有驾控挑战。', 9),
 )
 CAR_BY_DESIGN = {car.design_id: car for car in GARAGE_CARS}
 DEFAULT_PAINT = {'coastal-hatch': 4, 'coastal-roadster': 2, 'coastal-gt': 2, 'gr86-2022-premium-6mt': 4,

@@ -1,24 +1,28 @@
 {
   "source": {
-    "size": 18429221,
-    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/kloofendal_43d_clear_puresky_4k.hdr",
-    "md5": "4e0af6bcab0e373639f3b48b6677a2c1",
-    "file": "kloofendal_43d_clear_puresky_4k.hdr",
-    "sha256": "1f92cbf17e46659ff37c9770d065280da226896b0f56091c4c1fca071da7fbeb",
-    "source": "https://polyhaven.com/a/kloofendal_43d_clear_puresky",
-    "author": "Greg Zaal",
-    "license": "CC0-1.0"
+    "size": 20674857,
+    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+    "md5": "816340c969d2e60d659051d13ac3c4dc",
+    "file": "kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+    "sha256": "3061c00a16ecae748e84fd6c44c04804f539c118bb66325db858bad87b11bf88",
+    "source": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+    "authors": {
+      "Greg Zaal": "Original",
+      "Jarod Guest": "Sky edits"
+    },
+    "license": "CC0-1.0",
+    "status": "production standalone default"
   },
-  "sky_heading_degrees": 17.53522476255523,
-  "source_sun_elevation_degrees": 42.890625,
+  "sky_heading_degrees": -34.1015625,
+  "source_sun_elevation_degrees": 47.8125,
   "directional_sun": [
-    -0.3530068099498749,
-    -0.4813729226589203,
-    0.8022881746292114
+    -0.6715589761734009,
+    8.224225373207247e-17,
+    0.7409511208534241
   ],
   "cube_size": 128,
   "prefiltered_samples": 64,
   "indirect_radiance_limit": 4.0,
-  "sky_sha256": "1f92cbf17e46659ff37c9770d065280da226896b0f56091c4c1fca071da7fbeb",
-  "environment_sha256": "277f5d31d085c235ab4abdfcbbde9f5533e01dc711e3dc65c1ac57aacddbf319"
+  "sky_sha256": "3061c00a16ecae748e84fd6c44c04804f539c118bb66325db858bad87b11bf88",
+  "environment_sha256": "d56453e7bcebbf012d8c7c75e0e0fa76de854de07514e76d2514d235635f229a"
 }

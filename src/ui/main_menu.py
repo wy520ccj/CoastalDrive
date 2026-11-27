@@ -234,7 +234,7 @@ class MainMenu:
 
         # 左缘悬浮磨砂玻璃垂直页签（复刻参考图「前轮 / 制动」）。
         self._left_tab(7, '驾驶辅助', 'shield', 148)
-        self._left_tab(4, '声音设置', 'speaker', 226)
+        self._left_tab(4, '设置', 'sliders', 226)
         self.driving_mode_button = self.buttons[7]
 
         # 展车左下方磨砂深色当前车辆信息卡 + 真实 Cycles 车模小图（1:1 复刻参考图左下角！）。

@@ -13,6 +13,7 @@ from panda3d.core import (
     GeomVertexFormat,
     GeomVertexWriter,
     PNMImage,
+    SamplerState,
     Texture,
     TransparencyAttrib,
 )
@@ -44,12 +45,22 @@ LAB_ERROR = (0.760, 0.160, 0.140, 1)
 
 
 class LabOptionMenu(DirectOptionMenu):
-    """定高平面列表；悬停不改变文字或鼠标命中区域。"""
+    """定高平面列表；锁定控件外框尺寸不随箭头扩张，悬停不改变文字或鼠标命中区域。"""
 
     def __init__(self, parent=None, *, before_popup=None, **options):
         self.before_popup = before_popup
+        self._fixed_frame_size = options.get("frameSize")
         super().__init__(parent, **options)
         self.initialiseoptions(LabOptionMenu)
+        self._apply_fixed_frame()
+
+    def _apply_fixed_frame(self):
+        if self._fixed_frame_size is not None:
+            self["frameSize"] = self._fixed_frame_size
+
+    def set(self, index, fCommand=1):
+        super().set(index, fCommand=fCommand)
+        self._apply_fixed_frame()
 
     def _highlightItem(self, item, index):
         item["frameColor"] = self["highlightColor"]
@@ -62,19 +73,20 @@ class LabOptionMenu(DirectOptionMenu):
     def showPopupMenu(self, event=None):
         if self.before_popup is not None:
             self.before_popup()
+        bounds = self._fixed_frame_size or self["frameSize"]
+        width = bounds[1] - bounds[0]
         height = self.maxHeight * len(self["items"])
-        self.popupMenu["frameSize"] = (-.002, self.maxWidth + .002, -height - .002, .002)
+        self.popupMenu["frameSize"] = (-.003, width + .003, -height - .003, .003)
         super().showPopupMenu(event)
         popup = self.popupMenu
-        bounds = self["frameSize"]
-        popup.setPos(self, 0, 0, bounds[2] - .008)
+        popup.setPos(self, bounds[0], 0, bounds[2] - .006)
         screen = ShowBaseGlobal.render2d
         pos, scale = popup.getPos(screen), popup.getScale(screen)
         # 底部控件向上展开，其余列表与控件左边缘对齐向下展开。
         if pos.z - height * scale.z < -.99:
-            popup.setZ(self, bounds[3] + .008 + height)
+            popup.setZ(self, bounds[3] + .006 + height)
         pos = popup.getPos(screen)
-        popup.setX(screen, max(-.99, min(pos.x, .99 - self.maxWidth * scale.x)))
+        popup.setX(screen, max(-.99, min(pos.x, .99 - width * scale.x)))
         popup.setZ(screen, max(-.99 + height * scale.z, min(pos.z, .99)))
 
 
@@ -170,9 +182,9 @@ def gradient_panel(parent, name, box, color_a, color_b, *, horizontal=False):
     return result
 
 
-@lru_cache(maxsize=8)
-def button_textures(variant):
-    """精密圆角按钮材质：lab_primary(赛道暖橙实心) / primary(落日琥珀金实心) / dark(黑曜石细描边) / secondary(明净浅白描边)。"""
+@lru_cache(maxsize=64)
+def button_textures(variant, aspect=4):
+    """按宽高比生成等比圆角按钮材质，确保任意宽度与分辨率下四边细描边连续清晰。"""
     if variant == "lab_primary":
         fills = ((.880, .365, .115), (.940, .430, .175), (.760, .295, .080), (.78, .80, .84))
         border_rgb = (.880, .365, .115)
@@ -184,9 +196,13 @@ def button_textures(variant):
         border_rgb = (.245, .292, .375)
     else:
         fills = ((.994, .996, .999), (.936, .950, .972), (.882, .902, .936), (.93, .94, .96))
-        border_rgb = (.795, .825, .868)
+        border_rgb = (.745, .782, .832)
     textures = []
-    width, height, radius = 256, 64, 10
+    height = 64
+    ratio = max(1, min(16, round(aspect)))
+    width = min(640, max(64, height * ratio))
+    radius = 12
+    stroke = 2.6
     for index, fill in enumerate(fills):
         image = PNMImage(width, height, 4)
         border = fill if (variant in (True, "primary", "lab_primary")) else border_rgb
@@ -197,9 +213,13 @@ def button_textures(variant):
                 distance = math.hypot(dx, dy)
                 alpha = min(1., max(0., radius+.5-distance))
                 edge = min(x+.5, width-x-.5, y+.5, height-y-.5, radius-distance)
-                color = border if edge < 1.4 else fill
+                color = border if edge < stroke else fill
                 image.setXelA(x, y, *color, alpha)
-        texture = Texture(f"lab-button-{variant}-{index}")
+        texture = Texture(f"lab-button-{variant}-{ratio}-{index}")
         texture.load(image)
+        texture.setWrapU(SamplerState.WMClamp)
+        texture.setWrapV(SamplerState.WMClamp)
+        texture.setMinfilter(SamplerState.FTLinearMipmapLinear)
+        texture.setMagfilter(SamplerState.FTLinear)
         textures.append(texture)
     return tuple(textures)

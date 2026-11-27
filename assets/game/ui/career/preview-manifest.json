@@ -1,76 +1,69 @@
 {
-  "source": "CoastalDrive Panda3D renderer; current live scene vehicles sky and roads",
+  "source": "CoastalDrive standalone Panda3D renderer; open-license MIT/CC0 foliage, terrain, rocks, sky and roads",
   "process": "Live camera capture with synced road segments and sky dome; no UI and no pixel edits",
   "cases": [
     {
-      "event": "first-drive",
       "image": "first-drive.png",
-      "sha256": "388743448e1115ff9ea379781babe8c8574e0f55e35f103717852ce98ad0c9c5",
-      "initialisation_ticks": 132,
-      "driving_steps": 0,
-      "tick": 132,
+      "sha256": "da539defac50f4160cdcd8e01800a8e3095c9cd8cdf26680888cac1a603762b9",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "first-drive"
     },
     {
-      "event": "parking",
       "image": "parking.png",
-      "sha256": "b8d1c85bbea4df3be027dcdcbc8bd5939694021909e9c817f1d74c9ca939fe67",
-      "initialisation_ticks": 132,
-      "driving_steps": 0,
-      "tick": 132,
+      "sha256": "70411f1abea1f94fa261c536b34fe5c16249109512cd573fd4f428c5edf99292",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "parking"
     },
     {
-      "event": "slalom",
       "image": "slalom.png",
-      "sha256": "5f52631fe70402f69e7109152e9146033daf812574c8c06e4b58b2f2a641deb8",
-      "initialisation_ticks": 132,
-      "driving_steps": 0,
-      "tick": 132,
+      "sha256": "392fa328ed6b53134ccf7d2ff0f100238fa5e28643fe9a99668a380e9a19bddc",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "slalom"
     },
     {
-      "event": "coast-sprint",
       "image": "coast-sprint.png",
-      "sha256": "29995d64cf4ae7f964542fe4de909d02ff6aad2c487375030d5bbb3662979ff6",
-      "initialisation_ticks": 132,
-      "driving_steps": 0,
-      "tick": 132,
+      "sha256": "00aaf93b2bd484830f7e685656a40355848816b3e00a6646ae7979dd02538707",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "coast-sprint"
     },
     {
-      "event": "ridge-run",
       "image": "ridge-run.png",
-      "sha256": "0f1804874197a6a1833ef8bf97fb4a47fcc8f102bad76ac29d40edbe5937b694",
-      "initialisation_ticks": 152,
-      "driving_steps": 0,
-      "tick": 152,
+      "sha256": "e3790495cd5d4fe94c7add3a7d40a31ee1f3a0637c68ad37b1459332b2a2080f",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "ridge-run"
     },
     {
-      "event": "coastal-cup",
       "image": "coastal-cup.png",
-      "sha256": "2c77165b341f264814fef57d5fbcb059c4573ace7fc3c3f8dcbfb14b202986f0",
-      "initialisation_ticks": 132,
-      "driving_steps": 0,
-      "tick": 132,
+      "sha256": "974f954c5035f303a5b7ad89162ab7dd3a318488c3639a04d6d8770fdaa2fcab",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "coastal-cup"
     },
     {
-      "event": "chase-valley",
       "image": "chase-valley.png",
-      "sha256": "dd6576b31834016a75cb5638e7d65133ef1a9ecfbab260933533a1479b9cd982",
-      "initialisation_ticks": 148,
-      "driving_steps": 0,
-      "tick": 148,
+      "sha256": "4bb7572c7ad16c86aa39e5ff8b7645a2bc5e2fbbd8cfa6ac8deae4756e0511aa",
       "design_id": "game-tuned",
-      "visual": "sports"
+      "visual": "sports",
+      "event": "chase-valley"
+    },
+    {
+      "image": "hill-traffic.png",
+      "sha256": "a9f9662be91bc3ba68eba19c01acc732bf080183b83f03b6109c7de7d97a8f22",
+      "design_id": "game-tuned",
+      "visual": "sports",
+      "event": "hill-traffic"
+    },
+    {
+      "image": "chase-coastal.png",
+      "sha256": "09cea966802546a530a15c43a2680ed1e14636ce585329985b73c822f12787a9",
+      "design_id": "game-tuned",
+      "visual": "sports",
+      "event": "chase-coastal"
     }
   ]
 }

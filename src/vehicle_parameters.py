@@ -32,6 +32,7 @@ PARAMETER_GROUPS = {
         "tire_aligning_enabled", "tire_contact_half_length",
         "rolling_coefficient", "grass_rolling_coefficient", "wheel_rolling_resistance",
         "rolling_transition_speed", "road_friction", "grass_friction",
+        "camber_stiffness", "rear_camber_stiffness", "camber_load_exponent",
     ),
     "suspension": (
         "unsprung_enabled", "unsprung_masses", "tire_radial_stiffness", "tire_radial_damping",
@@ -42,6 +43,8 @@ PARAMETER_GROUPS = {
         "suspension_damper_curves",
         "suspension_extension_damping", "suspension_stiffness", "suspension_compression",
         "suspension_relaxation", "suspension_travel", "suspension_force_limit",
+        "suspension_kc_enabled", "static_camber_deg", "static_toe_deg",
+        "camber_jounce_gains", "camber_jounce_quad", "camber_steer_gain", "bump_steer_gains",
     ),
     "electronics": ("brake_torque", "front_brake_share", "braking", "traction", "stability"),
 }
@@ -149,6 +152,30 @@ def config_from_document(document, selected):
         values["body_inertia"] = tuple(values["body_inertia"])
     if "axle_track_widths" in values and values["axle_track_widths"] is not None:
         values["axle_track_widths"] = tuple(values["axle_track_widths"])
+    # 旧版工程文件缺少 K&C 与外倾推力字段，补齐零默认以严格保持原物理定义。
+    for name, default in (
+        ("camber_stiffness", 0.0),
+        ("rear_camber_stiffness", 0.0),
+        ("camber_load_exponent", 0.85),
+        ("suspension_kc_enabled", False),
+        ("camber_steer_gain", 0.0),
+    ):
+        if name not in values:
+            values[name] = default
+    for name in (
+        "static_camber_deg",
+        "static_toe_deg",
+        "camber_jounce_gains",
+        "camber_jounce_quad",
+        "bump_steer_gains",
+    ):
+        if name not in values:
+            values[name] = (0.0, 0.0)
+        elif isinstance(values[name], (list, tuple)):
+            values[name] = tuple(
+                float(x) if isinstance(x, (int, float)) and not isinstance(x, bool) else x
+                for x in values[name]
+            )
     return replace(selected, **values)
 
 

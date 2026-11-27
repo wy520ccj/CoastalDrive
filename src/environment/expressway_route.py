@@ -12,11 +12,7 @@ from career_courses import CareerCourse
 from environment.career_coast import _enabled as coast_candidate
 from environment.expressway import WHITE, smooth
 from environment.expressway_signs import SIGN_MODELS, kilometer_face
-from environment.expressway_vegetation import (
-    TERRAIN_COLUMNS,
-    understory,
-    vegetation_steps,
-)
+from environment.expressway_vegetation import TERRAIN_COLUMNS, understory
 from highway_curve import HighwayCurve
 from highway_segments import SEGMENT_LENGTH, segment, surface_meshes
 
@@ -315,13 +311,23 @@ def build_segment(root, index, seed, kit, stabilize_rail, curve=None):
         pass
 
 
+@lru_cache(maxsize=1)
+def _default_sun_slope():
+    from environment.expressway_materials import daylight_environment
+    from paths import resource_root
+
+    _environment, metadata = daylight_environment(resource_root() / 'assets/game/expressway')
+    sx, sy, sz = metadata['directional_sun']
+    return -sx / sz, -sy / sz
+
+
 def rail_shadow_coordinate(curve, distance, lateral, height=0):
     """0.8m护栏沿固定太阳方向投到当前坡面，不使用玩家距离。"""
     pose = curve.sample(distance) if curve else None
     heading = math.radians(pose.heading) if pose else 0
     grade = math.radians(pose.grade) if pose else 0
-    # 普通高速沿用原太阳；沿海生涯的护栏投影与同一落日方向配套。
-    x, y = .44, .60
+    # 普通高速沿用高速晴空太阳；沿海生涯的护栏投影与同一落日方向配套。
+    x, y = _default_sun_slope()
     if isinstance(curve, CareerCourse) and curve.course_id in ('coast-club', 'coast-final'):
         from environment.expressway_materials import daylight_environment
         from paths import resource_root
@@ -374,7 +380,7 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
                     px, py, pz = pose.x - origin.x, pose.y - origin.y, pose.z - origin.z + z
                     g_tan = math.tan(math.radians(pose.grade))
                     # 复用单次道路采样同步计算两侧顶点与护栏投影坐标。
-                    sx, sy = (.44, .60)
+                    sx, sy = _default_sun_slope()
                     if isinstance(curve, CareerCourse) and curve.course_id in ('coast-club', 'coast-final'):
                         _, sh_left = rail_shadow_coordinate(curve, s, left, z)
                         _, sh_right = rail_shadow_coordinate(curve, s, right, z)
@@ -415,7 +421,7 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
         if curve and rail:
             # 原曲线碰撞盒的三角形朝内；显示副本翻面，避免朝上的底面与路肩争深度。
             faces = [(a, c, b) for a, b, c in faces]
-        color = (1, 1, 1, 1) if name == 'road' else ((.53, .59, .56, 1) if rail else (.11, .13, .14, 1))
+        color = (1, 1, 1, 1) if name == 'road' else ((.36, .37, .34, 1) if rail else (.11, .13, .14, 1))
         node = make_mesh(f"expressway-{name}", vertices, faces, Vec4(*color))
         node.setMaterial(kit["surface-material"])
         node.reparentTo(root)
@@ -547,13 +553,21 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
                 abutment.setH(pose.heading if pose else 0)
         yield "facilities"
     # 物理树的位置、高程和绝对朝向严格沿用streamed_road。
+    from environment.expressway_foliage import (
+        ground_collision_trees,
+        optimize_city_steps,
+        tree_batch_steps,
+    )
+
     seg_trees = segment(seed, index).trees
+    collision_terrain_cache = {}
     for number, (d, local, scale, heading) in enumerate(seg_trees):
         tree = kit[f"tree-{(index + number) % 2}"].copyTo(detail_parent(start + local))
         tree.setPos(point(d, start + local, -.32 + .05 * scale))
         tree.setScale(scale)
         tree.setH(heading)
         if number % 2 == 1 or number == len(seg_trees) - 1:
+            ground_collision_trees(root, index, seed, curve, origin, collision_terrain_cache)
             yield "trees"
     road_batch = root.attachNewNode("road-batch")
     for child in list(root.getChildren()):
@@ -575,14 +589,19 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
     signs.clearModelNodes()
     signs.flattenStrong()
     yield "sign-batch"
+    yield from optimize_city_steps(root, kit)
+    yield from tree_batch_steps(root, kit)
     root.setTag("visual-route", "HWY-02")
 
 
 def landscape_steps(root, index, seed, curve, kit, detail_parent):
+    from environment.expressway_foliage import foliage_steps, rock_steps, woodland_and_normals_steps
     from scene import make_mesh
 
     start = index * 200
     origin = Vec3(*anchor(curve, index))
+    # 岩岸与巨石先落位，后续林木按实际外廓留出根部净距。
+    yield from rock_steps(root, index, seed, curve, kit, detail_parent)
     if isinstance(curve, CareerCourse):
         from environment.surface_mesh import surface_mesh
 
@@ -614,6 +633,8 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
         node.setMaterial(kit['surface-material'])
         node.reparentTo(root)
         yield 'course-terrain'
+        yield from foliage_steps(root, index, seed, curve, kit, detail_parent)
+        yield from woodland_and_normals_steps(root, index, curve, seed, kit)
         return
     columns = TERRAIN_COLUMNS
     beds = understory(index,seed)
@@ -713,14 +734,7 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
         node.setMaterial(kit["surface-material"])
         node.reparentTo(root)
         yield "terrain-mesh"
-    yield from vegetation_steps(root,index,seed,curve,kit,detail_parent)
-    if index % 3 != 0:
-        s, d = start + 94, -42
-        rock = kit["strata-shelf"].copyTo(detail_parent(s))
-        rock.setPos(terrain_point(curve, d, s, seed) - origin - Vec3(0, 0, .4))
-        rock.setScale(1.2, 1.8, 1.1)
-        rock.setH((curve.sample(s).heading if curve else 0) + 15)
-        yield "rocks"
+    yield from foliage_steps(root, index, seed, curve, kit, detail_parent)
     # 每段都持有自己的海面和背景截面，随原segment回收，不堆积远景。
     water_vertices, faces = [], []
     for local in range(0, 201, 5):
@@ -748,3 +762,4 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
     from environment.expressway_city import city_steps
 
     yield from city_steps(root, index, seed, curve, kit)
+    yield from woodland_and_normals_steps(root, index, curve, seed, kit)

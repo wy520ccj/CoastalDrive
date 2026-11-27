@@ -8,7 +8,7 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode
 
-from ui.lab_widgets import LAB_ERROR, MUTED
+from ui.lab_widgets import LAB_ERROR, MUTED, rounded_panel
 
 ERROR = LAB_ERROR
 
@@ -16,16 +16,17 @@ ERROR = LAB_ERROR
 class LabFeedback:
     def __init__(self, app):
         self.footer = OnscreenText(parent=app.root, font=app.font, fg=MUTED,
-            text="选择工况后点击开始试验，拖动时间轴可逐帧分析", pos=(-.92, -.948), scale=.030,
-            wordwrap=80, align=TextNode.ALeft, mayChange=True)
-        self.root = DirectFrame(parent=app.root, frameColor=(.995, .942, .935, 1),
-            frameSize=(-.94, 1.72, -.98, -.74), sortOrder=130, state=DGG.NORMAL)
-        DirectFrame(parent=self.root, frameColor=ERROR,
-                    frameSize=(-.94, -.924, -.98, -.74))
-        app.text("请检查以下问题", -.87, -.795, .040, ERROR, parent=self.root)
+            text="选择工况后点击开始试验，拖动时间轴可逐帧分析", pos=(-.94, -.948), scale=.029,
+            wordwrap=82, align=TextNode.ALeft, mayChange=True)
+        self.root = DirectFrame(parent=app.root, frameColor=(0, 0, 0, 0),
+            frameSize=(-.94, 1.72, -.97, -.73), sortOrder=130, state=DGG.NORMAL)
+        rounded_panel(self.root, "error-edge", (-.944, 1.724, -.974, -.726), (.88, .68, .66, 1), .020)
+        rounded_panel(self.root, "error-card", (-.94, 1.72, -.97, -.73), (.995, .942, .935, 1), .018)
+        rounded_panel(self.root, "error-accent", (-.928, -.916, -.952, -.748), ERROR, .006)
+        app.text("请检查以下问题", -.88, -.804, .038, ERROR, parent=self.root, font=app.heading_font)
         self.message = OnscreenText(parent=self.root, font=app.font, fg=ERROR, text="",
-            pos=(-.87, -.855), scale=.034, wordwrap=68, align=TextNode.ALeft, mayChange=True)
-        app.button("收起提示", 1.50, -.795, .32, self.dismiss, parent=self.root)
+            pos=(-.88, -.866), scale=.033, wordwrap=68, align=TextNode.ALeft, mayChange=True)
+        app.button("收起提示", 1.50, -.792, .32, self.dismiss, parent=self.root)
         self.root.hide()
 
     def setText(self, text):

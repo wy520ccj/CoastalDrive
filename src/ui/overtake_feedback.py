@@ -45,7 +45,7 @@ def incident_feedback(incident):
     advice = {'front': '下次更早收油或制动，跟车净距至少10m。',
               'parallel': '下次并行至少留1m侧距，保持横向空间。',
               'clear': '下次等整车领先10m，再向对方车道切回。'}[incident.kind]
-    return measured+'\n'+advice+('\n拍间数值按原保守包络插值。' if incident.between_ticks else '')
+    return measured+'\n'+advice+('\n帧间最小间距由相邻采样步插值估算。' if incident.between_ticks else '')
 
 
 def result_feedback(result):

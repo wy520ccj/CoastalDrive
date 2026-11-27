@@ -381,7 +381,12 @@ def build_page(panel, spec, draft, tab, notice):
     if reference:
         button('切换：'+('弯道改装' if 'braking' in spec.id else '制动改装'), width*.49, 23, 158, 42,
                'reference-topic', 1 if 'braking' in spec.id else 0, role='secondary')
-    button('‹  返回巡回' if practice else '‹  返回', left, 862, 190, 58, 'challenge-back', role='footer')
+    back_label = ('‹  返回巡回' if practice else
+                  '‹  返回车库' if app.budget_origin == 'garage' else
+                  '‹  返回首页' if app.budget_origin == 'coastal' else
+                  '‹  返回高速' if app.budget_origin == 'highway' else
+                  '‹  返回')
+    button(back_label, left, 862, 190, 58, 'challenge-back', role='footer')
     button('保存方案', left+230, 862, 190, 58, 'challenge-save', role='secondary')
     button('查看曲线' if reference else '参考试验', left+436, 862, 190, 58, 'challenge-lab', role='secondary')
     if app.budget_origin == 'cup':
@@ -697,7 +702,10 @@ def result_page(panel, spec, status):
     panel.challenge_readouts['budget'].setText(f'本场预算 {spec.budget}')
     button('Esc 返回综合杯' if app.budget_origin == 'cup' else
            'Esc 返回巡回' if app.budget_origin in ('tour', 'tour-practice') else
-           'Esc 返回进阶' if app.budget_origin == 'journey' else 'Esc 返回赛事',
+           'Esc 返回进阶' if app.budget_origin == 'journey' else
+           'Esc 返回车库' if app.budget_origin == 'garage' else
+           'Esc 返回首页' if app.budget_origin == 'coastal' else
+           'Esc 返回高速' if app.budget_origin == 'highway' else 'Esc 返回赛事',
            left, 880, 190, 42, 'challenge-back', role='footer')
     retry_x = width*.48
     if reference is not None and reference.build != result.build and not (advanced or needs_save):
@@ -741,13 +749,18 @@ def pause_page(panel, spec, draft, status):
     label(f'{seconds:.1f} s · {progress:.0f} / {spec.distance_m:.0f} m', x, 252, 20, theme.TEXT_SUB)
     label(f'本场改装 {draft.cost} / {spec.budget}', x, 294, 20, theme.TEXT_LIGHT)
     origin = panel.vehicle_view.base.budget_origin
-    back = '返回综合杯' if origin == 'cup' else '返回巡回' if origin in ('tour', 'tour-practice') else '返回挑战'
-    for title, y, action in (('继续驾驶', 348, 'challenge-resume'),
-                             ('从起点重试', 456, 'challenge-retry'),
-                             ('调整方案', 564, 'challenge-adjust'),
-                             (back, 672, 'challenge-back')):
-        item = button(title, x, y, inner, 72, action, role='primary' if y == 348 else 'secondary', primary=y == 348)
-        if y == 348:
+    back = ('返回综合杯' if origin == 'cup' else
+            '返回巡回' if origin in ('tour', 'tour-practice') else
+            '返回车库' if origin == 'garage' else
+            '返回首页' if origin == 'coastal' else
+            '返回高速' if origin == 'highway' else '返回挑战')
+    for title, y, action in (('继续驾驶', 344, 'challenge-resume'),
+                             ('设置', 432, 'challenge-settings'),
+                             ('从起点重试', 520, 'challenge-retry'),
+                             ('调整方案', 608, 'challenge-adjust'),
+                             (back, 696, 'challenge-back')):
+        item = button(title, x, y, inner, 68, action, role='primary' if y == 344 else 'secondary', primary=y == 344)
+        if y == 344:
             item['text_pos'] = (16*unit, -7*unit)
             ic = atelier.picture(item, panel.loader, 'atelier/icon-steering.png',
                                  (-74*unit, -46*unit, -14*unit, 14*unit), color=theme.INK)

@@ -3,6 +3,8 @@
 import math
 from dataclasses import dataclass
 
+from suspension_kc import snapshot_kc_angles
+
 
 @dataclass(frozen=True)
 class Signal:
@@ -93,8 +95,9 @@ SIGNALS = (
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
     *UNSPRUNG_SIGNALS,
 )
-SIGNAL_BY_KEY = {signal.key: signal for signal in SIGNALS}
-PRE_UNSPRUNG_SIGNAL_KEYS = set(SIGNAL_BY_KEY)-{s.key for s in UNSPRUNG_SIGNALS}
+_PRE_FIDELITY02_SIGNALS = SIGNALS
+PRE_FIDELITY02_SIGNAL_KEYS = {signal.key for signal in _PRE_FIDELITY02_SIGNALS}
+PRE_UNSPRUNG_SIGNAL_KEYS = PRE_FIDELITY02_SIGNAL_KEYS - {s.key for s in UNSPRUNG_SIGNALS}
 PRE_ALIGN_SIGNAL_KEYS = PRE_UNSPRUNG_SIGNAL_KEYS - {f"{key}_{wheel}"
     for key in ("mz", "trail", "contact_steering_work") for wheel in ("fl", "fr", "rl", "rr")}
 LEGACY_SIGNAL_KEYS = {"time", "tick", "speed", "ax", "ay", "yaw", "steering", "steering_request",
@@ -103,8 +106,28 @@ LEGACY_SIGNAL_KEYS = {"time", "tick", "speed", "ax", "ay", "yaw", "steering", "s
     f"{field}_{wheel}" for field in ("kappa", "load", "omega", "fx", "fy", "grip", "abs", "pressure")
     for wheel in ("fl", "fr", "rl", "rr")}
 
+KC_SIGNALS = (
+    *(Signal(f"camber_{wheel}", f"车轮外倾角 {wheel.upper()}", "deg",
+             f"suspension_kc.snapshot_kc_angles(Snapshot.player, config)[1][{index}]; automotive camber outward positive")
+      for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *(Signal(f"kc_steer_{wheel}", f"K&C 实际轮角 {wheel.upper()}", "deg",
+             f"suspension_kc.snapshot_kc_angles(Snapshot.player, config)[0][{index}]; Ackermann + toe")
+      for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+)
+ESTIMATE_SIGNALS = (
+    Signal("est_speed", "估计车速", "km/h", "ChassisEstimate.vx_mps * 3.6; sensor_ekf mode only"),
+    Signal("est_beta", "估计车身侧偏角", "deg", "ChassisEstimate.sideslip_deg; sensor_ekf mode only"),
+    Signal("est_yaw", "估计横摆角速度", "rad/s", "ChassisEstimate.yaw_rate_radps; sensor_ekf mode only"),
+    Signal("est_mu", "在线辨识路面附着", "1", "ChassisEstimate.mu_est; sensor_ekf mode only"),
+    Signal("est_vx_std", "车速估计标准差", "m/s", "ChassisEstimate.vx_std_mps; sensor_ekf mode only"),
+    Signal("est_beta_std", "侧偏角估计标准差", "deg", "ChassisEstimate.beta_std_deg; sensor_ekf mode only"),
+)
+ESTIMATE_SIGNAL_KEYS = {signal.key for signal in ESTIMATE_SIGNALS}
+SIGNALS = (*_PRE_FIDELITY02_SIGNALS, *KC_SIGNALS, *ESTIMATE_SIGNALS)
+SIGNAL_BY_KEY = {signal.key: signal for signal in SIGNALS}
 
-def sample_signals(snapshot, command, start_time):
+
+def sample_signals(snapshot, command, start_time, *, config=None, estimate=None):
     player = snapshot.player
     horizontal_speed = math.hypot(*player.velocity[:2])
     values = {"time": snapshot.time-start_time, "tick": snapshot.tick, "speed": player.speed*3.6,
@@ -140,6 +163,21 @@ def sample_signals(snapshot, command, start_time):
         values[f"ltr_{axle}"] = ((values[f"sample_load_{right}"]-values[f"sample_load_{left}"])/total
                                  if total > 0 else None)
     sample_unsprung(player,values)
+    if config is not None:
+        kc_steers, kc_cambers = snapshot_kc_angles(player, config)
+    else:
+        kc_steers = tuple(player.wheel_dynamics[i].steering for i in range(4))
+        kc_cambers = (0.0, 0.0, 0.0, 0.0)
+    for index, wheel in enumerate(("fl", "fr", "rl", "rr")):
+        values[f"camber_{wheel}"] = kc_cambers[index]
+        values[f"kc_steer_{wheel}"] = kc_steers[index]
+    if estimate is None:
+        values.update(est_speed=None, est_beta=None, est_yaw=None,
+                      est_mu=None, est_vx_std=None, est_beta_std=None)
+    else:
+        values.update(est_speed=estimate.vx_mps * 3.6, est_beta=estimate.sideslip_deg,
+                      est_yaw=estimate.yaw_rate_radps, est_mu=estimate.mu_est,
+                      est_vx_std=estimate.vx_std_mps, est_beta_std=estimate.beta_std_deg)
     return values
 
 

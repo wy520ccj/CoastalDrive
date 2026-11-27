@@ -86,7 +86,7 @@ def test_report_is_recomputed_and_source_is_released_after_override(tmp_path):
     metadata = output["metadata"]
     validate_metadata(metadata)
     field = "suspension_spring_rates"
-    assert "非实测" in source_note(metadata, field, config.suspension_spring_rates, asdict(config))
+    assert "合成基准数据" in source_note(metadata, field, config.suspension_spring_rates, asdict(config))
     assert "已覆盖" in source_note(metadata, field, (1, 2, 3, 4), asdict(config))
     assert source_note(metadata, "mass", config.mass, asdict(config)) is None
     tampered = copy.deepcopy(metadata)

@@ -25,6 +25,8 @@ from mechanical_kernels import (
     suspension_forces,
     suspension_projection,
     suspension_residuals,
+    tire_combined_force,
+    tire_contact_jacobian,
     wheel_brake_correction,
     wheel_contact_state,
     wheel_free_state,
@@ -56,7 +58,7 @@ from shaft_transmission import (
 )
 from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
 from suspension_kinematics import finite_contact_system
-from tire_compliance import contact_jacobian, energy_terms
+from tire_compliance import energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
 from transmission_ports import (
@@ -299,7 +301,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        synchronizing=False, synchronizer_capacity=0.,
                        downstream_omega=(), downstream_inertias=(), downstream_axes=(),
                        suspension=None, rolling_coefficients=(0.,) * 4, query_lock=None,
-                       game_solver_tolerance=False):
+                       game_solver_tolerance=False, inclination_rad=(0.,) * 4):
     """九维q含实体输入轴；未指定输入轴时保留原八维机制供旧/新A/B。"""
     mass, wheel_inertia = config.mass, config.wheel_inertia
     game = game_solver_tolerance
@@ -463,6 +465,21 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     modes = [None] * 4
     rolling = tuple(max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                         abs(radii[i] * omega[i])) >= config.static_contact_speed for i, frame in enumerate(frames))
+    camber_law = ()
+    if any(inclination_rad) and (config.camber_stiffness or rear_config.camber_stiffness):
+        # 固定子步初速的低速系数，切向求解中只随构型刷新实际轮荷。
+        camber_law = tuple((car.camber_stiffness * math.sin(gamma)
+                            * min(1., abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])) / car.slip_speed)
+                            if rolling[i] and gamma != 0. and car.camber_stiffness != 0. else 0.,
+                            car.camber_load_exponent)
+                           for i, (frame, car, gamma) in enumerate(zip(frames, configurations, inclination_rad)))
+
+    def camber_offset(i):
+        load = wheel_loads[i]
+        if not camber_law or load == 0. or camber_law[i][0] == 0.:
+            return 0.
+        return camber_law[i][0] * (load / configurations[i].tire_reference_load) ** camber_law[i][1]
+
     static = tuple((wheel_loads[i] > 0 if suspension is None else suspension.touching[i]) and max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                    abs(dot(velocity, frame.axle) + dot(angular, moments_y[i])), abs(radii[i] * omega[i]))
                    < config.static_contact_speed for i, frame in enumerate(frames))
@@ -611,10 +628,13 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             return wheel_contact_state(state, end_velocity, wheel_start, index, frame.tangent, frame.axle,
                 moments_x[index], moments_y[index], radii[index], (fx, fy), deformations[index],
                 contact_parameters[index], tire_hardware[index], dt, rolling[index], None if shaft else math.hypot,
-                frame.steering_lateral_velocity)
+                frame.steering_lateral_velocity, camber_offset(index))
         vx, vy, _slip = velocities(index, state, end_velocity)
         grip, cx, cy = contact_parameters[index]
         kappa, alpha = slip_state(vx, vy, state[index + wheel_start], radii[index], car)
+        camber = camber_offset(index)
+        if camber != 0.:
+            return tire_combined_force(kappa, alpha, grip, cx, cy, car.tire_shape, car.tire_curvature, math.hypot, camber), None
         return combined_force(kappa, alpha, grip, cx, cy, car.tire_shape, car.tire_curvature), None
 
     def solve_wheel(i, gyro):
@@ -629,7 +649,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 moments_x[i], moments_y[i], deformations[i], contact_parameters[i], tire_hardware[i],
                 rolling[i], wheel_tolerance, forces[i][:2],
                 suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, None,
-                frame.steering_lateral_velocity, *game_option)
+                frame.steering_lateral_velocity,
+                *((game, camber_offset(i)) if camber_law else game_option))
             return (fx, fy, brake), "magic-formula" if wheel_loads[i] > 0 else "airborne"
         if shaft:
             free_base_wheel, velocity_base = wheel_free_state(wheel_map, forces, velocity,
@@ -712,10 +733,10 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             slip_jacobian = tuple(tuple(gradients[j][a] for j in range(2)) for a in range(2))
             denominator_gradient = (tuple(math.copysign(1., vx) * value[2] for value in gradients)
                                     if abs(vx) > car.slip_speed else (0., 0.))
-            target = contact_jacobian((fx, fy), deformations[i], slip, slip_jacobian,
+            target = tire_contact_jacobian((fx, fy), deformations[i], slip, slip_jacobian,
                 max(abs(vx), car.slip_speed), denominator_gradient, rolling[i], contact_parameters[i][0],
                 *contact_parameters[i][1:], dt, car.tire_contact_stiffness, car.tire_contact_damping,
-                car.tire_shape, car.tire_curvature)
+                car.tire_shape, car.tire_curvature, math.hypot, camber_offset(i))
             return 1 - target[0][0], -target[0][1], -target[1][0], 1 - target[1][1]
 
         def sticking_residual(fx, fy):
@@ -743,6 +764,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 a, b = matrix[0]
                 c, d = matrix[1]
                 rhs_x, rhs_y = tuple(slopes[a] * patch[a] for a in range(2))
+                if camber_law:
+                    rhs_y += camber_offset(i)
                 determinant = a * d - b * c
                 if not game or abs(determinant) > 1e-12:
                     guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
@@ -902,7 +925,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                  rolling, wheel_supported, wheel_loads, tire_hardware, laws,
                  suspension.gradients, suspension.touching,
                  tuple(0. if value is None else value for value in suspension.alignment),
-                 tuple(frame.steering_lateral_velocity for frame in frames)), *game_option)
+                 tuple(frame.steering_lateral_velocity for frame in frames)),
+                *((game, camber_law) if camber_law else game_option))
         finally:
             if release_query_lock:
                 query_lock.acquire()
@@ -954,7 +978,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 if shaft:
                     maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
                         deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
-                        tire_compliance, None, tuple(frame.steering_lateral_velocity for frame in frames))
+                        tire_compliance, None, tuple(frame.steering_lateral_velocity for frame in frames),
+                        tuple(camber_offset(i) for i in range(4)) if camber_law else None)
                 else:
                     maximum, brake_error = 0., 0.
                     for i in range(4):

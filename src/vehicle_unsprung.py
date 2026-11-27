@@ -7,10 +7,11 @@ import numpy as np
 from panda3d.core import Vec3
 
 from radial_geometry import RadialRoads
+from suspension_kc import wheel_kinematics
 from tire_aligning import brush_trail
 from tire_compliance import project_deformation, world_deformation
 from tire_drivetrain import DrivetrainStep
-from tire_properties import tire_grip, tire_stiffness
+from tire_properties import tire_camber_stiffness, tire_grip, tire_stiffness
 from unsprung_body import NativeWheelGuides, SprungBodyFrame, apply_joint_forces
 from unsprung_contact_geometry import FiniteRadialContact
 from unsprung_drivetrain import drivetrain_ports, tire_ports
@@ -59,11 +60,13 @@ def read_kinematics(car):
 
 
 def wheel_axes(rotation,angles):
-    return np.array([mechanical_axis(rotation[:,0],rotation[:,1],a if i<2 else 0.) for i,a in enumerate((*angles,0.,0.))])
+    return np.array([mechanical_axis(rotation[:,0],rotation[:,1],angles[i] if i<len(angles) else 0.)
+                     for i in range(4)])
 
 
-def read_mechanics(car, angles):
-    position,rotation,centers,speeds,q,u,transverse,velocity = read_kinematics(car)
+def read_mechanics(car, angles, *, kinematics=None):
+    position,rotation,centers,speeds,q,u,transverse,velocity = (
+        read_kinematics(car) if kinematics is None else kinematics)
     mechanical = assemble_unsprung(car._sprung_frame.partition,rotation,q,((0.,0.,1.),)*4,velocity[:10])
     axes = wheel_axes(rotation,angles)
     hardware = drivetrain_ports(mechanical,axes,rotation@car.config.engine_axis,rotation@car.config.input_shaft_axis,
@@ -109,11 +112,25 @@ class UnsprungAdvanceInput:
     body_external_torque: np.ndarray | None = None
     finite_motion: object | None = None
     jacobian_hint: JointJacobianHint | None = None
+    inclination_rad: tuple = (0.,) * 4
 
     @classmethod
     def read(cls, car, pressures, angles, tick, dt, accumulate, static_shapes):
         config,body = car.config,car._chassis
-        position,rotation,centers,speeds,q,_u,_transverse,v,hardware = read_mechanics(car,angles)
+        kinematics = None
+        inclination = (0.,) * 4
+        if config.suspension_kc_enabled:
+            kinematics = read_kinematics(car)
+            kc_angles, _camber, inclination = wheel_kinematics(
+                car.steering.angle, tuple(kinematics[4]+car._unsprung_reference), config)
+            if len(angles) == 2:
+                angles = kc_angles
+            else:
+                inclination = tuple(value + math.radians(config.camber_steer_gain * (angles[i] - kc_angles[i]))
+                                    if i < 2 else value for i, value in enumerate(inclination))
+            for i, angle in enumerate(angles):
+                car._vehicle.setSteeringValue(-angle, i)
+        position,rotation,centers,speeds,q,_u,_transverse,v,hardware = read_mechanics(car,angles,kinematics=kinematics)
         guide_bias = car._wheel_guides.velocity_bias(dt)
         motion = FiniteSuspensionMotion(position,rotation,centers,q+car._unsprung_reference,
                                         hardware.mechanical,guide_bias,dt)
@@ -123,17 +140,20 @@ class UnsprungAdvanceInput:
                              else config.grass_friction for hit in geometry.hits])
         rolling = np.array([config.rolling_coefficient if hit is None or car.on_asphalt(*hit.point[:2])
                             else config.grass_rolling_coefficient for hit in geometry.hits]) if config.wheel_rolling_resistance else np.zeros(4)
-        steer = np.array([-math.radians((angles[i] if i<2 else 0.)-old.steering)/dt*rotation[:,2]
+        steer = np.array([-math.radians((angles[i] if i<len(angles) else 0.)-old.steering)/dt*rotation[:,2]
                           for i,old in enumerate(car.tires.states)])
         trails,local_deformation,frame_loss = [],[],[]
         for i,old in enumerate(car.tires.states):
             load = old.normal_load if old.road_support and geometry.hits[i] is not None else 0.
             tire = config if i<2 else car.tires.rear_config
             cx,cy = tire_stiffness(load,tire)
+            gamma = inclination[i]
+            cgamma = (tire_camber_stiffness(load,tire)*min(1.,abs(old.longitudinal_speed)/tire.slip_speed)
+                      if gamma != 0. else 0.)
             trails.append(brush_trail(config.tire_contact_half_length,
                 0. if old.force_patch_kappa is None else old.force_patch_kappa,
                 0. if old.force_patch_alpha is None else old.force_patch_alpha,
-                tire_grip(load,friction[i],tire),cx,cy,old.longitudinal_speed,config.static_contact_speed)
+                tire_grip(load,friction[i],tire),cx,cy,old.longitudinal_speed,config.static_contact_speed,cgamma,gamma)
                 if config.tire_aligning_enabled else 0.)
             basis = tuple(map(tuple,(geometry.tangents[i],geometry.laterals[i],geometry.normals[i])))
             projected,loss = project_deformation(car.tires.deformation[i],basis,config.tire_contact_stiffness)
@@ -166,7 +186,7 @@ class UnsprungAdvanceInput:
             car.powertrain.capacity,capacities,car.powertrain.mechanical_ratio,car.powertrain.synchronizing,
             steering_torque,steer,np.asarray(trails),tuple(angles),tick,dt,accumulate,np.asarray(frame_loss),
             air_velocity,air_force,finite,guide_bias,wheel_known,True,np.asarray(tuple(body.getTotalTorque())),motion,
-            JointJacobianHint(seed))
+            JointJacobianHint(seed),inclination)
 
     def solve(self, *, query_lock=None):
         """纯数值子步；真实世界查询已在read阶段完成。"""
@@ -179,7 +199,7 @@ class UnsprungAdvanceInput:
             self.dt,self.config,wheel_initial_velocity=self.wheel_velocity,finite_contact=self.finite_contact,
             wheel_velocity_bias=self.guide_velocity_bias,wheel_known_force=self.wheel_known_force,
             native_body_gyro=self.native_body_gyro,body_external_torque=self.body_external_torque,finite_motion=self.finite_motion,
-            jacobian_hint=self.jacobian_hint)
+            jacobian_hint=self.jacobian_hint,inclination_rad=self.inclination_rad)
 
     def resolved_source(self, result):
         source = self
@@ -255,7 +275,7 @@ def publish_tires(car, source, result):
             longitudinal_speed=wheel.vx,lateral_speed=wheel.vy,kappa=wheel.kappa if supported else None,
             alpha=wheel.alpha if supported else None,fx=wheel.fx,fy=wheel.fy,drive_torque=drive[i],
             brake_capacity=source.brake_capacity[i],brake_torque=wheel.brake_torque,normal_load=result.normal.normal_force[i],
-            road_support=supported,steering=source.angles[i] if i<2 else 0.,force_contact_tick=source.tick,
+            road_support=supported,steering=source.angles[i] if i<len(source.angles) else 0.,force_contact_tick=source.tick,
             force_residual=result.force_error,force_kappa=wheel.kappa if supported else None,force_alpha=wheel.alpha if supported else None,
             force_mode=wheel.mode,longitudinal_impulse=prior.longitudinal_impulse+source.dt*wheel.fx,
             lateral_impulse=prior.lateral_impulse+source.dt*wheel.fy,brake_angular_impulse=prior.brake_angular_impulse+source.dt*wheel.brake_torque,
@@ -282,7 +302,7 @@ def publish_tires(car, source, result):
 
 def observe_unsprung(car, tick):
     """只读真实车身/轮心与已积分轴速，采样不修改自由度。"""
-    angles = tuple(s.steering for s in car.tires.states[:2])
+    angles = tuple(s.steering for s in (car.tires.states if car.config.suspension_kc_enabled else car.tires.states[:2]))
     position,rotation,centers,speeds,q,u,_xy,v = read_kinematics(car)
     axes = wheel_axes(rotation,angles)
     geometry = read_unsprung_geometry(car._world,car._chassis,centers,rotation[:,2],axes,car.config)

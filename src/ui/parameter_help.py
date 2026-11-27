@@ -28,7 +28,8 @@ from ui.lab_widgets import (
     MUTED,
     rounded_panel,
 )
-from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
+from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH, vehicle_design
+from vehicle_parameters import config_from_document
 
 GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "悬架",
                 "powertrain": "动力与传动", "electronics": "制动与控制"}
@@ -41,7 +42,8 @@ BROWSER_LABELS = {"suspension_spring_rates":"轮心等效弹簧率",
                   "suspension_compression":"质量归一化压缩阻尼","suspension_relaxation":"质量归一化伸张阻尼"}
 OPTION_FIELDS = {"speed": "speed_kph", "duration": "duration", "steer": "steering_deg",
                  "onset": "onset", "radius": "radius_m", "bump_height": "bump_height_m",
-                 "bump_length": "bump_length_m", "bump_distance": "bump_distance_m"}
+                 "bump_length": "bump_length_m", "bump_distance": "bump_distance_m",
+                 "sweep_end": "sweep_end_kph"}
 
 
 def display_value(value):
@@ -60,39 +62,39 @@ class ParameterHelp:
         self.root = DirectFrame(parent=app.root, frameColor=(.06, .08, .11, .45),
                                frameSize=(-1.78, 1.78, -1, 1), sortOrder=110, state=DGG.NORMAL)
         self.root.setTransparency(TransparencyAttrib.MAlpha)
-        rounded_panel(self.root, "parameter-help-edge", (-1.484, 1.554, -.764, .744), BORDER, .028)
-        rounded_panel(self.root, "parameter-help-card", (-1.48, 1.55, -.76, .74), LAB_CARD, .026)
-        rounded_panel(self.root, "parameter-browser", (-1.40, -.53, -.56, .565), LAB_SURFACE, .018)
+        rounded_panel(self.root, "parameter-help-edge", (-1.484, 1.484, -.764, .744), BORDER, .028)
+        rounded_panel(self.root, "parameter-help-card", (-1.48, 1.48, -.76, .74), LAB_CARD, .026)
+        rounded_panel(self.root, "parameter-browser", (-1.40, -.56, -.58, .565), LAB_SURFACE, .018)
         DirectFrame(parent=self.root, frameColor=LAB_ACCENT_B,
-                    frameSize=(-1.41, -1.40, .624, .683))
-        app.text("参数计算说明", -1.37, .646, .048, parent=self.root, font=app.heading_font)
-        app.button("关闭 · Esc", 1.27, .661, .40, self.hide, parent=self.root)
-        self.groups = app.option(list(GROUP_LABELS.values()), -1.37, .486, .76,
+                    frameSize=(-1.39, -1.38, .626, .684))
+        app.text("参数计算说明", -1.34, .641, .048, parent=self.root, font=app.heading_font)
+        app.button("关闭 · Esc", 1.19, .655, .36, self.hide, parent=self.root)
+        self.groups = app.option(list(GROUP_LABELS.values()), -1.36, .490, .76,
                                  self.choose_group, parent=self.root)
-        self.buttons = [app.button("", -.99, .365 - i * .09, .76,
+        self.buttons = [app.button("", -.98, .372 - i * .092, .76,
                                    lambda index=i: self.choose_item(index), parent=self.root)
                         for i in range(8)]
-        app.button("‹", -1.20, -.434, .24, lambda: self.turn(-1), parent=self.root)
-        app.button("›", -.78, -.434, .24, lambda: self.turn(1), parent=self.root)
-        self.page_label = app.text("", -1.33, -.525, .035, MUTED, parent=self.root)
-        self.title = app.text("", -.45, .507, .043, parent=self.root, font=app.heading_font)
+        app.button("上一页", -1.21, -.438, .30, lambda: self.turn(-1), parent=self.root)
+        app.button("下一页", -.75, -.438, .30, lambda: self.turn(1), parent=self.root)
+        self.page_label = app.text("", -.98, -.532, .032, MUTED, parent=self.root, align=TextNode.ACenter)
+        self.title = app.text("", -.47, .507, .043, parent=self.root, font=app.heading_font)
         self.content_scroll = DirectScrolledFrame(parent=self.root,
-            frameSize=(-.49, 1.49, -.58, .46), canvasSize=(-.49, 1.44, -.58, .46),
+            frameSize=(-.50, 1.40, -.58, .46), canvasSize=(-.50, 1.35, -.58, .46),
             frameColor=(0, 0, 0, 0), relief=None, scrollBarWidth=.035,
             horizontalScroll_scrollSize=.05, verticalScroll_scrollSize=.08)
         self.content = self.content_scroll.getCanvas()
         self.details = OnscreenText(parent=self.content, font=app.font, text="", fg=LAB_TEXT,
-                                   pos=(-.45, .408), scale=.035, align=TextNode.ALeft,
-                                   wordwrap=53, mayChange=True)
+                                   pos=(-.47, .408), scale=.035, align=TextNode.ALeft,
+                                   wordwrap=50, mayChange=True)
         self.notes = OnscreenText(parent=self.content, font=app.font, text="", fg=LAB_TEXT,
-                                 pos=(-.45, 0), scale=.033, align=TextNode.ALeft,
-                                 wordwrap=57, mayChange=True)
+                                 pos=(-.47, 0), scale=.033, align=TextNode.ALeft,
+                                 wordwrap=54, mayChange=True)
         self.equations = self.content.attachNewNode("typeset-equations")
         self.asset_dir = resource_root() / "assets/game/ui/formulas"
         self.formula_manifest = json.loads((self.asset_dir / "manifest.json").read_text(encoding="utf-8"))
         self.formula_nodes = []
-        app.text("名称悬停 / 输入框聚焦 → F1\n左侧可浏览完整模型参数", -1.35, -.658,
-                 .035, MUTED, parent=self.root)
+        app.text("名称悬停 / 输入框聚焦 → F1  ·  左侧可浏览完整模型参数", -1.36, -.676,
+                 .031, MUTED, parent=self.root)
         self.refresh_list()
         self.root.hide()
 
@@ -131,19 +133,19 @@ class ParameterHelp:
         if app.record is not None:
             config = app.record.metadata["vehicle_config"]
             options = app.record.metadata["summary"]["options"]
-            basis = "已保存试验配置（说明使用当前源码，不改旧记录）"
+            basis = "已保存试验记录的配置"
             design_id = options["vehicle_id"]
             parameter_metadata = app.record.metadata.get("parameter_metadata")
         elif app.run_state is not None:
             config, options = asdict(app.run_state.config), asdict(app.run_state.options)
-            basis = "当前试验的实际配置"
+            basis = "当前试验运行配置"
             design_id = options["vehicle_id"]
             parameter_metadata = app.run_state.parameter_metadata
         else:
             design = DESIGN_VEHICLES[app.vehicle_menu.selectedIndex]
             config = asdict(design.config if app.engineered_config is None else app.engineered_config)
             options = {}
-            basis = "选中车型的工程配置；尚未试验"
+            basis = "当前选中车型的预设工程配置"
             design_id = design.id
             parameter_metadata = app.parameter_metadata
         return config,options,basis,design_id,parameter_metadata
@@ -153,22 +155,25 @@ class ParameterHelp:
         if key in METRIC_INFO:
             record = app.active_record()
             if record is None:
-                return "尚无真实试验", "指标值：—"
+                return "尚未运行试验", "指标值：—"
             summary = record.metadata["summary"]
-            analysis = engineering_analysis(record.samples, record.snapshots, summary["options"], summary["reason"])
-            item = next(item for item in (*analysis["metrics"], *analysis["ride"]["metrics"])
+            opts = summary["options"]
+            cfg = config_from_document(record.metadata["vehicle_config"], vehicle_design(opts["vehicle_id"]).config)
+            analysis = engineering_analysis(record.samples, record.snapshots, opts, summary["reason"], config=cfg)
+            item = next(item for item in (*analysis["metrics"], *analysis["ride"]["metrics"],
+                                          *analysis["iso_ride"]["metrics"], *analysis["theory"]["metrics"])
                         if "metric."+item["key"] == key)
-            value = f"{item['value']:.5g}" if item["value"] is not None else "— 未满足工况条件"
-            return "已完成试验记录；"+item["note"], "当前指标："+value
+            value = f"{item['value']:.5g}" if item["value"] is not None else "— 当前工况不适用"
+            return "试验记录统计结果；"+item["note"], "当前指标："+value
         config,options,basis,design_id,parameter_metadata = self.configuration()
         field = ALIASES.get(key, key)
-        current = display_value(config[field]) if field in config else "旧记录未保存此字段"
+        current = display_value(config[field]) if field in config else "记录未包含此字段"
         if field=="suspension_installation_curves" and field in config:
-            current = ("未提供，使用常运动比" if config[field] is None else
-                       "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"；完整坐标见工程JSON")
+            current = ("未配置，采用常运动比" if config[field] is None else
+                       "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"（完整坐标见工程 JSON）")
         if field=="suspension_damper_curves" and field in config:
-            current=("未提供，采用压缩/伸张常阻尼" if config[field] is None else
-                     "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"；完整力速表见工程JSON")
+            current=("未配置，采用常阻尼系数" if config[field] is None else
+                     "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"（完整力速表见工程 JSON）")
         if "." in field and not field.startswith("manual."):
             parent, child = field.split(".")
             current = str(config[parent][child])
@@ -183,49 +188,51 @@ class ParameterHelp:
                 fitted_value = fit["parameters"][field]
             if fitted:
                 if config[field] == fitted_value:
-                    source = "合成算法恢复值，非实测" if fit["conditions"]["source_kind"] == "synthetic" else "按文件声明：台架数据拟合"
+                    source = "合成基准数据拟合（算法验证）" if fit["conditions"]["source_kind"] == "synthetic" else "台架试验数据拟合"
                     conditions = fit["conditions"]
-                    basis += f"\n{source}；{conditions['pressure_kpa']:g}kPa / {conditions['temperature_c']:g}°C / {conditions['speed_mps']:g}m/s"
+                    basis += f"\n{source}（{conditions['pressure_kpa']:g} kPa / {conditions['temperature_c']:g} °C / {conditions['speed_mps']:g} m/s）"
                     if "data_domain" in fit:
                         minimum, maximum = fit["data_domain"]["train"]["fz_N"]
-                        basis += f"\n拟合轮荷 {minimum:g}～{maximum:g} N；不覆盖速度/胎压/温度变化"
+                        basis += f"\n标定轮荷区间：{minimum:g}–{maximum:g} N"
                     else:
-                        basis += "\n旧报告未保存轮荷范围，不能据此声明区间覆盖"
-                    basis += "\n计算来源：纯滑移序列最小二乘拟合，独立留出验证"
+                        basis += "\n标定记录未附带轮荷区间信息"
+                    basis += "\n辨识方法：纯滑移序列最小二乘拟合（独立留出集验证）"
                     if field == "road_friction":
-                        basis += "\nμ为指定轮胎/表面条件下的有效峰值系数"
+                        basis += "\n附着系数 μ 对应标定工况下的路面—轮胎峰值附着特性"
                 else:
-                    basis += "\n已覆盖拟合值，不沿用其标定来源"
+                    basis += "\n当前值已手动修改，偏离原台架标定结果"
             elif suspension_basis is not None:
                 basis += "\n"+suspension_basis
             elif design_id == "gr86-2022-premium-6mt":
                 ledger = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))["metadata"]["vehicle_fields"]
                 if field not in ledger:
-                    basis += "\n车型账本未提供此参数；当前为模型值，不作原厂/实测归属"
+                    basis += "\n车型参数表未单独收录，沿用通用工程默认值"
                 elif json.loads(json.dumps(config[field])) == ledger[field]["value"]:
-                    statuses = {"measured": "实测", "oem": "原厂", "manufacturer": "原厂", "derived": "推导",
-                                "engineering_prior": "工程初值", "model_mechanism": "模型机制"}
+                    statuses = {"measured": "实测数据", "oem": "原厂规格", "manufacturer": "原厂规格", "derived": "工程推导",
+                                "engineering_prior": "工程先验", "model_mechanism": "模型机制",
+                                "literature_prior": "文献先验", "calibrated_train": "试验标定"}
                     status = ledger[field]["status"]
-                    basis += f"\n当前车型账本分类：{statuses.get(status, status)}"
-                    basis += "\n来源说明："+ledger[field]["basis"]
+                    basis += f"\n参数来源分类：{statuses.get(status, status)}"
+                    basis += "\n依据说明："+ledger[field]["basis"]
                 else:
-                    basis += "\n该值已覆盖车型原值，不沿用原来源分类"
+                    basis += "\n当前值已手动修改，偏离车型原始配置"
             else:
-                basis += "\n设计参考值，未作为实车测量数据"
+                basis += "\n工程设计参数（基准模型配置）"
         if key in ALIASES and field not in config:
-            current = "旧记录未保存此字段"
+            current = "记录未包含此字段"
         if key in app.entries:
-            pending = app.entries[key].get().strip() or "留空，采用车型值"
+            pending = app.entries[key].get().strip() or "留空（沿用模型默认值）"
             if key in OPTION_FIELDS:
-                current = str(options.get(OPTION_FIELDS[key], "旧记录未保存此字段")) if options else "尚未试验"
-            return basis, f"待运行编辑值：{pending}\n已运行 / 配置值：{current}"
+                current = str(options.get(OPTION_FIELDS[key], "记录未包含此字段")) if options else "未运行"
+            return basis, f"待运行输入值：{pending}\n当前配置值：{current}"
         if key.startswith("manual."):
-            return basis, f"手动编辑值：{app.manual_entries[key.split('.')[1]].get()}（按应用输入后生效）"
+            return basis, f"手动输入值：{app.manual_entries[key.split('.')[1]].get()}（点击确认输入后生效）"
         if key in EDITOR_INFO:
             menus = {"vehicle": app.vehicle_menu, "maneuver": app.maneuver_menu,
-                     "abs": app.abs_menu, "esc": app.esc_menu, "plot": app.plot_menu}
-            return basis, f"当前选项：{menus[key].get()}（未运行的选项不代表旧结果配置）"
-        value = current if len(current) <= 95 else current[:95] + "…（完整值见工程JSON）"
+                     "abs": app.abs_menu, "esc": app.esc_menu, "plot": app.plot_menu,
+                     "road_class": app.road_class_menu, "feedback_source": app.feedback_menu}
+            return basis, f"当前选项：{menus[key].get()}"
+        value = current if len(current) <= 95 else current[:95] + "…（完整数值见工程 JSON）"
         return basis, f"配置值：{value}"
 
     def show(self, key, *, switch_group=True):
@@ -281,24 +288,24 @@ class ParameterHelp:
                 texture.setMagfilter(Texture.FTLinear)
                 node.setTexture(texture)
                 node.setTransparency(TransparencyAttrib.MAlpha)
-                node.setPos(-.45, 0, bottom-height)
+                node.setPos(-.47, 0, bottom-height)
                 self.formula_nodes.append(node)
                 bottom -= height + .018
             algorithm = FORMULAS[math_key][1]
         else:
             algorithm = info.formula
         if math_key in ("suspension_spring_preloads","suspension_installation_curves"):
-            algorithm += "\nq=0沿用悬架参考长度处的轮心位置；x0不能直接填静载压缩。"
+            algorithm += "\nq = 0 对应悬架设计参考位置；x0 为该位置处弹簧相对自由长度的安装压缩量。"
         if ALIASES.get(key,key) in ("suspension_spring_rates","suspension_compression_damping","suspension_extension_damping"):
-            algorithm += "\n输入是q=0参考轮心等效值；有安装曲线时随行程换算。"
+            algorithm += "\n参数定义为 q = 0 参考位置处的轮心等效值；配置安装位移曲线时按瞬时运动比换算。"
         use=info.use
         if math_key=="suspension_installation_curves" and field=="suspension_spring_preloads":
-            use="F0不改变部件ks；变运动比下，载荷通过几何项改变轮心总切线。松弛/防倾/止挡分别计算。"
+            use="安装预载 F0 定义于 q = 0 处，不改变弹簧本体刚度 ks；变运动比机构下，总切线刚度包含受载几何项，弹簧松弛、防倾杆与限位止挡分别计算。"
         if math_key=="suspension_damper_curves" and field.endswith("damping"):
-            use="当前系数只记录参考零速段斜率；实际受力由整张力速表决定，编辑此系数不改变表。"
-        self.notes.setPos(-.45, bottom-.023)
+            use="当前数值表示力速曲线在零速处的切线斜率；仿真阻尼力由完整分段力速表确定。"
+        self.notes.setPos(-.47, bottom-.023)
         self.notes.setText(f"{algorithm}\n{use}\n\n数值来源\n{basis}\n\n对应源码\n{info.source}")
         lower = min(-.58, self.notes.getTightBounds(self.content)[0].z-.04)
-        self.content_scroll["canvasSize"] = (-.49, 1.44, lower, .46)
+        self.content_scroll["canvasSize"] = (-.50, 1.35, lower, .46)
         self.content_scroll.verticalScroll["value"] = 0
         self.root.show()

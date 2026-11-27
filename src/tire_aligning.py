@@ -4,21 +4,24 @@ import math
 from dataclasses import replace
 
 from rotor_dynamics import cross, dot
-from tire_properties import tire_grip, tire_stiffness
+from tire_properties import tire_camber_stiffness, tire_grip, tire_stiffness
 from wheel_dynamics import Mobility
 
 
-def brush_trail(half_length, kappa, alpha, grip, cx, cy, speed, minimum_speed):
+def brush_trail(half_length, kappa, alpha, grip, cx, cy, speed, minimum_speed, cgamma=0.0, gamma_rad=0.0):
     """前缘零变形、沿接触长度线性增长；滑动段在局部库仑限值饱和。"""
     if grip <= 0. or abs(speed) < minimum_speed:
         return 0.
-    trial = math.hypot(cx * kappa, cy * math.tan(alpha))
+    if cgamma != 0.0 and gamma_rad != 0.0:
+        trial = math.hypot(cx * kappa, -cy * math.tan(alpha) + cgamma * math.sin(gamma_rad))
+    else:
+        trial = math.hypot(cx * kappa, cy * math.tan(alpha))
     adhesion = 1. / max(1., 2. * trial / grip)
     trail = half_length * adhesion * (3. - 2. * adhesion) / (3. * (2. - adhesion))
     return math.copysign(trail, speed)
 
 
-def aligning_frame(frame, previous, config, inverse_inertia, steering_velocity):
+def aligning_frame(frame, previous, config, inverse_inertia, steering_velocity, *, gamma_rad=0.0):
     """冻结上个子步的刷毛分布几何；重新计算共轭速度/力矩与对称Mobility。"""
     if not config.tire_aligning_enabled:
         return frame
@@ -30,7 +33,9 @@ def aligning_frame(frame, previous, config, inverse_inertia, steering_velocity):
     cx, cy = tire_stiffness(load, config)
     trail = brush_trail(config.tire_contact_half_length, kappa, alpha,
                         tire_grip(load, frame.mu, config), cx, cy,
-                        previous.longitudinal_speed, config.static_contact_speed)
+                        previous.longitudinal_speed, config.static_contact_speed,
+                        tire_camber_stiffness(load, config) * min(1., abs(previous.longitudinal_speed) / config.slip_speed)
+                        if gamma_rad != 0. else 0., gamma_rad)
     point = tuple(frame.point[a] - trail * frame.tangent[a] for a in range(3))
     moment_y = cross(point, frame.axle)
     ry = tuple(dot(row, moment_y) for row in inverse_inertia)

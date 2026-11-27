@@ -1,0 +1,170 @@
+{
+  "generator": "tools/environment/prepare_standalone_env.py",
+  "style": "Mediterranean / Pacific Coast Natural Stylized-Photoreal",
+  "sky": {
+    "sky_sha256": "3061c00a16ecae748e84fd6c44c04804f539c118bb66325db858bad87b11bf88",
+    "env_sha256": "d56453e7bcebbf012d8c7c75e0e0fa76de854de07514e76d2514d235635f229a"
+  },
+  "terrain": {
+    "pasture_lin_mean": [
+      0.0541,
+      0.062,
+      0.0102
+    ],
+    "dry_lin_mean": [
+      0.1978,
+      0.15,
+      0.032
+    ],
+    "forest_lin_mean": [
+      0.1037,
+      0.0708,
+      0.0115
+    ]
+  },
+  "textures": [
+    "boulder-diff.png",
+    "boulder-gloss.png",
+    "boulder-normal.png",
+    "fern-diff.png",
+    "fern-gloss.png",
+    "fern-normal.png",
+    "fern-transmission.png",
+    "grass-diff.png",
+    "grass-gloss.png",
+    "grass-normal.png",
+    "grass-transmission.png",
+    "oak-bark-diff.png",
+    "oak-bark-gloss.png",
+    "oak-bark-normal.png",
+    "oak-bark-transmission.png",
+    "oak-leaf-diff.png",
+    "oak-leaf-gloss.png",
+    "oak-leaf-normal.png",
+    "oak-leaf-transmission.png",
+    "shrub-leaf-diff.png"
+  ],
+  "oaks": {
+    "oak-a": {
+      "species": "coastal-oak",
+      "height_m": 14.91,
+      "crown_radius_m": 8.35,
+      "lod1_tris": 4390,
+      "lod2_tris": 2398
+    },
+    "oak-b": {
+      "species": "tall-elm",
+      "height_m": 17.26,
+      "crown_radius_m": 6.62,
+      "lod1_tris": 2650,
+      "lod2_tris": 1442
+    },
+    "oak-c": {
+      "species": "umbrella-pine",
+      "height_m": 14.44,
+      "crown_radius_m": 6.8,
+      "lod1_tris": 2764,
+      "lod2_tris": 1488
+    },
+    "oak-d": {
+      "species": "olive-oak",
+      "height_m": 9.57,
+      "crown_radius_m": 5.49,
+      "lod1_tris": 1550,
+      "lod2_tris": 836
+    },
+    "oak-e": {
+      "species": "golden-oak",
+      "height_m": 13.76,
+      "crown_radius_m": 6.79,
+      "lod1_tris": 2090,
+      "lod2_tris": 1130
+    }
+  },
+  "young_oaks": {
+    "young-a": {
+      "species": "olive-oak",
+      "height_m": 3.8,
+      "tris": 640
+    },
+    "young-b": {
+      "species": "coastal-oak",
+      "height_m": 4.3,
+      "tris": 1842
+    },
+    "young-c": {
+      "species": "golden-oak",
+      "height_m": 3.5,
+      "tris": 878
+    }
+  },
+  "shrubs": {
+    "shrub-a": {
+      "height_m": 1.98,
+      "tris": 324
+    },
+    "shrub-b": {
+      "height_m": 2.63,
+      "tris": 376
+    },
+    "shrub-c": {
+      "height_m": 1.64,
+      "tris": 284
+    }
+  },
+  "ferns": {
+    "fern-a": {
+      "height_m": 0.75,
+      "tris": 940
+    },
+    "fern-b": {
+      "height_m": 0.72,
+      "tris": 940
+    }
+  },
+  "grass_tuft_tris": [
+    55,
+    55,
+    55,
+    55,
+    55,
+    55,
+    54,
+    54
+  ],
+  "boulders": {
+    "huge": {
+      "height_m": 4.73,
+      "lod0_tris": 1280,
+      "lod1_tris": 320
+    },
+    "large_a": {
+      "height_m": 3.73,
+      "lod0_tris": 1280,
+      "lod1_tris": 320
+    },
+    "large_b": {
+      "height_m": 3.77,
+      "lod0_tris": 1280,
+      "lod1_tris": 320
+    },
+    "medium": {
+      "height_m": 2.93,
+      "lod0_tris": 1280,
+      "lod1_tris": 320
+    },
+    "small": {
+      "height_m": 1.88,
+      "lod0_tris": 1280,
+      "lod1_tris": 320
+    }
+  },
+  "bam_sha256": {
+    "boulders.bam": "ceaaf9c2f5ea5e8c4b21c193841274a8b66a616b2ac0bd26a111c460795cc7bd",
+    "ferns.bam": "d6b8bbebd0940b83e80d338f03bd1eb9463f63720f26fef8b0dea144afc1c412",
+    "grass-tufts.bam": "f19ce8f8cf42c112332064336f956ea7690b0345e0cf08f56bc26823c75c89f2",
+    "oaks.bam": "2e57cef2762722858acb6d62a513ffa9fab09beeed86fb651965b541b6142b90",
+    "shrubs.bam": "d70512443d550104aaeb64243da3fcead190e478e05b5aa87201bc6520a59d17",
+    "young-oaks.bam": "91ac12657aa8ebaff23df510b6677848f9767faf5c32f1bae4d51fb02365662b"
+  }
+}

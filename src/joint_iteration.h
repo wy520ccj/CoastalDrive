@@ -11,6 +11,7 @@ typedef struct {
     double previous[8],moment_x[12],moment_y[12],rolling[4],supported[4],loads[4],lateral_bias[4];
     double hardware[20],law[28],parameters[12],normal[4],gradients[24],touching[4],alignment[4];
     double responses[36],mobility[16],road[4],active[3],bias_ports[2];
+    double camber_law[8],camber[4];
     double maximum,brake_error,normal_error,geometry_error;
     JointGeometryRecord geometry_cache[512];
 } JointWork;
@@ -63,7 +64,10 @@ static int joint_normal(JointWork *w,const double *velocity,const double *angula
 static void joint_load_parameters(JointWork *w) {
     for(int i=0;i<4;++i){const double *p=w->law+7*i;double load=w->loads[i],ratio=load/p[1];
         w->parameters[3*i]=load==0.?0.:p[0]*load*pow(ratio,p[2]-1);
-        w->parameters[3*i+1]=p[3]*pow(ratio,p[4]);w->parameters[3*i+2]=p[5]*pow(ratio,p[6]);}
+        w->parameters[3*i+1]=p[3]*pow(ratio,p[4]);w->parameters[3*i+2]=p[5]*pow(ratio,p[6]);
+        w->camber[i]=w->camber_law[2*i]!=0.&&load>0.
+            ? w->camber_law[2*i]*pow(ratio,w->camber_law[2*i+1]) : 0.;
+    }
 }
 static void joint_normal_loads(JointWork *w) {
     for(int i=0;i<4;++i)w->loads[i]=w->supported[i]!=0.&&w->touching[i]!=0.&&w->normal[i]>0.?w->normal[i]/w->alignment[i]:0.;
@@ -83,6 +87,28 @@ static int joint_shared(JointWork *w,const double guess[9]) {
     return joint_shared_values(w->map->shared,state,angular,normal,w->loads,w->supported,w->shared_branch,w->bias_ports,
         w->state,w->road,w->active,w->port_values,&w->shared_branch,&w->shared_port);
 }
+typedef struct {
+    JointWheelForce *wheel;
+    double camber;
+} JointCamberWheel;
+
+static int joint_camber_wheel_values(void *context,double fx,double fy,int jacobian,double *result) {
+    JointCamberWheel *camber_wheel=context;
+    JointWheelForce *data=camber_wheel->wheel;
+    double state[9],velocity[3],brake,force[2]={fx,fy},speed[2],slip[2],gradients[2][3];
+    int branch,mode;
+    if (!joint_wheel_force_state(data,fx,fy,state,velocity,&brake,&branch,&mode)) return 0;
+    if (jacobian) {
+        if (!wheel_derivative_values(data->map,data->wheel,branch,mode,state,velocity,data->moment_x,data->moment_y,
+            data->radius,data->tangent,data->axle,speed,slip,gradients)) return 0;
+    } else {
+        wheel_velocity_values(state,velocity,data->wheel+5,data->tangent,data->axle,
+            data->moment_x,data->moment_y,data->radius,speed,slip);
+    }
+    return wheel_constitutive_values(force,speed,slip,gradients,jacobian,data->previous,data->parameters,
+        data->hardware,data->map->shared->dt,1,data->lateral_bias,data->hypot,camber_wheel->camber,result);
+}
+
 static int joint_wheel(JointWork *w,int i,const double gyro[3]) {
     JointWheelForce c={0};c.map=w->map;c.wheel=i;c.rolling=w->rolling[i]!=0.;c.hypot=Py_None;c.game=w->game;
     c.warm_branches=w->warm_branches;c.warm_modes=w->warm_modes;
@@ -95,7 +121,14 @@ static int joint_wheel(JointWork *w,int i,const double gyro[3]) {
     memcpy(c.parameters,w->parameters+3*i,sizeof(c.parameters));memcpy(c.hardware,w->hardware+5*i,sizeof(c.hardware));c.radius=data->radii[i];
     c.lateral_bias=w->lateral_bias[i];
     int predict=w->sweep==0&&c.rolling&&w->loads[i]>0.;
-    if(!joint_wheel_force_result(&c,w->game?.1:.0001,force,predict,&brake))return 0;
+    if (c.rolling && w->camber[i]!=0.) {
+        JointCamberWheel context={&c,w->camber[i]};
+        double error,state[9],end_velocity[3];
+        int branch,mode;
+        if (!rolling_root_values(joint_camber_wheel_values,&context,c.parameters[0],w->game?.1:.0001,
+                                 force,c.hypot,&error,w->game)
+            || !joint_wheel_force_state(&c,force[0],force[1],state,end_velocity,&brake,&branch,&mode)) return 0;
+    } else if(!joint_wheel_force_result(&c,w->game?.1:.0001,force,predict,&brake))return 0;
     w->forces[i][0]=force[0];w->forces[i][1]=force[1];w->forces[i][2]=brake;return 1;
 }
 static int joint_contact_errors(JointWork *w,double *errors) {
@@ -104,7 +137,7 @@ static int joint_contact_errors(JointWork *w,double *errors) {
         wheel_velocity_values(w->state,w->velocity,i+5,w->map->load.tangents+3*i,w->map->load.axles+3*i,w->moment_x+3*i,w->moment_y+3*i,data->radii[i],speed,slip);
         speed[1]+=w->lateral_bias[i];slip[1]-=w->lateral_bias[i];
         double denominator=fabs(speed[0])>h[0]?fabs(speed[0]):h[0];
-        if(!tire_contact_values(w->forces[i],w->previous+2*i,slip,denominator,w->rolling[i]!=0.,p[0],p[1],p[2],data->dt,h[1],h[2],h[3],h[4],Py_None,target,deformation,rate,patch,&kappa,&alpha,&mode))return 0;
+        if(!tire_contact_camber_values(w->forces[i],w->previous+2*i,slip,denominator,w->rolling[i]!=0.,p[0],p[1],p[2],data->dt,h[1],h[2],h[3],h[4],Py_None,target,deformation,rate,patch,&kappa,&alpha,&mode,w->camber[i]))return 0;
         double ex=w->forces[i][0]-target[0],ey=w->forces[i][1]-target[1],error=hypot_two(ex,ey);
         if(w->game&&!isfinite(error))return 0;
         if(errors){errors[2*i]=ex;errors[2*i+1]=ey;}if(error>w->maximum)w->maximum=error;
@@ -254,6 +287,7 @@ static int joint_iterate_game(JointWork *w) {
     for(int a=0;a<9;++a)w->state[a]=isfinite(initial[a])?initial[a]:0.;
     for(int a=0;a<3;++a)w->velocity[a]=isfinite(w->initial_velocity[a])?w->initial_velocity[a]:0.;
     memset(w->port_values,0,sizeof(w->port_values));memset(w->forces,0,sizeof(w->forces));
+    memset(w->camber,0,sizeof(w->camber));
     memset(w->normal,0,sizeof(w->normal));memset(w->gradients,0,sizeof(w->gradients));
     memset(w->touching,0,sizeof(w->touching));memset(w->loads,0,sizeof(w->loads));
     memset(w->parameters,0,sizeof(w->parameters));memset(w->road,0,sizeof(w->road));
@@ -283,9 +317,9 @@ static PyObject *joint_matrix_object(const double *data,int rows,int columns) {
     for(int i=0;i<rows;++i){PyObject *row=joint_vector_object(data+i*columns,columns);if(!row){Py_DECREF(result);return NULL;}PyTuple_SET_ITEM(result,i,row);}return result;
 }
 static PyObject *joint_solve(PyObject *self,PyObject *args) {
-    PyObject *workspace,*wheel,*suspension,*contacts,*input;
+    PyObject *workspace,*wheel,*suspension,*contacts,*input,*camber=Py_None;
     int game=0;
-    if(!PyArg_ParseTuple(args,"OOOOO|p",&workspace,&wheel,&suspension,&contacts,&input,&game))return NULL;
+    if(!PyArg_ParseTuple(args,"OOOOO|pO",&workspace,&wheel,&suspension,&contacts,&input,&game,&camber))return NULL;
     JointWork *w=PyCapsule_GetPointer(workspace,"CoastalDrive.joint_workspace.v1");if(!w)return NULL;
     if(w->busy){PyErr_SetString(PyExc_RuntimeError,"同一原生共同求解工作区被重入");return NULL;}
     w->map=PyCapsule_GetPointer(wheel,wheel_map_name);w->suspension=PyCapsule_GetPointer(suspension,suspension_coefficients_name);
@@ -306,6 +340,8 @@ static PyObject *joint_solve(PyObject *self,PyObject *args) {
         ||!matrix_values(PyTuple_GET_ITEM(input,10),w->law,4,7)||!matrix_values(PyTuple_GET_ITEM(input,11),w->gradients,4,6)
         ||!vector(PyTuple_GET_ITEM(input,12),w->touching,4)||!vector(PyTuple_GET_ITEM(input,13),w->alignment,4)
         ||!vector(PyTuple_GET_ITEM(input,14),w->lateral_bias,4))return NULL;
+    memset(w->camber_law,0,sizeof(w->camber_law));
+    if(camber!=Py_None&&!matrix_values(camber,w->camber_law,4,2))return NULL;
     memset(w->normal,0,sizeof(w->normal));memset(w->road,0,sizeof(w->road));memset(w->bias_ports,0,sizeof(w->bias_ports));memset(w->warm_branches,0,sizeof(w->warm_branches));
     for(int i=0;i<27;++i)for(int j=0;j<4;++j)w->warm_modes[i][j]=-1;
     w->cache_count=0;w->shared_branch=0;w->shared_port=-1;w->busy=1;w->game=game;

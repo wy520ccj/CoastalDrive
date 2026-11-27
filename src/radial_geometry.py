@@ -134,8 +134,13 @@ class RadialRoads:
     def __init__(self, world, body, config, static_shapes=None):
         groups = (static_support_shapes(world,body,BitMask32.bit(0),packet_cache={})
                   if static_shapes is None else static_shapes)
+        car_y = float(body.getTransform().getPos().y)
+        max_reach = config.wheelbase + config.wheel_radius + config.suspension_travel + 1.0
         surfaces = []
         for road,supported,parts in groups:
+            y_span = road.getPythonTag("y_span")
+            if y_span is not None and (car_y + max_reach < y_span[0] or car_y - max_reach > y_span[1]):
+                continue
             for index,part in enumerate(parts):
                 _inverse,_frame,_translation,half,margin,plane,triangles,_bounds = part
                 if supported:

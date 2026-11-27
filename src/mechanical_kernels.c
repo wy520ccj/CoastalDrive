@@ -2247,10 +2247,11 @@ static int tire_norm(PyObject *hypot_function,double x,double y,double *value) {
     *value=PyFloat_AsDouble(result); Py_DECREF(result); return !PyErr_Occurred();
 }
 static int tire_curve_values(double kappa,double alpha,double grip,double cx,double cy,
-    double shape,double curvature,PyObject *hypot_function,double target[2]) {
+    double shape,double curvature,PyObject *hypot_function,double target[2],double camber) {
     target[0]=target[1]=0.;
     if (grip==0.) return 1;
     double qx=cx*kappa,qy=-cy*tan(alpha),magnitude;
+    if (camber!=0.) qy+=camber;
     if (!tire_norm(hypot_function,qx,qy,&magnitude)) return 0;
     if (magnitude==0.) return 1;
     double n=magnitude/(shape*grip);
@@ -2259,16 +2260,16 @@ static int tire_curve_values(double kappa,double alpha,double grip,double cx,dou
     return 1;
 }
 static PyObject *tire_combined_force(PyObject *self,PyObject *args) {
-    double kappa,alpha,grip,cx,cy,shape,curvature,target[2];
+    double kappa,alpha,grip,cx,cy,shape,curvature,target[2],camber=0.;
     PyObject *hypot_function;
-    if (!PyArg_ParseTuple(args,"dddddddO",&kappa,&alpha,&grip,&cx,&cy,&shape,&curvature,&hypot_function)) return NULL;
-    if (!tire_curve_values(kappa,alpha,grip,cx,cy,shape,curvature,hypot_function,target)) return NULL;
+    if (!PyArg_ParseTuple(args,"dddddddO|d",&kappa,&alpha,&grip,&cx,&cy,&shape,&curvature,&hypot_function,&camber)) return NULL;
+    if (!tire_curve_values(kappa,alpha,grip,cx,cy,shape,curvature,hypot_function,target,camber)) return NULL;
     return Py_BuildValue("(dd)",target[0],target[1]);
 }
-static int tire_contact_values(const double force[2],const double previous[2],const double slip[2],
+static int tire_contact_camber_values(const double force[2],const double previous[2],const double slip[2],
     double denominator,int rolling,double grip,double cx,double cy,double dt,double stiffness,double damping,
     double shape,double curvature,PyObject *hypot_function,double target[2],double deformation[2],double rate[2],
-    double patch[2],double *kappa,double *alpha,const char **mode) {
+    double patch[2],double *kappa,double *alpha,const char **mode,double camber) {
     double impedance=stiffness*dt+damping;
     for (int i=0; i<2; ++i) {
         rate[i]=(force[i]-stiffness*previous[i])/impedance;
@@ -2276,7 +2277,7 @@ static int tire_contact_values(const double force[2],const double previous[2],co
     }
     *kappa=patch[0]/denominator; *alpha=atan2(-patch[1],denominator);
     if (rolling) {
-        if (!tire_curve_values(*kappa,*alpha,grip,cx,cy,shape,curvature,hypot_function,target)) return 0;
+        if (!tire_curve_values(*kappa,*alpha,grip,cx,cy,shape,curvature,hypot_function,target,camber)) return 0;
         *mode="compliant-rolling";
     } else {
         double trial[2],magnitude;
@@ -2291,17 +2292,24 @@ static int tire_contact_values(const double force[2],const double previous[2],co
     }
     return 1;
 }
+static int tire_contact_values(const double force[2],const double previous[2],const double slip[2],
+    double denominator,int rolling,double grip,double cx,double cy,double dt,double stiffness,double damping,
+    double shape,double curvature,PyObject *hypot_function,double target[2],double deformation[2],double rate[2],
+    double patch[2],double *kappa,double *alpha,const char **mode) {
+    return tire_contact_camber_values(force,previous,slip,denominator,rolling,grip,cx,cy,dt,stiffness,damping,
+        shape,curvature,hypot_function,target,deformation,rate,patch,kappa,alpha,mode,0.);
+}
 static PyObject *tire_contact_force(PyObject *self,PyObject *args) {
     PyObject *force_object,*previous_object,*slip_object,*hypot_function;
-    double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature;
+    double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature,camber=0.;
     int rolling;
-    if (!PyArg_ParseTuple(args,"OOOdpddddddddO",&force_object,&previous_object,&slip_object,&denominator,&rolling,
-        &grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function)) return NULL;
+    if (!PyArg_ParseTuple(args,"OOOdpddddddddO|d",&force_object,&previous_object,&slip_object,&denominator,&rolling,
+        &grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function,&camber)) return NULL;
     double force[2],previous[2],slip[2],rate[2],deformation[2],patch[2],target[2];
     if (!vector(force_object,force,2) || !vector(previous_object,previous,2) || !vector(slip_object,slip,2)) return NULL;
     double kappa,alpha; const char *mode;
-    if (!tire_contact_values(force,previous,slip,denominator,rolling,grip,cx,cy,dt,stiffness,damping,
-                             shape,curvature,hypot_function,target,deformation,rate,patch,&kappa,&alpha,&mode)) return NULL;
+    if (!tire_contact_camber_values(force,previous,slip,denominator,rolling,grip,cx,cy,dt,stiffness,damping,
+                             shape,curvature,hypot_function,target,deformation,rate,patch,&kappa,&alpha,&mode,camber)) return NULL;
     return Py_BuildValue("((dd)(dd)(dd)(dd)dds)",target[0],target[1],deformation[0],deformation[1],
         rate[0],rate[1],patch[0],patch[1],kappa,alpha,mode);
 }
@@ -2324,11 +2332,11 @@ static PyObject *wheel_contact_state(PyObject *self,PyObject *args) {
     PyObject *state_object,*velocity_object,*tangent_object,*axle_object,*moment_x_object,*moment_y_object;
     PyObject *force_object,*previous_object,*parameters_object,*hardware_object,*hypot_function;
     int wheel_start,wheel,rolling;
-    double radius,dt,state[9],velocity[3],tangent[3],axle[3],moment_x[3],moment_y[3],lateral_bias=0.;
+    double radius,dt,state[9],velocity[3],tangent[3],axle[3],moment_x[3],moment_y[3],lateral_bias=0.,camber=0.;
     double force[2],previous[2],parameters[3],hardware[5],speed[2],slip[2],target[2],deformation[2],rate[2],patch[2];
-    if (!PyArg_ParseTuple(args,"OOiiOOOOdOOOOdpO|d",&state_object,&velocity_object,&wheel_start,&wheel,
+    if (!PyArg_ParseTuple(args,"OOiiOOOOdOOOOdpO|dd",&state_object,&velocity_object,&wheel_start,&wheel,
         &tangent_object,&axle_object,&moment_x_object,&moment_y_object,&radius,&force_object,&previous_object,
-        &parameters_object,&hardware_object,&dt,&rolling,&hypot_function,&lateral_bias)) return NULL;
+        &parameters_object,&hardware_object,&dt,&rolling,&hypot_function,&lateral_bias,&camber)) return NULL;
     if ((wheel_start!=4 && wheel_start!=5) || wheel<0 || wheel>=4) {
         PyErr_SetString(PyExc_IndexError,"接点机械轮速索引越界"); return NULL;
     }
@@ -2341,8 +2349,8 @@ static PyObject *wheel_contact_state(PyObject *self,PyObject *args) {
     speed[1]+=lateral_bias;slip[1]-=lateral_bias;
     double denominator=fabs(speed[0])>hardware[0] ? fabs(speed[0]) : hardware[0],kappa,alpha;
     const char *mode;
-    if (!tire_contact_values(force,previous,slip,denominator,rolling,parameters[0],parameters[1],parameters[2],
-        dt,hardware[1],hardware[2],hardware[3],hardware[4],hypot_function,target,deformation,rate,patch,&kappa,&alpha,&mode)) return NULL;
+    if (!tire_contact_camber_values(force,previous,slip,denominator,rolling,parameters[0],parameters[1],parameters[2],
+        dt,hardware[1],hardware[2],hardware[3],hardware[4],hypot_function,target,deformation,rate,patch,&kappa,&alpha,&mode,camber)) return NULL;
     return Py_BuildValue("((dd)[(dd)(dd)(dd)dds])",target[0],target[1],deformation[0],deformation[1],
         rate[0],rate[1],patch[0],patch[1],kappa,alpha,mode);
 }
@@ -2363,10 +2371,10 @@ static PyObject *tire_energy_terms(PyObject *self,PyObject *args) {
     double numerical=.5*stiffness*compensated(terms,2);
     return Py_BuildValue("(dddd)",energy,material,road,numerical);
 }
-static int tire_jacobian_values(const double force[2],const double previous[2],const double slip[2],
+static int tire_camber_jacobian_values(const double force[2],const double previous[2],const double slip[2],
     const double slip_jacobian[4],double denominator,const double denominator_gradient[2],int rolling,
     double grip,double cx,double cy,double dt,double stiffness,double damping,double shape,double curvature,
-    PyObject *hypot_function,double result[4]) {
+    PyObject *hypot_function,double result[4],double camber) {
     if (grip==0.) { for (int i=0;i<4;++i) result[i]=0.; return 1; }
     double impedance=stiffness*dt+damping;
     if (!rolling) {
@@ -2395,6 +2403,8 @@ static int tire_jacobian_values(const double force[2],const double previous[2],c
                 q_jacobian[2*i+j]=(stiffnesses[i]*patch_jacobian-q[i]*denominator_gradient[j])/denominator;
             }
         }
+        /* 外倾偏置在子步初速下冻结，不进入 q 的滑移或分母导数。 */
+        if (camber!=0.) q[1]+=camber;
         if (!tire_norm(hypot_function,q[0],q[1],&magnitude)) return 0;
         if (magnitude==0.) {
             for (int i=0; i<4; ++i) result[i]=q_jacobian[i];
@@ -2412,19 +2422,26 @@ static int tire_jacobian_values(const double force[2],const double previous[2],c
     }
     return 1;
 }
+static int tire_jacobian_values(const double force[2],const double previous[2],const double slip[2],
+    const double slip_jacobian[4],double denominator,const double denominator_gradient[2],int rolling,
+    double grip,double cx,double cy,double dt,double stiffness,double damping,double shape,double curvature,
+    PyObject *hypot_function,double result[4]) {
+    return tire_camber_jacobian_values(force,previous,slip,slip_jacobian,denominator,denominator_gradient,rolling,
+        grip,cx,cy,dt,stiffness,damping,shape,curvature,hypot_function,result,0.);
+}
 static PyObject *tire_contact_jacobian(PyObject *self,PyObject *args) {
     PyObject *force_object,*previous_object,*slip_object,*slip_jacobian_object,*denominator_gradient_object,*hypot_function;
-    double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature;
+    double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature,camber=0.;
     int rolling;
-    if (!PyArg_ParseTuple(args,"OOOOdOpddddddddO",&force_object,&previous_object,&slip_object,&slip_jacobian_object,
-        &denominator,&denominator_gradient_object,&rolling,&grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function)) return NULL;
+    if (!PyArg_ParseTuple(args,"OOOOdOpddddddddO|d",&force_object,&previous_object,&slip_object,&slip_jacobian_object,
+        &denominator,&denominator_gradient_object,&rolling,&grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function,&camber)) return NULL;
     if (grip==0.) return Py_BuildValue("((dd)(dd))",0.,0.,0.,0.);
     double force[2],previous[2],slip[2],slip_jacobian[4],denominator_gradient[2],result[4];
     if (!vector(force_object,force,2) || !vector(previous_object,previous,2) || !vector(slip_object,slip,2)
         || !matrix_values(slip_jacobian_object,slip_jacobian,2,2)
         || !vector(denominator_gradient_object,denominator_gradient,2)) return NULL;
-    if (!tire_jacobian_values(force,previous,slip,slip_jacobian,denominator,denominator_gradient,rolling,
-                              grip,cx,cy,dt,stiffness,damping,shape,curvature,hypot_function,result)) return NULL;
+    if (!tire_camber_jacobian_values(force,previous,slip,slip_jacobian,denominator,denominator_gradient,rolling,
+                              grip,cx,cy,dt,stiffness,damping,shape,curvature,hypot_function,result,camber)) return NULL;
     return Py_BuildValue("((dd)(dd))",result[0],result[1],result[2],result[3]);
 }
 
@@ -2611,7 +2628,7 @@ typedef struct {
     WheelMap *map;
     int wheel,rolling,game;
     double base[9],velocity[3],active[3],tangent[3],axle[3],moment_x[3],moment_y[3];
-    double radius,previous[2],parameters[3],hardware[5],lateral_bias;
+    double radius,previous[2],parameters[3],hardware[5],lateral_bias,camber;
     PyObject *warm_branches,*warm_modes,*hypot;
 } WheelForce;
 
@@ -2622,6 +2639,32 @@ static int wheel_force_state(WheelForce *data,double fx,double fy,double state[9
         warm,data->warm_modes,data->tangent,data->axle,state,velocity,brake,selected,mode)) return 0;
     PyObject *updated=PyLong_FromLong(*selected);
     if (!updated || PyList_SetItem(data->warm_branches,data->wheel,updated)<0) return 0;
+    return 1;
+}
+static int wheel_constitutive_values(const double force[2],double speed[2],double slip[2],
+    const double gradients[2][3],int jacobian,const double previous[2],const double parameters[3],
+    const double hardware[5],double dt,int rolling,double lateral_bias,PyObject *hypot_function,
+    double camber,double *result) {
+    speed[1]+=lateral_bias;slip[1]-=lateral_bias;
+    double denominator=fabs(speed[0]);
+    if (hardware[0]>denominator) denominator=hardware[0];
+    if (jacobian) {
+        double slip_jacobian[4]={gradients[0][0],gradients[1][0],gradients[0][1],gradients[1][1]};
+        double denominator_gradient[2]={0.},target[4];
+        if (fabs(speed[0])>hardware[0])
+            for (int a=0;a<2;++a) denominator_gradient[a]=copysign(1.,speed[0])*gradients[a][2];
+        if (!tire_camber_jacobian_values(force,previous,slip,slip_jacobian,denominator,denominator_gradient,rolling,
+            parameters[0],parameters[1],parameters[2],dt,hardware[1],hardware[2],hardware[3],hardware[4],
+            hypot_function,target,camber)) return 0;
+        result[0]=1-target[0]; result[1]=-target[1]; result[2]=-target[2]; result[3]=1-target[3];
+    } else {
+        double target[2],deformation[2],rate[2],patch[2],kappa,alpha;
+        const char *mode;
+        if (!tire_contact_camber_values(force,previous,slip,denominator,rolling,parameters[0],parameters[1],parameters[2],
+            dt,hardware[1],hardware[2],hardware[3],hardware[4],hypot_function,target,deformation,rate,patch,
+            &kappa,&alpha,&mode,camber)) return 0;
+        result[0]=force[0]-target[0]; result[1]=force[1]-target[1];
+    }
     return 1;
 }
 static int wheel_force_values(void *context,double fx,double fy,int jacobian,double *result) {
@@ -2637,28 +2680,8 @@ static int wheel_force_values(void *context,double fx,double fy,int jacobian,dou
         wheel_velocity_values(state,velocity,data->wheel+5,data->tangent,data->axle,
             data->moment_x,data->moment_y,data->radius,speed,slip);
     }
-    speed[1]+=data->lateral_bias;slip[1]-=data->lateral_bias;
-    double denominator=fabs(speed[0]);
-    if (data->hardware[0]>denominator) denominator=data->hardware[0];
-    double dt=data->map->shared->dt;
-    if (jacobian) {
-        double slip_jacobian[4]={gradients[0][0],gradients[1][0],gradients[0][1],gradients[1][1]};
-        double denominator_gradient[2]={0.},target[4];
-        if (fabs(speed[0])>data->hardware[0])
-            for (int a=0;a<2;++a) denominator_gradient[a]=copysign(1.,speed[0])*gradients[a][2];
-        if (!tire_jacobian_values(force,data->previous,slip,slip_jacobian,denominator,denominator_gradient,data->rolling,
-            data->parameters[0],data->parameters[1],data->parameters[2],dt,data->hardware[1],data->hardware[2],
-            data->hardware[3],data->hardware[4],data->hypot,target)) return 0;
-        result[0]=1-target[0]; result[1]=-target[1]; result[2]=-target[2]; result[3]=1-target[3];
-    } else {
-        double target[2],deformation[2],rate[2],patch[2],kappa,alpha;
-        const char *contact_mode;
-        if (!tire_contact_values(force,data->previous,slip,denominator,data->rolling,
-            data->parameters[0],data->parameters[1],data->parameters[2],dt,data->hardware[1],data->hardware[2],
-            data->hardware[3],data->hardware[4],data->hypot,target,deformation,rate,patch,&kappa,&alpha,&contact_mode)) return 0;
-        result[0]=fx-target[0]; result[1]=fy-target[1];
-    }
-    return 1;
+    return wheel_constitutive_values(force,speed,slip,gradients,jacobian,data->previous,data->parameters,
+        data->hardware,data->map->shared->dt,data->rolling,data->lateral_bias,data->hypot,data->camber,result);
 }
 static int wheel_newton_values(WheelForce *data,double tolerance,double force[2],double *final_error) {
     if(data->game)return bounded_force_newton(wheel_force_values,data,data->parameters[0],tolerance,force,final_error);
@@ -2741,10 +2764,10 @@ static PyObject *loaded_wheel_force_solution(PyObject *self,PyObject *args) {
     PyObject *active,*moment_x,*moment_y,*previous,*parameters,*hardware,*initial;
     double tolerance,force[2],angular[9],normal[9],gyro[3],road[4];
     int predict;
-    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOOOOOOOO" "pdOpO|dp",&coefficients,&context.wheel,
+    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOOOOOOOO" "pdOpO|dpd",&coefficients,&context.wheel,
         &forces,&velocity,&normal_forces,&normal_responses,&gradients,&gyro_object,&road_object,&active,
         &context.warm_branches,&context.warm_modes,&moment_x,&moment_y,&previous,&parameters,&hardware,
-        &context.rolling,&tolerance,&initial,&predict,&context.hypot,&context.lateral_bias,&context.game)) return NULL;
+        &context.rolling,&tolerance,&initial,&predict,&context.hypot,&context.lateral_bias,&context.game,&context.camber)) return NULL;
     context.map=PyCapsule_GetPointer(coefficients,wheel_map_name);
     if (!context.map) return NULL;
     if (context.wheel<0 || context.wheel>=4) { PyErr_SetString(PyExc_IndexError,"轮端索引越界"); return NULL; }
@@ -2769,15 +2792,16 @@ static PyObject *loaded_wheel_force_solution(PyObject *self,PyObject *args) {
 static PyObject *wheel_residuals(PyObject *self,PyObject *args) {
     PyObject *coefficients,*state_object,*velocity_object,*forces_object,*modes_object,*previous_object;
     PyObject *parameters_object,*hardware_object,*rolling_object,*moment_x_object,*moment_y_object,*compliance_object,*hypot;
-    PyObject *bias_object=Py_None;
-    if (!PyArg_ParseTuple(args,"OOOOOOOOOOOOO|O",&coefficients,&state_object,&velocity_object,&forces_object,
+    PyObject *bias_object=Py_None,*camber_object=Py_None;
+    if (!PyArg_ParseTuple(args,"OOOOOOOOOOOOO|OO",&coefficients,&state_object,&velocity_object,&forces_object,
         &modes_object,&previous_object,&parameters_object,&hardware_object,&rolling_object,&moment_x_object,
-        &moment_y_object,&compliance_object,&hypot,&bias_object)) return NULL;
+        &moment_y_object,&compliance_object,&hypot,&bias_object,&camber_object)) return NULL;
     WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
     if (!packet) return NULL;
     double state[9],velocity[3],forces[12],previous[8],parameters[12],hardware[20],rolling[4];
-    double moment_x[12],moment_y[12],compliance[4],bias[4]={0.};
+    double moment_x[12],moment_y[12],compliance[4],bias[4]={0.},camber[4]={0.};
     if(bias_object!=Py_None&&!vector(bias_object,bias,4))return NULL;
+    if(camber_object!=Py_None&&!vector(camber_object,camber,4))return NULL;
     if (!vector(state_object,state,9) || !vector(velocity_object,velocity,3)
         || !matrix_values(forces_object,forces,4,3) || !matrix_values(previous_object,previous,4,2)
         || !matrix_values(parameters_object,parameters,4,3) || !matrix_values(hardware_object,hardware,4,5)
@@ -2807,11 +2831,11 @@ static PyObject *wheel_residuals(PyObject *self,PyObject *args) {
             if (compliance[i]!=0.) {
                 double deformation[2],rate[2],patch[2],kappa,alpha;
                 const char *contact_mode;
-                if (!tire_contact_values(forces+3*i,previous+2*i,slip,denominator,rolling[i]!=0.,p[0],p[1],p[2],
-                    dt,h[1],h[2],h[3],h[4],hypot,target,deformation,rate,patch,&kappa,&alpha,&contact_mode)) {
+                if (!tire_contact_camber_values(forces+3*i,previous+2*i,slip,denominator,rolling[i]!=0.,p[0],p[1],p[2],
+                    dt,h[1],h[2],h[3],h[4],hypot,target,deformation,rate,patch,&kappa,&alpha,&contact_mode,camber[i])) {
                     Py_DECREF(modes); return NULL;
                 }
-            } else if (!tire_curve_values(slip[0]/denominator,atan2(speed[1],denominator),p[0],p[1],p[2],h[3],h[4],hypot,target)) {
+            } else if (!tire_curve_values(slip[0]/denominator,atan2(speed[1],denominator),p[0],p[1],p[2],h[3],h[4],hypot,target,camber[i])) {
                 Py_DECREF(modes); return NULL;
             }
             if (!tire_norm(hypot,forces[3*i]-target[0],forces[3*i+1]-target[1],&error)) { Py_DECREF(modes); return NULL; }
@@ -2854,11 +2878,321 @@ static PyObject *suspension_residuals(PyObject *self,PyObject *args) {
 #include "joint_mechanical_prepare.h"
 #include "drivetrain_prepare.h"
 #include "lab_joint_native.h"
+
+typedef struct {
+    double inertia[16][16],momentum[16],known[16],ports[10][16],response[10],engine[16];
+    double downstream[3][16],downstream_inertias[3],downstream_axes[3][3],old_down[3];
+    double engine_axis[3],shaft_axis[3],axes[4][3],arms[4][3],guides[4][3],wheel_known[4][3];
+    double world_inertia[3][3],external_torque[3],start_angular[3];
+    double brakes[4],capacity[3],bias[2],viscosity[3],rolling[4];
+    double dt,ratio,share,final_drive,efficiency,clutch,sync_capacity;
+    double engine_torque,engine_drag,engine_inertia,shaft_inertia,wheel_inertia;
+    double rolling_speed,slip_speed,stiffness,damping,shape,curvature;
+    int synchronizing,body_gyro;
+} UnsprungFixed;
+
+typedef struct {
+    double gx[4][16],gy[4][16],gn[4][16],radii[4],steering[4][3],guide[4][3];
+    double previous[4][2],rolling[4],suspension[4],normal[4],parameters[4][3],camber[4];
+} UnsprungConfiguration;
+
+typedef struct {
+    double target[2],elastic[2],rate[2],patch[2],kappa,alpha;
+    const char *mode;
+} UnsprungContact;
+
+typedef struct {
+    double down[3],surface[4][3],rolling[4],speed[10],gyro[3];
+    UnsprungContact contact[4];
+} UnsprungDetails;
+
+static int unsprung_read(PyObject *object,double *target,int rows,int columns) {
+    Py_buffer buffer={0};
+    if (PyObject_GetBuffer(object,&buffer,PyBUF_STRIDES|PyBUF_FORMAT)<0) return 0;
+    int valid=buffer.itemsize==sizeof(double)&&strcmp(buffer.format,"d")==0
+        &&buffer.ndim==(columns ? 2 : 1)&&buffer.shape[0]==rows
+        &&(!columns||buffer.shape[1]==columns);
+    if (valid) {
+        if (PyBuffer_IsContiguous(&buffer,'C')) {
+            memcpy(target,buffer.buf,(size_t)buffer.len);
+        } else {
+            for (int i=0;i<rows;++i)
+                for (int j=0;j<(columns ? columns : 1);++j) *target++=lab_joint_get(&buffer,i,j);
+        }
+    } else PyErr_SetString(PyExc_ValueError,"簧下共同求解须使用指定形状的双精度数组");
+    PyBuffer_Release(&buffer);
+    return valid;
+}
+
+static void unsprung_fixed_free(PyObject *capsule) {
+    PyMem_Free(PyCapsule_GetPointer(capsule,"CoastalDrive.unsprung_fixed.v1"));
+}
+
+static PyObject *unsprung_fixed_prepare(PyObject *self,PyObject *args) {
+    PyObject *inputs,*port_settings,*tire_settings;
+    UnsprungFixed w;
+    if (!PyArg_ParseTuple(args,"OOOp",&inputs,&port_settings,&tire_settings,&w.body_gyro)
+        || !tuple_fields(inputs,24)
+        || !PyArg_ParseTuple(port_settings,"ddpddddd",&w.dt,&w.ratio,&w.synchronizing,&w.share,
+                             &w.final_drive,&w.efficiency,&w.clutch,&w.sync_capacity)
+        || !PyArg_ParseTuple(tire_settings,"ddddddddddd",&w.engine_torque,&w.engine_drag,&w.engine_inertia,
+                             &w.shaft_inertia,&w.wheel_inertia,&w.rolling_speed,&w.slip_speed,&w.stiffness,
+                             &w.damping,&w.shape,&w.curvature)) return NULL;
+    int index=0;
+#define UNSPRUNG_READ(field,rows,columns) unsprung_read(PyTuple_GET_ITEM(inputs,index++),(double *)(field),rows,columns)
+    if (!UNSPRUNG_READ(w.inertia,16,16)||!UNSPRUNG_READ(w.momentum,16,0)||!UNSPRUNG_READ(w.known,16,0)
+        ||!UNSPRUNG_READ(w.ports,10,16)||!UNSPRUNG_READ(w.response,10,0)||!UNSPRUNG_READ(w.engine,16,0)
+        ||!UNSPRUNG_READ(w.downstream,3,16)||!UNSPRUNG_READ(w.downstream_inertias,3,0)
+        ||!UNSPRUNG_READ(w.downstream_axes,3,3)||!UNSPRUNG_READ(w.old_down,3,0)
+        ||!UNSPRUNG_READ(w.engine_axis,3,0)||!UNSPRUNG_READ(w.shaft_axis,3,0)||!UNSPRUNG_READ(w.axes,4,3)
+        ||!UNSPRUNG_READ(w.arms,4,3)||!UNSPRUNG_READ(w.guides,4,3)||!UNSPRUNG_READ(w.wheel_known,4,3)
+        ||!UNSPRUNG_READ(w.world_inertia,3,3)||!UNSPRUNG_READ(w.external_torque,3,0)||!UNSPRUNG_READ(w.start_angular,3,0)
+        ||!UNSPRUNG_READ(w.brakes,4,0)||!UNSPRUNG_READ(w.capacity,3,0)||!UNSPRUNG_READ(w.bias,2,0)
+        ||!UNSPRUNG_READ(w.viscosity,3,0)||!UNSPRUNG_READ(w.rolling,4,0)) return NULL;
+    UnsprungFixed *data=PyMem_Malloc(sizeof(w));
+    if (!data) return PyErr_NoMemory();
+    *data=w;
+    PyObject *capsule=PyCapsule_New(data,"CoastalDrive.unsprung_fixed.v1",unsprung_fixed_free);
+    if (!capsule) PyMem_Free(data);
+    return capsule;
+}
+
+static int unsprung_read_configuration(PyObject *inputs,UnsprungConfiguration *g) {
+    if (!tuple_fields(inputs,12)) return 0;
+    int index=0;
+    return UNSPRUNG_READ(g->gx,4,16)&&UNSPRUNG_READ(g->gy,4,16)&&UNSPRUNG_READ(g->gn,4,16)
+        &&UNSPRUNG_READ(g->radii,4,0)&&UNSPRUNG_READ(g->steering,4,3)&&UNSPRUNG_READ(g->guide,4,3)
+        &&UNSPRUNG_READ(g->previous,4,2)&&UNSPRUNG_READ(g->rolling,4,0)&&UNSPRUNG_READ(g->suspension,4,0)
+        &&UNSPRUNG_READ(g->normal,4,0)&&UNSPRUNG_READ(g->parameters,4,3)&&UNSPRUNG_READ(g->camber,4,0);
+}
+#undef UNSPRUNG_READ
+
+static double unsprung_dot(const double *row,const double *value,int size) {
+    double sum=0.;
+    for (int i=0;i<size;++i) sum+=row[i]*value[i];
+    return sum;
+}
+
+static void unsprung_solve3(const double input[3][3],double value[3]) {
+    double a[3][3];
+    memcpy(a,input,sizeof(a));
+    for (int j=0;j<2;++j) {
+        int pivot=j;
+        for (int i=j+1;i<3;++i) if (fabs(a[i][j])>fabs(a[pivot][j])) pivot=i;
+        if (pivot!=j) {
+            for (int k=j;k<3;++k) { double swap=a[j][k]; a[j][k]=a[pivot][k]; a[pivot][k]=swap; }
+            double swap=value[j]; value[j]=value[pivot]; value[pivot]=swap;
+        }
+        for (int i=j+1;i<3;++i) {
+            double factor=a[i][j]/a[j][j];
+            for (int k=j+1;k<3;++k) a[i][k]-=factor*a[j][k];
+            value[i]-=factor*value[j];
+        }
+    }
+    for (int i=2;i>=0;--i) {
+        value[i]/=a[i][i];
+        for (int j=0;j<i;++j) value[j]-=a[j][i]*value[i];
+    }
+}
+
+static void unsprung_gyro_impulse(const UnsprungFixed *w,const double body_torque[3],double gyro[3]) {
+    double angular[3],momentum[3],jacobian[3][3],correction[3];
+    for (int i=0;i<3;++i) angular[i]=body_torque[i]-w->external_torque[i];
+    unsprung_solve3(w->world_inertia,angular);
+    for (int i=0;i<3;++i) angular[i]=w->start_angular[i]+w->dt*angular[i];
+    for (int i=0;i<3;++i) momentum[i]=unsprung_dot(w->world_inertia[i],angular,3);
+    joint_cross(angular,momentum,correction);
+    for (int i=0;i<3;++i) {
+        double inertia_column[3],basis[3]={0.},left[3],right[3];
+        for (int j=0;j<3;++j) inertia_column[j]=w->world_inertia[j][i];
+        basis[i]=1.;
+        joint_cross(angular,inertia_column,left);
+        joint_cross(momentum,basis,right);
+        for (int j=0;j<3;++j)
+            jacobian[j][i]=w->world_inertia[j][i]+w->dt*(left[j]-right[j]);
+        correction[i]*=w->dt;
+    }
+    unsprung_solve3(jacobian,correction);
+    for (int i=0;i<3;++i) gyro[i]=unsprung_dot(w->world_inertia[i],correction,3)*-1.;
+}
+
+static void unsprung_ports(const UnsprungFixed *w,const double torque[10],const double speed[10],
+                           const double inertial_torques[3],double result[10]) {
+    double drive=w->ratio*(torque[1]-torque[2]);
+    double axle[2]={w->share*drive-w->final_drive*(w->share*inertial_torques[0]+inertial_torques[1]),
+        (1-w->share)*drive-w->final_drive*((1-w->share)*inertial_torques[0]+inertial_torques[2])};
+    result[0]=torque[0]-lab_joint_clip(torque[0]+speed[0]/(w->dt*w->response[0]),-w->clutch,w->clutch);
+    if (w->ratio!=0.&&!w->synchronizing) {
+        result[1]=speed[1]/(w->dt*w->response[1]);
+        double slope=torque[1]*speed[2]>=0. ? 1-w->efficiency : 1-1/w->efficiency;
+        result[2]=torque[2]-slope*torque[1];
+    } else {
+        result[1]=w->ratio!=0. ? torque[1]-lab_joint_clip(torque[1]+speed[1]/(w->dt*w->response[1]),
+                                                         -w->sync_capacity,w->sync_capacity) : torque[1];
+        result[2]=torque[2];
+    }
+    for (int i=0;i<4;++i) {
+        int j=3+i;
+        result[j]=torque[j]-lab_joint_array_clip(torque[j]+speed[j]/(w->dt*w->response[j]),-w->brakes[i],w->brakes[i]);
+    }
+    for (int i=0;i<3;++i) {
+        double limit=w->capacity[i];
+        if (i<2&&w->bias[i]>1.) {
+            double capacity=fabs(axle[i])*(w->bias[i]-1.)/(2*(w->bias[i]+1.));
+            if (capacity<limit) limit=capacity;
+        }
+        result[7+i]=torque[7+i]-lab_joint_array_clip(w->viscosity[i]*speed[7+i],-limit,limit);
+    }
+}
+
+static void unsprung_fixed_values(const UnsprungFixed *w,const UnsprungConfiguration *g,
+                                  const double values[34],double residual[34],UnsprungDetails *details) {
+    const double *end=values,*forces=values+16,*torques=values+24;
+    double inertial_torques[3],spin[3],rotor_bias[3],body_torque[3],wheel_moment[3]={0.};
+    for (int j=0;j<3;++j) {
+        details->down[j]=unsprung_dot(w->downstream[j],end,16);
+        inertial_torques[j]=w->downstream_inertias[j]*(details->down[j]-w->old_down[j])/w->dt;
+    }
+    for (int j=0;j<3;++j) {
+        double wheels=0.,downstream=0.;
+        for (int i=0;i<4;++i) wheels+=end[12+i]*w->axes[i][j];
+        for (int i=0;i<3;++i) downstream+=(w->downstream_inertias[i]*details->down[i])*w->downstream_axes[i][j];
+        spin[j]=w->engine_inertia*end[10]*w->engine_axis[j]+w->shaft_inertia*end[11]*w->shaft_axis[j]
+            -w->wheel_inertia*wheels+downstream;
+    }
+    joint_cross(end+3,spin,rotor_bias);
+    double drag=w->engine_drag*unsprung_dot(w->engine,end,16);
+    for (int i=0;i<4;++i) {
+        double *surface=details->surface[i];
+        surface[0]=(unsprung_dot(g->gx[i],end,16)+g->steering[i][0])+g->guide[i][0];
+        surface[1]=(unsprung_dot(g->gy[i],end,16)+g->steering[i][1])+g->guide[i][1];
+        surface[2]=(unsprung_dot(g->gn[i],end,16)+g->steering[i][2])+g->guide[i][2];
+        double wheel_speed=g->radii[i]*end[12+i],absolute=fabs(wheel_speed);
+        double radius_squared=g->radii[i]*g->radii[i];
+        details->rolling[i]=g->rolling[i]*g->normal[i]*radius_squared*end[12+i]
+            /(absolute>w->rolling_speed ? absolute : w->rolling_speed);
+        if (w->body_gyro) {
+            double force[3],moment[3];
+            for (int j=0;j<3;++j)
+                force[j]=forces[2*i]*g->gx[i][j]+forces[2*i+1]*g->gy[i][j]+g->normal[i]*g->gn[i][j]
+                    -g->suspension[i]*w->guides[i][j]+w->wheel_known[i][j];
+            joint_cross(w->arms[i],force,moment);
+            for (int j=0;j<3;++j) wheel_moment[j]+=moment[j];
+        }
+        double denominator=fabs(surface[0]+wheel_speed);
+        if (w->slip_speed>denominator) denominator=w->slip_speed;
+        const double slip[2]={-surface[0],-surface[1]},*p=g->parameters[i];
+        UnsprungContact *c=details->contact+i;
+        tire_contact_camber_values(forces+2*i,g->previous[i],slip,denominator,w->rolling[i]!=0.,p[0],p[1],p[2],
+            w->dt,w->stiffness,w->damping,w->shape,w->curvature,Py_None,c->target,c->elastic,c->rate,c->patch,
+            &c->kappa,&c->alpha,&c->mode,g->camber[i]);
+        for (int j=0;j<2;++j) residual[16+2*i+j]=forces[2*i+j]-c->target[j];
+    }
+    for (int j=0;j<16;++j) {
+        double normal=0.,fx=0.,fy=0.,torque=0.;
+        for (int i=0;i<4;++i) {
+            normal+=g->gn[i][j]*g->normal[i];
+            fx+=g->gx[i][j]*forces[2*i];
+            fy+=g->gy[i][j]*forces[2*i+1];
+        }
+        for (int i=0;i<10;++i) torque+=w->ports[i][j]*torques[i];
+        double suspension=j>=6&&j<10 ? g->suspension[j-6] : 0.;
+        double reaction=w->known[j]+w->engine_torque*w->engine[j]-drag*w->engine[j];
+        reaction=(((reaction-suspension)+normal)+fx)+fy-torque;
+        if (j>=12) reaction-=details->rolling[j-12];
+        double rotor=j>=3&&j<6 ? rotor_bias[j-3] : 0.;
+        if (j>=3&&j<6&&w->body_gyro) body_torque[j-3]=reaction-rotor-wheel_moment[j-3];
+        residual[j]=(unsprung_dot(w->inertia[j],end,16)-w->momentum[j])-w->dt*(reaction-rotor);
+    }
+    if (w->body_gyro) {
+        unsprung_gyro_impulse(w,body_torque,details->gyro);
+        for (int i=0;i<3;++i) residual[3+i]-=details->gyro[i];
+    } else memset(details->gyro,0,sizeof(details->gyro));
+    for (int i=0;i<10;++i) details->speed[i]=unsprung_dot(w->ports[i],end,16);
+    unsprung_ports(w,torques,details->speed,inertial_torques,residual+24);
+}
+
+static int unsprung_output(PyObject *object,Py_buffer *output,int matrix) {
+    if (PyObject_GetBuffer(object,output,PyBUF_C_CONTIGUOUS|PyBUF_FORMAT|PyBUF_WRITABLE)<0) return 0;
+    if (output->itemsize!=sizeof(double)||strcmp(output->format,"d")||output->ndim!=1+matrix
+        ||output->shape[0]!=34||(matrix&&output->shape[1]!=34)) {
+        PyErr_SetString(PyExc_ValueError,"簧下共同求解输出缓冲区维数不符");
+        return 0;
+    }
+    return 1;
+}
+
+static PyObject *unsprung_fixed_evaluate(PyObject *self,PyObject *args) {
+    PyObject *capsule,*geometry,*values,*output;
+    int publish=0;
+    if (!PyArg_ParseTuple(args,"OOOO|p",&capsule,&geometry,&values,&output,&publish)) return NULL;
+    UnsprungFixed *w=PyCapsule_GetPointer(capsule,"CoastalDrive.unsprung_fixed.v1");
+    UnsprungConfiguration g;
+    double state[34];
+    Py_buffer residual={0};
+    if (!w||!unsprung_read_configuration(geometry,&g)||!unsprung_read(values,state,34,0)) return NULL;
+    if (!unsprung_output(output,&residual,0)) {
+        lab_joint_release(&residual,1); return NULL;
+    }
+    UnsprungDetails details;
+    unsprung_fixed_values(w,&g,state,(double *)residual.buf,&details);
+    PyBuffer_Release(&residual);
+    if (!publish) Py_RETURN_NONE;
+    PyObject *contacts=PyList_New(4);
+    if (!contacts) return NULL;
+    for (int i=0;i<4;++i) {
+        const UnsprungContact *c=details.contact+i;
+        PyObject *contact=Py_BuildValue("((dd)(dd)(dd)(dd)dds)",c->target[0],c->target[1],c->elastic[0],c->elastic[1],
+            c->rate[0],c->rate[1],c->patch[0],c->patch[1],c->kappa,c->alpha,c->mode);
+        if (!contact) { Py_DECREF(contacts); return NULL; }
+        PyList_SET_ITEM(contacts,i,contact);
+    }
+    return Py_BuildValue("NNNNNN",joint_vector_object(details.down,3),joint_matrix_object(&details.surface[0][0],4,3),
+        joint_vector_object(details.rolling,4),contacts,joint_vector_object(details.speed,10),
+        joint_vector_object(details.gyro,3));
+}
+
+static PyObject *unsprung_jacobian_tail(PyObject *self,PyObject *args) {
+    PyObject *capsule,*geometry,*values,*base,*scales,*rows,*output;
+    int start,forward;
+    if (!PyArg_ParseTuple(args,"OOOOOOOip",&capsule,&geometry,&values,&base,&scales,&rows,&output,&start,&forward)) return NULL;
+    if (start!=10&&start!=16) { PyErr_SetString(PyExc_ValueError,"簧下差分起始列无效"); return NULL; }
+    UnsprungFixed *w=PyCapsule_GetPointer(capsule,"CoastalDrive.unsprung_fixed.v1");
+    UnsprungConfiguration g;
+    double state[34],base_residual[34],state_scale[34],row_scale[34];
+    Py_buffer jacobian={0};
+    if (!w||!unsprung_read_configuration(geometry,&g)||!unsprung_read(values,state,34,0)
+        ||!unsprung_read(base,base_residual,34,0)||!unsprung_read(scales,state_scale,34,0)
+        ||!unsprung_read(rows,row_scale,34,0)) return NULL;
+    if (!unsprung_output(output,&jacobian,1)) {
+        lab_joint_release(&jacobian,1); return NULL;
+    }
+    double *matrix=jacobian.buf;
+    UnsprungDetails details;
+    for (int i=start;i<34;++i) {
+        double original=state[i],epsilon=1e-5*state_scale[i],plus[34],minus[34];
+        state[i]=original+epsilon;
+        unsprung_fixed_values(w,&g,state,plus,&details);
+        if (!forward) {
+            state[i]=original-epsilon;
+            unsprung_fixed_values(w,&g,state,minus,&details);
+        }
+        state[i]=original;
+        const double *low=forward ? base_residual : minus;
+        for (int j=0;j<34;++j)
+            matrix[34*j+i]=(plus[j]-low[j])/(forward ? epsilon : 2*epsilon)*state_scale[i]/row_scale[j];
+    }
+    PyBuffer_Release(&jacobian);
+    Py_RETURN_NONE;
+}
 #include "lab_normal_native.h"
 
 static PyMethodDef methods[] = {
     {"unsprung_normal_parameters",unsprung_normal_parameters_native,METH_VARARGS,"试验台不可变法向材料系数准备"},
     {"unsprung_normal_material",unsprung_normal_material_native,METH_VARARGS,"试验台完整四轮法向材料批量组装"},
+    {"unsprung_fixed_prepare",unsprung_fixed_prepare,METH_VARARGS,"准备簧下共同求解的固定力学数据"},
+    {"unsprung_fixed_evaluate",unsprung_fixed_evaluate,METH_VARARGS,"固定构型下的簧下完整34维残差"},
+    {"unsprung_jacobian_tail",unsprung_jacobian_tail,METH_VARARGS,"固定构型下批量差分Jacobian尾列"},
     {"unsprung_contact_residual",unsprung_contact_residual_native,METH_VARARGS,"试验台四轮原材料残差批量组装"},
     {"unsprung_port_residual",unsprung_port_residual_native,METH_VARARGS,"试验台完整有限端口残差批量组装"},
     {"drivetrain_prepare",drivetrain_prepare,METH_VARARGS,"轮轴约束、实体轴惯量与自由状态连续准备"},

@@ -45,11 +45,11 @@ FIELDS = {
 }
 BY_KEY = {field.key: field for fields in FIELDS.values() for field in fields}
 HELP = {
-    'tires': '前轮更硬通常响应更快；前后差异会改变转向平衡。数值是轮胎模型标定值。',
-    'brakes': '前轴份额决定制动力分配；总扭矩影响制动能力，过大仍会触发ABS。',
+    'tires': '提高前轮侧偏刚度可加快转向响应，前后轴刚度比决定整车转向平衡。',
+    'brakes': '前轴份额决定前后制动力分配；制动扭矩超过路面附着极限时由 ABS 介入调节。',
     'front': '弹簧支撑车身；阻尼控制压缩和回弹；防倾杆影响前后侧倾分配。',
-    'rear': '左右轮同步调整。前后悬架共同决定车身响应，去工坊比较制动与转向。',
-    'drive': '减速比影响加速与转速；差速器须同时有阻尼和耦合上限才产生作用。',
+    'rear': '左右轮同步调整。前后悬架共同决定车身响应，可前往工坊对比制动与转向表现。',
+    'drive': '主减速比影响加速与发动机转速；差速器需同时配置阻尼与耦合上限才会介入。',
 }
 
 
@@ -81,7 +81,7 @@ def candidate(config, changes):
             updated[name] = tuple(updated[name])
     if config.suspension_damper_curves is not None and any('bump' in key or 'rebound' in key for key in changes
                                                          if float(changes[key]) != original[key]):
-        raise ValueError('当前车使用非线性阻尼曲线，请到工坊编辑曲线，车库未替换原曲线')
+        raise ValueError('当前车辆采用非线性减振器力速曲线，请在试验台编辑曲线参数')
     return replace(config, **updated)
 
 

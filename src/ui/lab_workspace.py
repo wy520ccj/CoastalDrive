@@ -30,6 +30,8 @@ class LabWorkspace:
     workshop_state: dict | None = None
     road_state: dict | None = None
     retest_state: dict | None = None
+    road_class_index: int = 2
+    feedback_index: int = 0
 
     @classmethod
     def capture(cls, app):
@@ -40,7 +42,8 @@ class LabWorkspace:
                    app.abs_menu.selectedIndex, app.esc_menu.selectedIndex, app.plot_menu.selectedIndex,
                    app.engineered_config, app.parameter_metadata, app.active_record(), app.baseline,
                    app.view_index, app.scene.camera_mode, app.play_speed, app.last_report,
-                   app.workshop.capture(), app.schemes.virtual_driver.capture(), app.road_retest.capture())
+                   app.workshop.capture(), app.schemes.virtual_driver.capture(), app.road_retest.capture(),
+                   app.road_class_menu.selectedIndex, app.feedback_menu.selectedIndex)
 
     def restore(self, app):
         app.set_options(LabOptions(vehicle_id=self.vehicle_id, maneuver=self.maneuver))
@@ -48,11 +51,14 @@ class LabWorkspace:
         app.engineered_vehicle_id = self.vehicle_id if self.config is not None else None
         app.parameter_metadata = self.parameter_metadata
         for key, text in self.fields.items():
-            app.entries[key].enterText(text)
+            if key in app.entries:
+                app.entries[key].enterText(text)
         for key, text in self.manual_fields.items():
             app.manual_entries[key].enterText(text)
         app.abs_menu.set(self.abs_index)
         app.esc_menu.set(self.esc_index)
+        app.road_class_menu.set(self.road_class_index, fCommand=0)
+        app.feedback_menu.set(self.feedback_index, fCommand=0)
         app.refresh_configuration_note()
         app.record, app.baseline = self.record, self.baseline
         app.last_report = self.last_report
